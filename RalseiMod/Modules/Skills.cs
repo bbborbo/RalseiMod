@@ -10,6 +10,8 @@ namespace RalseiMod.Modules
 {
     internal static class Skills
     {
+        public static Dictionary<string, SkillLocator> characterSkillLocators = new Dictionary<string, SkillLocator>();
+
         #region genericskills
         public static void CreateSkillFamilies(GameObject targetPrefab) => CreateSkillFamilies(targetPrefab, SkillSlot.Primary, SkillSlot.Secondary, SkillSlot.Utility, SkillSlot.Special);
         /// <summary>
@@ -191,6 +193,15 @@ namespace RalseiMod.Modules
             return skillDef;
         }
         #endregion skilldefs
+
+        #region entitystates
+        public static ComboSkillDef.Combo ComboFromType(Type t)
+        {
+            ComboSkillDef.Combo combo = new ComboSkillDef.Combo();
+            combo.activationStateType = new SerializableEntityStateType(t);
+            return combo;
+        }
+        #endregion
     }
 
     /// <summary>
@@ -262,5 +273,44 @@ namespace RalseiMod.Modules
 
         }
         #endregion construction complete
+    }
+    public class SimpleSkillData
+    {
+        public SimpleSkillData(int baseMaxStock = 1, float baseRechargeInterval = 1f, bool beginSkillCooldownOnSkillEnd = false,
+            bool canceledFromSprinting = false, bool cancelSprintingOnActivation = true, bool dontAllowPastMaxStocks = true,
+            bool fullRestockOnAssign = true, InterruptPriority interruptPriority = InterruptPriority.Any,
+            bool isCombatSkill = true, bool mustKeyPress = false, int rechargeStock = 1,
+            int requiredStock = 1, bool resetCooldownTimerOnUse = false, int stockToConsume = 1)
+        {
+            this.baseMaxStock = baseMaxStock;
+            this.baseRechargeInterval = baseRechargeInterval;
+            this.beginSkillCooldownOnSkillEnd = beginSkillCooldownOnSkillEnd;
+            this.canceledFromSprinting = canceledFromSprinting;
+            this.cancelSprintingOnActivation = cancelSprintingOnActivation;
+            this.dontAllowPastMaxStocks = dontAllowPastMaxStocks;
+            this.fullRestockOnAssign = fullRestockOnAssign;
+            this.interruptPriority = interruptPriority;
+            this.isCombatSkill = isCombatSkill;
+            this.mustKeyPress = mustKeyPress;
+            this.rechargeStock = rechargeStock;
+            this.requiredStock = requiredStock;
+            this.resetCooldownTimerOnUse = resetCooldownTimerOnUse;
+            this.stockToConsume = stockToConsume;
+        }
+
+        internal int baseMaxStock;
+        internal float baseRechargeInterval;
+        internal bool beginSkillCooldownOnSkillEnd;
+        internal bool canceledFromSprinting;
+        internal bool cancelSprintingOnActivation;
+        internal bool dontAllowPastMaxStocks;
+        internal bool fullRestockOnAssign;
+        internal InterruptPriority interruptPriority;
+        internal bool isCombatSkill;
+        internal bool mustKeyPress;
+        internal int rechargeStock;
+        internal int requiredStock;
+        internal bool resetCooldownTimerOnUse;
+        internal int stockToConsume;
     }
 }

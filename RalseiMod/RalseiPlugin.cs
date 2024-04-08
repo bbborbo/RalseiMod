@@ -6,14 +6,15 @@ using System.Collections.Generic;
 using System.Security;
 using System.Security.Permissions;
 using UnityEngine;
+using System.Reflection;
+using RalseiMod.Modules.Characters;
 
 [module: UnverifiableCode]
 [assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
 
-//rename this namespace
 namespace RalseiMod
 {
-    //[BepInDependency("com.rune580.riskofoptions", BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInDependency("com.johnedwa.RTAutoSprintEx", BepInDependency.DependencyFlags.SoftDependency)]
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
     [BepInPlugin(guid, modName, version)]
     public class RalseiPlugin : BaseUnityPlugin
@@ -27,6 +28,15 @@ namespace RalseiMod
 
         public static RalseiPlugin instance;
         public static AssetBundle mainAssetBundle;
+
+        #region asset paths
+        public const string iconsPath = "";
+        #endregion
+
+        #region mods loaded
+        public static bool ModLoaded(string modGuid) { return modGuid != "" && BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey(modGuid); }
+        public static bool autoSprintLoaded => ModLoaded("com.johnedwa.RTAutoSprintEx");
+        #endregion
 
         void Awake()
         {
@@ -43,6 +53,9 @@ namespace RalseiMod
 
             // make a content pack and add it. this has to be last
             new Modules.ContentPacks().Initialize();
+
+            Modules.Language.TryPrintOutput("Ralsei.txt");
+            ////refer to guide on how to build and distribute your mod with the proper folders
         }
     }
 }

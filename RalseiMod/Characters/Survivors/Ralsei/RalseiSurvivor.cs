@@ -8,6 +8,7 @@ using RoR2.Skills;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using RalseiMod.Skills;
 
 namespace RalseiMod.Survivors.Ralsei
 {
@@ -16,21 +17,22 @@ namespace RalseiMod.Survivors.Ralsei
         #region config
         public override string ConfigName => "Ralsei";
 
-        [ConfigField("Jump Power", "Ralsei's jump power. 15 is standard for most survivors.", 18f)]
-        public static float jumpPower;
+        [AutoConfig("Jump Power", "Ralsei's jump power. 15 is standard for most survivors.", 18f)]
+        public static float ralseiJumpPower;
+        [AutoConfig("Movement Speed", "Ralsei's movement speed. 11 is standard for most survivors.", 12f)]
+        public static float ralseiMoveSpeed;
         #endregion
         #region language
         public override string CharacterName => "Ralsei";
-        public override string SurvivorSubtitle => "Prince of the Dark World";
+        public override string SurvivorSubtitle => "Prince from The Dark";
+        public override string SurvivorOutroWin => "..and so he left, shining with HOPE.";
+        public override string SurvivorOutroFailure => "..and so he vanished, a whisper of legend fading to black.";
         public override string CharacterLore => "";
         public override string SurvivorDescription => "Henry is a skilled fighter who makes use of a wide arsenal of weaponry to take down his foes.<color=#CCD3E0>" + Environment.NewLine + Environment.NewLine
              + "< ! > Sword is a good all-rounder while Boxing Gloves are better for laying a beatdown on more powerful foes." + Environment.NewLine + Environment.NewLine
              + "< ! > Pistol is a powerful anti air, with its low cooldown and high damage." + Environment.NewLine + Environment.NewLine
              + "< ! > Roll has a lingering armor buff that helps to use it aggressively." + Environment.NewLine + Environment.NewLine
-             + "< ! > Bomb can be used to wipe crowds with ease." + Environment.NewLine + Environment.NewLine;
-        public override string SurvivorOutroWin => "";
-        public override string SurvivorOutroFailure => "";
-
+             + "< ! > Bomb can be used to wipe crowds with ease.";
         #endregion
         public override string bodyName => "RalseiBody"; 
         public override string masterName => "RalseiMonsterMaster";
@@ -59,10 +61,10 @@ namespace RalseiMod.Survivors.Ralsei
             maxHealth = 75f,
             healthRegen = 1f,
             armor = 0f,
-            moveSpeed = 12f,
+            moveSpeed = ralseiMoveSpeed,
 
             jumpCount = 1,
-            jumpPower = jumpPower,
+            jumpPower = ralseiJumpPower,
         };
 
         public override CustomRendererInfo[] customRendererInfos => new CustomRendererInfo[]
@@ -162,11 +164,24 @@ namespace RalseiMod.Survivors.Ralsei
             //remove the genericskills from the commando body we cloned
             Modules.Skills.ClearGenericSkills(bodyPrefab);
             //add our own
-            //AddPassiveSkill();
-            AddPrimarySkills();
-            AddSecondarySkills();
-            AddUtiitySkills();
-            AddSpecialSkills();
+            SkillLocator skillLocator = bodyPrefab.GetComponent<SkillLocator>();
+            if (skillLocator != null)
+                Modules.Skills.characterSkillLocators[bodyName] = skillLocator;
+
+            //add passive skill
+            bodyPrefab.GetComponent<SkillLocator>().passiveSkill = new SkillLocator.PassiveSkill
+            {
+                enabled = true,
+                skillNameToken = RALSEI_PREFIX + "PASSIVE_NAME",
+                skillDescriptionToken = RALSEI_PREFIX + "PASSIVE_DESCRIPTION",
+                keywordToken = "KEYWORD_STUNNING",
+                icon = assetBundle.LoadAsset<Sprite>("texPassiveIcon"),
+            };
+            //GenericSkill passiveGenericSkill = Modules.Skills.CreateGenericSkillWithSkillFamily(bodyPrefab, "PassiveSkill");
+            Modules.Skills.CreateGenericSkillWithSkillFamily(bodyPrefab, SkillSlot.Primary);
+            Modules.Skills.CreateGenericSkillWithSkillFamily(bodyPrefab, SkillSlot.Secondary);
+            Modules.Skills.CreateGenericSkillWithSkillFamily(bodyPrefab, SkillSlot.Utility);
+            Modules.Skills.CreateGenericSkillWithSkillFamily(bodyPrefab, SkillSlot.Special);
         }
 
         public override void Hooks()
@@ -177,190 +192,6 @@ namespace RalseiMod.Survivors.Ralsei
         {
             base.Lang();
         }
-
-        #region skills
-
-        //skip if you don't have a passive
-        //also skip if this is your first look at skills
-        private void AddPassiveSkill()
-        {
-            //option 1. fake passive icon just to describe functionality we will implement elsewhere
-            bodyPrefab.GetComponent<SkillLocator>().passiveSkill = new SkillLocator.PassiveSkill
-            {
-                enabled = true,
-                skillNameToken = RALSEI_PREFIX + "PASSIVE_NAME",
-                skillDescriptionToken = RALSEI_PREFIX + "PASSIVE_DESCRIPTION",
-                keywordToken = "KEYWORD_STUNNING",
-                icon = assetBundle.LoadAsset<Sprite>("texPassiveIcon"),
-            };
-
-            //option 2. a new SkillFamily for a passive, used if you want multiple selectable passives
-            GenericSkill passiveGenericSkill = Modules.Skills.CreateGenericSkillWithSkillFamily(bodyPrefab, "PassiveSkill");
-            SkillDef passiveSkillDef1 = Modules.Skills.CreateSkillDef(new SkillDefInfo
-            {
-                skillName = "HenryPassive",
-                skillNameToken = RALSEI_PREFIX + "PASSIVE_NAME",
-                skillDescriptionToken = RALSEI_PREFIX + "PASSIVE_DESCRIPTION",
-                keywordTokens = new string[] { "KEYWORD_AGILE" },
-                skillIcon = assetBundle.LoadAsset<Sprite>("texPassiveIcon"),
-
-                //unless you're somehow activating your passive like a skill, none of the following is needed.
-                //but that's just me saying things. the tools are here at your disposal to do whatever you like with
-
-                //activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Shoot)),
-                //activationStateMachineName = "Weapon1",
-                //interruptPriority = EntityStates.InterruptPriority.Skill,
-
-                //baseRechargeInterval = 1f,
-                //baseMaxStock = 1,
-
-                //rechargeStock = 1,
-                //requiredStock = 1,
-                //stockToConsume = 1,
-
-                //resetCooldownTimerOnUse = false,
-                //fullRestockOnAssign = true,
-                //dontAllowPastMaxStocks = false,
-                //mustKeyPress = false,
-                //beginSkillCooldownOnSkillEnd = false,
-
-                //isCombatSkill = true,
-                //canceledFromSprinting = false,
-                //cancelSprintingOnActivation = false,
-                //forceSprintDuringState = false,
-
-            });
-            Modules.Skills.AddSkillsToFamily(passiveGenericSkill.skillFamily, passiveSkillDef1);
-        }
-
-        //if this is your first look at skilldef creation, take a look at Secondary first
-        private void AddPrimarySkills()
-        {
-            Modules.Skills.CreateGenericSkillWithSkillFamily(bodyPrefab, SkillSlot.Primary);
-
-            //the primary skill is created using a constructor for a typical primary
-            //it is also a SteppedSkillDef. Custom Skilldefs are very useful for custom behaviors related to casting a skill. see ror2's different skilldefs for reference
-            SteppedSkillDef primarySkillDef1 = Modules.Skills.CreateSkillDef<SteppedSkillDef>(new SkillDefInfo
-                (
-                    "HenrySlash",
-                    RALSEI_PREFIX + "PRIMARY_SLASH_NAME",
-                    RALSEI_PREFIX + "PRIMARY_SLASH_DESCRIPTION",
-                    assetBundle.LoadAsset<Sprite>("texPrimaryIcon"),
-                    new EntityStates.SerializableEntityStateType(typeof(SkillStates.SlashCombo)),
-                    "Weapon",
-                    true
-                ));
-            //custom Skilldefs can have additional fields that you can set manually
-            primarySkillDef1.stepCount = 2;
-            primarySkillDef1.stepGraceDuration = 0.5f;
-
-            Modules.Skills.AddPrimarySkills(bodyPrefab, primarySkillDef1);
-        }
-
-        private void AddSecondarySkills()
-        {
-            Modules.Skills.CreateGenericSkillWithSkillFamily(bodyPrefab, SkillSlot.Secondary);
-
-            //here is a basic skill def with all fields accounted for
-            SkillDef secondarySkillDef1 = Modules.Skills.CreateSkillDef(new SkillDefInfo
-            {
-                skillName = "HenryGun",
-                skillNameToken = RALSEI_PREFIX + "SECONDARY_GUN_NAME",
-                skillDescriptionToken = RALSEI_PREFIX + "SECONDARY_GUN_DESCRIPTION",
-                keywordTokens = new string[] { "KEYWORD_AGILE" },
-                skillIcon = assetBundle.LoadAsset<Sprite>("texSecondaryIcon"),
-
-                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Shoot)),
-                activationStateMachineName = "Weapon2",
-                interruptPriority = EntityStates.InterruptPriority.Skill,
-
-                baseRechargeInterval = 1f,
-                baseMaxStock = 1,
-
-                rechargeStock = 1,
-                requiredStock = 1,
-                stockToConsume = 1,
-
-                resetCooldownTimerOnUse = false,
-                fullRestockOnAssign = true,
-                dontAllowPastMaxStocks = false,
-                mustKeyPress = false,
-                beginSkillCooldownOnSkillEnd = false,
-
-                isCombatSkill = true,
-                canceledFromSprinting = false,
-                cancelSprintingOnActivation = false,
-                forceSprintDuringState = false,
-
-            });
-
-            Modules.Skills.AddSecondarySkills(bodyPrefab, secondarySkillDef1);
-        }
-
-        private void AddUtiitySkills()
-        {
-            Modules.Skills.CreateGenericSkillWithSkillFamily(bodyPrefab, SkillSlot.Utility);
-
-            //here's a skilldef of a typical movement skill.
-            SkillDef utilitySkillDef1 = Modules.Skills.CreateSkillDef(new SkillDefInfo
-            {
-                skillName = "HenryRoll",
-                skillNameToken = RALSEI_PREFIX + "UTILITY_ROLL_NAME",
-                skillDescriptionToken = RALSEI_PREFIX + "UTILITY_ROLL_DESCRIPTION",
-                skillIcon = assetBundle.LoadAsset<Sprite>("texUtilityIcon"),
-
-                activationState = new EntityStates.SerializableEntityStateType(typeof(Roll)),
-                activationStateMachineName = "Body",
-                interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
-
-                baseRechargeInterval = 4f,
-                baseMaxStock = 1,
-
-                rechargeStock = 1,
-                requiredStock = 1,
-                stockToConsume = 1,
-
-                resetCooldownTimerOnUse = false,
-                fullRestockOnAssign = true,
-                dontAllowPastMaxStocks = false,
-                mustKeyPress = false,
-                beginSkillCooldownOnSkillEnd = false,
-
-                isCombatSkill = false,
-                canceledFromSprinting = false,
-                cancelSprintingOnActivation = false,
-                forceSprintDuringState = true,
-            });
-
-            Modules.Skills.AddUtilitySkills(bodyPrefab, utilitySkillDef1);
-        }
-
-        private void AddSpecialSkills()
-        {
-            Modules.Skills.CreateGenericSkillWithSkillFamily(bodyPrefab, SkillSlot.Special);
-
-            //a basic skill. some fields are omitted and will just have default values
-            SkillDef specialSkillDef1 = Modules.Skills.CreateSkillDef(new SkillDefInfo
-            {
-                skillName = "HenryBomb",
-                skillNameToken = RALSEI_PREFIX + "SPECIAL_BOMB_NAME",
-                skillDescriptionToken = RALSEI_PREFIX + "SPECIAL_BOMB_DESCRIPTION",
-                skillIcon = assetBundle.LoadAsset<Sprite>("texSpecialIcon"),
-
-                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.ThrowBomb)),
-                //setting this to the "weapon2" EntityStateMachine allows us to cast this skill at the same time primary, which is set to the "weapon" EntityStateMachine
-                activationStateMachineName = "Weapon2", interruptPriority = EntityStates.InterruptPriority.Skill,
-
-                baseMaxStock = 1,
-                baseRechargeInterval = 10f,
-
-                isCombatSkill = true,
-                mustKeyPress = false,
-            });
-
-            Modules.Skills.AddSpecialSkills(bodyPrefab, specialSkillDef1);
-        }
-        #endregion skills
         
         #region skins
         public override void InitializeSkins()

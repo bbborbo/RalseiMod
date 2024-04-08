@@ -11,14 +11,14 @@ namespace RalseiMod.Modules
 {
     //thanks to hifu/pseudopulse for config attribute
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
-    public class ConfigFieldAttribute : Attribute
+    public class AutoConfigAttribute : Attribute
     {
         public string name;
         public string desc;
         public object defaultValue;
 
-        public ConfigFieldAttribute(string name, object defaultValue) => Init(name, string.Empty, defaultValue);
-        public ConfigFieldAttribute(string name, string desc, object defaultValue) => Init(name, desc, defaultValue);
+        public AutoConfigAttribute(string name, object defaultValue) => Init(name, string.Empty, defaultValue);
+        public AutoConfigAttribute(string name, string desc, object defaultValue) => Init(name, desc, defaultValue);
         public void Init(string name, string desc, object defaultValue)
         {
             this.name = name;
@@ -137,7 +137,7 @@ namespace RalseiMod.Modules
                 if (!field.IsStatic) continue;
 
                 Type t = field.FieldType;
-                ConfigFieldAttribute configattr = field.GetCustomAttribute<ConfigFieldAttribute>();
+                AutoConfigAttribute configattr = field.GetCustomAttribute<AutoConfigAttribute>();
                 if (configattr == null) continue;
 
                 MethodInfo method = typeof(ConfigFile).GetMethods().Where(x => x.Name == nameof(ConfigFile.Bind)).First();

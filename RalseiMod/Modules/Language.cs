@@ -36,6 +36,13 @@ namespace RalseiMod.Modules {
             TokensOutput += $"\n    \"{token}\" : \"{text.Replace(Environment.NewLine, "\\n").Replace("\n", "\\n")}\",";
         }
 
+        public static void TryPrintOutput(string fileName = "")
+        {
+            if (usingLanguageFolder && printingEnabled)
+            {
+                PrintOutput(fileName);
+            }
+        }
         public static void PrintOutput(string fileName = "") {
             if (!printingEnabled) return;
 
