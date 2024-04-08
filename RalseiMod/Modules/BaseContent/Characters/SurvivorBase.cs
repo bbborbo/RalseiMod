@@ -8,6 +8,11 @@ namespace RalseiMod.Modules.Characters
 {
     public abstract class SurvivorBase<T> : CharacterBase<T> where T : SurvivorBase<T>, new()
     {
+        public abstract string SurvivorSubtitle { get; }
+        public abstract string SurvivorDescription { get; }
+        public abstract string SurvivorOutroWin { get; }
+        public abstract string SurvivorOutroFailure { get; }
+
         public abstract string masterName { get; }
 
         public abstract string displayPrefabName { get; }
@@ -94,5 +99,14 @@ namespace RalseiMod.Modules.Characters
             CSSPreviewDisplayConroller.skillChangeResponses = newlist.ToArray();
         }
         #endregion
+        public override void Lang()
+        {
+            Modules.Language.Add(bodyInfo.bodyNameToken, CharacterName);
+            Modules.Language.Add(bodyInfo.subtitleNameToken, SurvivorSubtitle);
+            Modules.Language.Add(survivorTokenPrefix + "LORE", CharacterLore);
+            Modules.Language.Add(survivorTokenPrefix + "DESCRIPTION", SurvivorDescription);
+            Modules.Language.Add(survivorTokenPrefix + "OUTRO_FLAVOR", SurvivorOutroWin);
+            Modules.Language.Add(survivorTokenPrefix + "OUTRO_FAILURE", SurvivorOutroFailure);
+        }
     }
 }

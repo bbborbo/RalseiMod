@@ -2,7 +2,7 @@
 using RoR2.CharacterAI;
 using UnityEngine;
 
-namespace RalseiMod.Survivors.Henry
+namespace RalseiMod.Survivors.Ralsei
 {
     public static class HenryAI
     {

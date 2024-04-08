@@ -1,9 +1,9 @@
 ﻿using EntityStates;
-using RalseiMod.Survivors.Henry;
+using RalseiMod.Survivors.Ralsei;
 using RoR2;
 using UnityEngine;
 
-namespace RalseiMod.Survivors.Henry.SkillStates
+namespace RalseiMod.Survivors.Ralsei.SkillStates
 {
     public class Shoot : BaseSkillState
     {

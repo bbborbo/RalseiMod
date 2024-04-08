@@ -11,7 +11,7 @@ using UnityEngine;
                     {localScale})
 */
 
-namespace RalseiMod.Survivors.Henry
+namespace RalseiMod.Survivors.Ralsei
 {
     public class HenryItemDisplays : ItemDisplaysBase
     {

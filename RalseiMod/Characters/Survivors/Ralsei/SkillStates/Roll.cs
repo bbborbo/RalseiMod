@@ -1,10 +1,10 @@
 ﻿using EntityStates;
-using RalseiMod.Survivors.Henry;
+using RalseiMod.Survivors.Ralsei;
 using RoR2;
 using UnityEngine;
 using UnityEngine.Networking;
 
-namespace RalseiMod.Survivors.Henry.SkillStates
+namespace RalseiMod.Survivors.Ralsei.SkillStates
 {
     public class Roll : BaseSkillState
     {

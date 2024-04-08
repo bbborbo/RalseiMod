@@ -2,7 +2,7 @@
 using RoR2;
 using UnityEngine;
 
-namespace RalseiMod.Survivors.Henry.SkillStates
+namespace RalseiMod.Survivors.Ralsei.SkillStates
 {
     public class SlashCombo : BaseMeleeAttack
     {

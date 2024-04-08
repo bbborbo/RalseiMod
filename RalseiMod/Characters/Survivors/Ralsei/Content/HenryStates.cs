@@ -1,6 +1,6 @@
-﻿using RalseiMod.Survivors.Henry.SkillStates;
+﻿using RalseiMod.Survivors.Ralsei.SkillStates;
 
-namespace RalseiMod.Survivors.Henry
+namespace RalseiMod.Survivors.Ralsei
 {
     public static class HenryStates
     {

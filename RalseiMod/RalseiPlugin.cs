@@ -1,10 +1,11 @@
 ﻿using BepInEx;
-using RalseiMod.Survivors.Henry;
+using RalseiMod.Survivors.Ralsei;
 using R2API.Utils;
 using RoR2;
 using System.Collections.Generic;
 using System.Security;
 using System.Security.Permissions;
+using UnityEngine;
 
 [module: UnverifiableCode]
 [assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
@@ -25,19 +26,20 @@ namespace RalseiMod
         public const string DEVELOPER_PREFIX = "GRP";
 
         public static RalseiPlugin instance;
+        public static AssetBundle mainAssetBundle;
 
         void Awake()
         {
             instance = this;
 
-            //easy to use logger
             Log.Init(Logger);
 
-            // used when you want to properly set up language folders
+            mainAssetBundle = Modules.Assets.LoadAssetBundle("myassetbundle");
+            Modules.Config.Init();
             Modules.Language.Init();
 
             // character initialization
-            new HenrySurvivor().Initialize();
+            new RalseiSurvivor().Init();
 
             // make a content pack and add it. this has to be last
             new Modules.ContentPacks().Initialize();

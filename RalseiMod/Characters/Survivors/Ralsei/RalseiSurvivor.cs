@@ -1,54 +1,68 @@
 ﻿using BepInEx.Configuration;
-using RalseiMod.Modules;
 using RalseiMod.Modules.Characters;
-using RalseiMod.Survivors.Henry.Components;
-using RalseiMod.Survivors.Henry.SkillStates;
+using RalseiMod.Modules;
+using RalseiMod.Survivors.Ralsei.Components;
+using RalseiMod.Survivors.Ralsei.SkillStates;
 using RoR2;
 using RoR2.Skills;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace RalseiMod.Survivors.Henry
+namespace RalseiMod.Survivors.Ralsei
 {
-    public class HenrySurvivor : SurvivorBase<HenrySurvivor>
+    public class RalseiSurvivor : SurvivorBase<RalseiSurvivor>
     {
-        //used to load the assetbundle for this character. must be unique
-        public override string assetBundleName => "myassetbundle"; //if you do not change this, you are giving permission to deprecate the mod
+        #region config
+        public override string ConfigName => "Ralsei";
 
-        //the name of the prefab we will create. conventionally ending in "Body". must be unique
-        public override string bodyName => "HenryBody"; //if you do not change this, you get the point by now
+        [ConfigField("Jump Power", "Ralsei's jump power. 15 is standard for most survivors.", 18f)]
+        public static float jumpPower;
+        #endregion
+        #region language
+        public override string CharacterName => "Ralsei";
+        public override string SurvivorSubtitle => "Prince of the Dark World";
+        public override string CharacterLore => "";
+        public override string SurvivorDescription => "Henry is a skilled fighter who makes use of a wide arsenal of weaponry to take down his foes.<color=#CCD3E0>" + Environment.NewLine + Environment.NewLine
+             + "< ! > Sword is a good all-rounder while Boxing Gloves are better for laying a beatdown on more powerful foes." + Environment.NewLine + Environment.NewLine
+             + "< ! > Pistol is a powerful anti air, with its low cooldown and high damage." + Environment.NewLine + Environment.NewLine
+             + "< ! > Roll has a lingering armor buff that helps to use it aggressively." + Environment.NewLine + Environment.NewLine
+             + "< ! > Bomb can be used to wipe crowds with ease." + Environment.NewLine + Environment.NewLine;
+        public override string SurvivorOutroWin => "";
+        public override string SurvivorOutroFailure => "";
 
-        //name of the ai master for vengeance and goobo. must be unique
-        public override string masterName => "HenryMonsterMaster"; //if you do not
+        #endregion
+        public override string bodyName => "RalseiBody"; 
+        public override string masterName => "RalseiMonsterMaster";
 
         //the names of the prefabs you set up in unity that we will use to build your character
         public override string modelPrefabName => "mdlHenry";
         public override string displayPrefabName => "HenryDisplay";
 
-        public const string HENRY_PREFIX = RalseiPlugin.DEVELOPER_PREFIX + "_HENRY_";
-
-        //used when registering your survivor's language tokens
-        public override string survivorTokenPrefix => HENRY_PREFIX;
+        public const string RALSEI_PREFIX = RalseiPlugin.DEVELOPER_PREFIX + "_RALSEI_";
+        public override string survivorTokenPrefix => RALSEI_PREFIX;
         
         public override BodyInfo bodyInfo => new BodyInfo
         {
+            bodyNameToClone = "Commando",
             bodyName = bodyName,
-            bodyNameToken = HENRY_PREFIX + "NAME",
-            subtitleNameToken = HENRY_PREFIX + "SUBTITLE",
+            bodyNameToken = RALSEI_PREFIX + "NAME",
+            subtitleNameToken = RALSEI_PREFIX + "SUBTITLE",
 
             characterPortrait = assetBundle.LoadAsset<Texture>("texHenryIcon"),
-            bodyColor = Color.white,
+            bodyColor = Color.green,
             sortPosition = 100,
 
             crosshair = Assets.LoadCrosshair("Standard"),
             podPrefab = LegacyResourcesAPI.Load<GameObject>("Prefabs/NetworkedObjects/SurvivorPod"),
 
-            maxHealth = 110f,
-            healthRegen = 1.5f,
+            maxHealth = 75f,
+            healthRegen = 1f,
             armor = 0f,
+            moveSpeed = 12f,
 
             jumpCount = 1,
+            jumpPower = jumpPower,
         };
 
         public override CustomRendererInfo[] customRendererInfos => new CustomRendererInfo[]
@@ -68,12 +82,12 @@ namespace RalseiMod.Survivors.Henry
                 }
         };
 
-        public override UnlockableDef characterUnlockableDef => HenryUnlockables.characterUnlockableDef;
+        public override UnlockableDef characterUnlockableDef => RalseiUnlockables.characterUnlockableDef;
         
         public override ItemDisplaysBase itemDisplays => new HenryItemDisplays();
 
         //set in base classes
-        public override AssetBundle assetBundle { get; protected set; }
+        public override AssetBundle assetBundle => RalseiPlugin.mainAssetBundle;
 
         public override GameObject bodyPrefab { get; protected set; }
         public override CharacterBody prefabCharacterBody { get; protected set; }
@@ -81,25 +95,26 @@ namespace RalseiMod.Survivors.Henry
         public override CharacterModel prefabCharacterModel { get; protected set; }
         public override GameObject displayPrefab { get; protected set; }
 
-        public override void Initialize()
+        public override void Init()
         {
-            //uncomment if you have multiple characters
-            //ConfigEntry<bool> characterEnabled = Config.CharacterEnableConfig("Survivors", "Henry");
-
-            //if (!characterEnabled.Value)
-            //    return;
-
-            base.Initialize();
+            //loads the assetbundle then calls InitializeCharacter in CharacterBase
+            base.Init();
         }
 
         public override void InitializeCharacter()
         {
             //need the character unlockable before you initialize the survivordef
-            HenryUnlockables.Init();
+            RalseiUnlockables.Init();
 
+            ///
+            /// Loads the asset bundle for this character, then
+            ///     Initializes the body prefab and model
+            ///     Initializes item displays
+            ///     Initializes the display prefab (logbook? css?)
+            /// And registers the survivor
+            ///
             base.InitializeCharacter();
 
-            HenryConfig.Init();
             HenryStates.Init();
             HenryTokens.Init();
 
@@ -112,14 +127,12 @@ namespace RalseiMod.Survivors.Henry
             InitializeCharacterMaster();
 
             AdditionalBodySetup();
-
-            AddHooks();
         }
 
         private void AdditionalBodySetup()
         {
             AddHitboxes();
-            bodyPrefab.AddComponent<HenryWeaponComponent>();
+            //bodyPrefab.AddComponent<HenryWeaponComponent>();
             //bodyPrefab.AddComponent<HuntressTrackerComopnent>();
             //anything else here
         }
@@ -127,29 +140,27 @@ namespace RalseiMod.Survivors.Henry
         public void AddHitboxes()
         {
             //example of how to create a HitBoxGroup. see summary for more details
-            Prefabs.SetupHitBoxGroup(characterModelObject, "SwordGroup", "SwordHitbox");
+            Modules.Prefabs.SetupHitBoxGroup(characterModelObject, "SwordGroup", "SwordHitbox");
         }
 
         public override void InitializeEntityStateMachines() 
         {
             //clear existing state machines from your cloned body (probably commando)
             //omit all this if you want to just keep theirs
-            Prefabs.ClearEntityStateMachines(bodyPrefab);
+            Modules.Prefabs.ClearEntityStateMachines(bodyPrefab);
 
             //the main "Body" state machine has some special properties
-            Prefabs.AddMainEntityStateMachine(bodyPrefab, "Body", typeof(EntityStates.GenericCharacterMain), typeof(EntityStates.SpawnTeleporterState));
+            Modules.Prefabs.AddMainEntityStateMachine(bodyPrefab, "Body", typeof(EntityStates.GenericCharacterMain), typeof(EntityStates.SpawnTeleporterState));
             //if you set up a custom main characterstate, set it up here
-                //don't forget to register custom entitystates in your HenryStates.cs
+            //don't forget to register custom entitystates in your HenryStates.cs
 
-            Prefabs.AddEntityStateMachine(bodyPrefab, "Weapon");
-            Prefabs.AddEntityStateMachine(bodyPrefab, "Weapon2");
+            Modules.Prefabs.AddEntityStateMachine(bodyPrefab, "Weapon");
         }
-
-        #region skills
+        public override void InitializeCharacterMaster() => HenryAI.Init(bodyPrefab, masterName);
         public override void InitializeSkills()
         {
             //remove the genericskills from the commando body we cloned
-            Skills.ClearGenericSkills(bodyPrefab);
+            Modules.Skills.ClearGenericSkills(bodyPrefab);
             //add our own
             //AddPassiveSkill();
             AddPrimarySkills();
@@ -157,6 +168,17 @@ namespace RalseiMod.Survivors.Henry
             AddUtiitySkills();
             AddSpecialSkills();
         }
+
+        public override void Hooks()
+        {
+            R2API.RecalculateStatsAPI.GetStatCoefficients += RecalculateStatsAPI_GetStatCoefficients;
+        }
+        public override void Lang()
+        {
+            base.Lang();
+        }
+
+        #region skills
 
         //skip if you don't have a passive
         //also skip if this is your first look at skills
@@ -166,19 +188,19 @@ namespace RalseiMod.Survivors.Henry
             bodyPrefab.GetComponent<SkillLocator>().passiveSkill = new SkillLocator.PassiveSkill
             {
                 enabled = true,
-                skillNameToken = HENRY_PREFIX + "PASSIVE_NAME",
-                skillDescriptionToken = HENRY_PREFIX + "PASSIVE_DESCRIPTION",
+                skillNameToken = RALSEI_PREFIX + "PASSIVE_NAME",
+                skillDescriptionToken = RALSEI_PREFIX + "PASSIVE_DESCRIPTION",
                 keywordToken = "KEYWORD_STUNNING",
                 icon = assetBundle.LoadAsset<Sprite>("texPassiveIcon"),
             };
 
             //option 2. a new SkillFamily for a passive, used if you want multiple selectable passives
-            GenericSkill passiveGenericSkill = Skills.CreateGenericSkillWithSkillFamily(bodyPrefab, "PassiveSkill");
-            SkillDef passiveSkillDef1 = Skills.CreateSkillDef(new SkillDefInfo
+            GenericSkill passiveGenericSkill = Modules.Skills.CreateGenericSkillWithSkillFamily(bodyPrefab, "PassiveSkill");
+            SkillDef passiveSkillDef1 = Modules.Skills.CreateSkillDef(new SkillDefInfo
             {
                 skillName = "HenryPassive",
-                skillNameToken = HENRY_PREFIX + "PASSIVE_NAME",
-                skillDescriptionToken = HENRY_PREFIX + "PASSIVE_DESCRIPTION",
+                skillNameToken = RALSEI_PREFIX + "PASSIVE_NAME",
+                skillDescriptionToken = RALSEI_PREFIX + "PASSIVE_DESCRIPTION",
                 keywordTokens = new string[] { "KEYWORD_AGILE" },
                 skillIcon = assetBundle.LoadAsset<Sprite>("texPassiveIcon"),
 
@@ -208,21 +230,21 @@ namespace RalseiMod.Survivors.Henry
                 //forceSprintDuringState = false,
 
             });
-            Skills.AddSkillsToFamily(passiveGenericSkill.skillFamily, passiveSkillDef1);
+            Modules.Skills.AddSkillsToFamily(passiveGenericSkill.skillFamily, passiveSkillDef1);
         }
 
         //if this is your first look at skilldef creation, take a look at Secondary first
         private void AddPrimarySkills()
         {
-            Skills.CreateGenericSkillWithSkillFamily(bodyPrefab, SkillSlot.Primary);
+            Modules.Skills.CreateGenericSkillWithSkillFamily(bodyPrefab, SkillSlot.Primary);
 
             //the primary skill is created using a constructor for a typical primary
             //it is also a SteppedSkillDef. Custom Skilldefs are very useful for custom behaviors related to casting a skill. see ror2's different skilldefs for reference
-            SteppedSkillDef primarySkillDef1 = Skills.CreateSkillDef<SteppedSkillDef>(new SkillDefInfo
+            SteppedSkillDef primarySkillDef1 = Modules.Skills.CreateSkillDef<SteppedSkillDef>(new SkillDefInfo
                 (
                     "HenrySlash",
-                    HENRY_PREFIX + "PRIMARY_SLASH_NAME",
-                    HENRY_PREFIX + "PRIMARY_SLASH_DESCRIPTION",
+                    RALSEI_PREFIX + "PRIMARY_SLASH_NAME",
+                    RALSEI_PREFIX + "PRIMARY_SLASH_DESCRIPTION",
                     assetBundle.LoadAsset<Sprite>("texPrimaryIcon"),
                     new EntityStates.SerializableEntityStateType(typeof(SkillStates.SlashCombo)),
                     "Weapon",
@@ -232,19 +254,19 @@ namespace RalseiMod.Survivors.Henry
             primarySkillDef1.stepCount = 2;
             primarySkillDef1.stepGraceDuration = 0.5f;
 
-            Skills.AddPrimarySkills(bodyPrefab, primarySkillDef1);
+            Modules.Skills.AddPrimarySkills(bodyPrefab, primarySkillDef1);
         }
 
         private void AddSecondarySkills()
         {
-            Skills.CreateGenericSkillWithSkillFamily(bodyPrefab, SkillSlot.Secondary);
+            Modules.Skills.CreateGenericSkillWithSkillFamily(bodyPrefab, SkillSlot.Secondary);
 
             //here is a basic skill def with all fields accounted for
-            SkillDef secondarySkillDef1 = Skills.CreateSkillDef(new SkillDefInfo
+            SkillDef secondarySkillDef1 = Modules.Skills.CreateSkillDef(new SkillDefInfo
             {
                 skillName = "HenryGun",
-                skillNameToken = HENRY_PREFIX + "SECONDARY_GUN_NAME",
-                skillDescriptionToken = HENRY_PREFIX + "SECONDARY_GUN_DESCRIPTION",
+                skillNameToken = RALSEI_PREFIX + "SECONDARY_GUN_NAME",
+                skillDescriptionToken = RALSEI_PREFIX + "SECONDARY_GUN_DESCRIPTION",
                 keywordTokens = new string[] { "KEYWORD_AGILE" },
                 skillIcon = assetBundle.LoadAsset<Sprite>("texSecondaryIcon"),
 
@@ -272,19 +294,19 @@ namespace RalseiMod.Survivors.Henry
 
             });
 
-            Skills.AddSecondarySkills(bodyPrefab, secondarySkillDef1);
+            Modules.Skills.AddSecondarySkills(bodyPrefab, secondarySkillDef1);
         }
 
         private void AddUtiitySkills()
         {
-            Skills.CreateGenericSkillWithSkillFamily(bodyPrefab, SkillSlot.Utility);
+            Modules.Skills.CreateGenericSkillWithSkillFamily(bodyPrefab, SkillSlot.Utility);
 
             //here's a skilldef of a typical movement skill.
-            SkillDef utilitySkillDef1 = Skills.CreateSkillDef(new SkillDefInfo
+            SkillDef utilitySkillDef1 = Modules.Skills.CreateSkillDef(new SkillDefInfo
             {
                 skillName = "HenryRoll",
-                skillNameToken = HENRY_PREFIX + "UTILITY_ROLL_NAME",
-                skillDescriptionToken = HENRY_PREFIX + "UTILITY_ROLL_DESCRIPTION",
+                skillNameToken = RALSEI_PREFIX + "UTILITY_ROLL_NAME",
+                skillDescriptionToken = RALSEI_PREFIX + "UTILITY_ROLL_DESCRIPTION",
                 skillIcon = assetBundle.LoadAsset<Sprite>("texUtilityIcon"),
 
                 activationState = new EntityStates.SerializableEntityStateType(typeof(Roll)),
@@ -310,19 +332,19 @@ namespace RalseiMod.Survivors.Henry
                 forceSprintDuringState = true,
             });
 
-            Skills.AddUtilitySkills(bodyPrefab, utilitySkillDef1);
+            Modules.Skills.AddUtilitySkills(bodyPrefab, utilitySkillDef1);
         }
 
         private void AddSpecialSkills()
         {
-            Skills.CreateGenericSkillWithSkillFamily(bodyPrefab, SkillSlot.Special);
+            Modules.Skills.CreateGenericSkillWithSkillFamily(bodyPrefab, SkillSlot.Special);
 
             //a basic skill. some fields are omitted and will just have default values
-            SkillDef specialSkillDef1 = Skills.CreateSkillDef(new SkillDefInfo
+            SkillDef specialSkillDef1 = Modules.Skills.CreateSkillDef(new SkillDefInfo
             {
                 skillName = "HenryBomb",
-                skillNameToken = HENRY_PREFIX + "SPECIAL_BOMB_NAME",
-                skillDescriptionToken = HENRY_PREFIX + "SPECIAL_BOMB_DESCRIPTION",
+                skillNameToken = RALSEI_PREFIX + "SPECIAL_BOMB_NAME",
+                skillDescriptionToken = RALSEI_PREFIX + "SPECIAL_BOMB_DESCRIPTION",
                 skillIcon = assetBundle.LoadAsset<Sprite>("texSpecialIcon"),
 
                 activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.ThrowBomb)),
@@ -336,7 +358,7 @@ namespace RalseiMod.Survivors.Henry
                 mustKeyPress = false,
             });
 
-            Skills.AddSpecialSkills(bodyPrefab, specialSkillDef1);
+            Modules.Skills.AddSpecialSkills(bodyPrefab, specialSkillDef1);
         }
         #endregion skills
         
@@ -352,7 +374,7 @@ namespace RalseiMod.Survivors.Henry
 
             #region DefaultSkin
             //this creates a SkinDef with all default fields
-            SkinDef defaultSkin = Skins.CreateSkinDef("DEFAULT_SKIN",
+            SkinDef defaultSkin = Modules.Skins.CreateSkinDef("DEFAULT_SKIN",
                 assetBundle.LoadAsset<Sprite>("texMainSkin"),
                 defaultRendererinfos,
                 prefabCharacterModel.gameObject);
@@ -412,25 +434,6 @@ namespace RalseiMod.Survivors.Henry
         }
         #endregion skins
 
-        //Character Master is what governs the AI of your character when it is not controlled by a player (artifact of vengeance, goobo)
-        public override void InitializeCharacterMaster()
-        {
-            //you must only do one of these. adding duplicate masters breaks the game.
-
-            //if you're lazy or prototyping you can simply copy the AI of a different character to be used
-            //Modules.Prefabs.CloneDopplegangerMaster(bodyPrefab, masterName, "Merc");
-
-            //how to set up AI in code
-            HenryAI.Init(bodyPrefab, masterName);
-
-            //how to load a master set up in unity, can be an empty gameobject with just AISkillDriver components
-            //assetBundle.LoadMaster(bodyPrefab, masterName);
-        }
-
-        private void AddHooks()
-        {
-            R2API.RecalculateStatsAPI.GetStatCoefficients += RecalculateStatsAPI_GetStatCoefficients;
-        }
 
         private void RecalculateStatsAPI_GetStatCoefficients(CharacterBody sender, R2API.RecalculateStatsAPI.StatHookEventArgs args)
         {

@@ -1,7 +1,7 @@
 ﻿using RoR2;
 using UnityEngine;
 
-namespace RalseiMod.Survivors.Henry
+namespace RalseiMod.Survivors.Ralsei
 {
     public static class HenryBuffs
     {

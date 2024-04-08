@@ -1,10 +1,10 @@
 ﻿using EntityStates;
-using RalseiMod.Survivors.Henry;
+using RalseiMod.Survivors.Ralsei;
 using RoR2;
 using RoR2.Projectile;
 using UnityEngine;
 
-namespace RalseiMod.Survivors.Henry.SkillStates
+namespace RalseiMod.Survivors.Ralsei.SkillStates
 {
     public class ThrowBomb : GenericProjectileBaseState
     {

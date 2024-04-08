@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace RalseiMod.Survivors.Henry.Components
+namespace RalseiMod.Survivors.Ralsei.Components
 {
     internal class HenryWeaponComponent : MonoBehaviour
     {

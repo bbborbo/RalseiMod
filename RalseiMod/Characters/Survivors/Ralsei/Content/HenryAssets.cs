@@ -4,7 +4,7 @@ using RalseiMod.Modules;
 using System;
 using RoR2.Projectile;
 
-namespace RalseiMod.Survivors.Henry
+namespace RalseiMod.Survivors.Ralsei
 {
     public static class HenryAssets
     {
@@ -24,7 +24,6 @@ namespace RalseiMod.Survivors.Henry
 
         public static void Init(AssetBundle assetBundle)
         {
-
             _assetBundle = assetBundle;
 
             swordHitSoundEvent = Content.CreateAndAddNetworkSoundEventDef("HenrySwordHit");

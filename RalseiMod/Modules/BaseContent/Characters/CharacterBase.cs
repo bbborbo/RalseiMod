@@ -5,9 +5,10 @@ using UnityEngine;
 
 namespace RalseiMod.Modules.Characters
 {
-    public abstract class CharacterBase<T> where T : CharacterBase<T>, new()
+    public abstract class CharacterBase<T> : SharedBase<T> where T : CharacterBase<T>, new()
     {
-        public abstract string assetBundleName { get; }
+        public abstract string CharacterName { get; }
+        public abstract string CharacterLore { get; }
 
         public abstract string bodyName { get; }
         public abstract string modelPrefabName { get; }
@@ -18,20 +19,15 @@ namespace RalseiMod.Modules.Characters
 
         public virtual ItemDisplaysBase itemDisplays { get; }
 
-        public static T instance { get; private set; }
-
-        public abstract AssetBundle assetBundle { get; protected set; }
 
         public abstract GameObject bodyPrefab                 {get; protected set;}
         public abstract CharacterBody prefabCharacterBody     {get; protected set;}
         public abstract GameObject characterModelObject       {get; protected set;}
         public abstract CharacterModel prefabCharacterModel   {get; protected set;}
 
-        public virtual void Initialize()
+        public override void Init()
         {
-            instance = this as T;
-            assetBundle = Assets.LoadAssetBundle(assetBundleName);
-
+            base.Init();
             InitializeCharacter();
         }
 
@@ -75,7 +71,6 @@ namespace RalseiMod.Modules.Characters
         public abstract void InitializeSkins();
 
         public abstract void InitializeCharacterMaster();
-
     }
 
     // for simplifying characterbody creation
