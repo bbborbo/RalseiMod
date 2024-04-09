@@ -20,6 +20,7 @@ using RalseiMod.Modules;
 namespace RalseiMod
 {
     [BepInDependency("com.johnedwa.RTAutoSprintEx", BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInDependency("com.HouseOfFruits.IAmBecomeMissiles", BepInDependency.DependencyFlags.SoftDependency)]
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
     [BepInPlugin(guid, modName, version)]
     public class RalseiPlugin : BaseUnityPlugin
@@ -41,6 +42,7 @@ namespace RalseiMod
         #region mods loaded
         public static bool ModLoaded(string modGuid) { return modGuid != "" && BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey(modGuid); }
         public static bool autoSprintLoaded => ModLoaded("com.johnedwa.RTAutoSprintEx");
+        public static bool iabMissilesLoaded => ModLoaded("com.HouseOfFruits.IAmBecomeMissiles");
         #endregion
 
         void Awake()
@@ -55,8 +57,8 @@ namespace RalseiMod
 
             Type[] allTypes = Assembly.GetExecutingAssembly().GetTypes();
 
-            //new RalseiSurvivor().Init();
-            BeginInitializing(typeof(SurvivorBase), allTypes);
+            new RalseiSurvivor().Init();
+            //BeginInitializing(typeof(SurvivorBase), allTypes);
             Modules.Language.TryPrintOutput("RalseiSurvivor.txt");
 
             BeginInitializing(typeof(SkillBase), allTypes);
