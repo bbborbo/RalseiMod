@@ -3,10 +3,22 @@ using RoR2;
 using UnityEngine;
 using System.Collections.Generic;
 using RoR2.Skills;
+using System;
 
 namespace RalseiMod.Modules.Characters
 {
-    public abstract class SurvivorBase<T> : CharacterBase<T> where T : SurvivorBase<T>, new()
+    public abstract class SurvivorBase<T> : SurvivorBase where T : SurvivorBase<T>
+    {
+        public static T instance { get; private set; }
+
+        public SurvivorBase()
+        {
+            if (instance != null) throw new InvalidOperationException(
+                $"Singleton class \"{typeof(T).Name}\" inheriting {RalseiPlugin.modName} {typeof(SurvivorBase).Name} was instantiated twice");
+            instance = this as T;
+        }
+    }
+    public abstract class SurvivorBase : CharacterBase
     {
         public abstract string SurvivorSubtitle { get; }
         public abstract string SurvivorDescription { get; }

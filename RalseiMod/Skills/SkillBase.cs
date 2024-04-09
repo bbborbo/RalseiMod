@@ -12,7 +12,19 @@ using RalseiMod.Modules;
 
 namespace RalseiMod.Skills
 {
-    public abstract class SkillBase<T> : SharedBase<T> where T : SkillBase<T>
+    public abstract class SkillBase<T> : SkillBase where T : SkillBase<T>
+    {
+        public static T instance { get; private set; }
+
+        public SkillBase()
+        {
+            if (instance != null) throw new InvalidOperationException(
+                $"Singleton class \"{typeof(T).Name}\" inheriting {RalseiPlugin.modName} {typeof(SkillBase).Name} was instantiated twice");
+            instance = this as T;
+        }
+    }
+
+    public abstract class SkillBase : SharedBase
     {
         public static string Token = RalseiPlugin.DEVELOPER_PREFIX + "SKILL";
         public abstract string SkillName { get; }

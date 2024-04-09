@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace RalseiMod.Modules.Characters
 {
-    public abstract class CharacterBase<T> : SharedBase<T> where T : CharacterBase<T>, new()
+    public abstract class CharacterBase : SharedBase
     {
         public abstract string CharacterName { get; }
         public abstract string CharacterLore { get; }

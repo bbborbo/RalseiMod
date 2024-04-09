@@ -11,7 +11,7 @@ namespace RalseiMod.Survivors.Ralsei.SkillStates
             hitboxGroupName = "SwordGroup";
 
             damageType = DamageType.Generic;
-            damageCoefficient = HenryStaticValues.swordDamageCoefficient;
+            damageCoefficient = 0;
             procCoefficient = 1f;
             pushForce = 300f;
             bonusForce = Vector3.zero;

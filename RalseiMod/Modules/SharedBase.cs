@@ -6,10 +6,8 @@ using UnityEngine;
 
 namespace RalseiMod.Modules
 {
-    public abstract class SharedBase<T> where T : SharedBase<T>
+    public abstract class SharedBase
     {
-        public static T instance { get; private set; }
-
         public abstract string ConfigName { get; }
         public virtual bool isEnabled { get; } = true;
         public static ManualLogSource Logger => Log._logSource;
@@ -20,8 +18,6 @@ namespace RalseiMod.Modules
 
         public virtual void Init()
         {
-            instance = this as T;
-
             ConfigManager.HandleConfigAttributes(GetType(), ConfigName, Config.MyConfig);
             Hooks();
             Lang();

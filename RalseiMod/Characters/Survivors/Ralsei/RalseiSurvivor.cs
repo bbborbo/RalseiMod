@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using RalseiMod.Skills;
+using RalseiMod.Survivors.Ralsei.Achievements;
 
 namespace RalseiMod.Survivors.Ralsei
 {
@@ -117,8 +118,10 @@ namespace RalseiMod.Survivors.Ralsei
             ///
             base.InitializeCharacter();
 
-            HenryStates.Init();
-            HenryTokens.Init();
+            #region Achievements
+            Modules.Language.Add(Tokens.GetAchievementNameToken(RalseiMasteryAchievement.identifier), $"{CharacterName}: Mastery");
+            Modules.Language.Add(Tokens.GetAchievementDescriptionToken(RalseiMasteryAchievement.identifier), $"As {CharacterName}, beat the game or obliterate on Monsoon.");
+            #endregion
 
             HenryAssets.Init(assetBundle);
             HenryBuffs.Init(assetBundle);
