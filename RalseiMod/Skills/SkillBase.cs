@@ -57,7 +57,7 @@ namespace RalseiMod.Skills
 
         protected void CreateSkill()
         {
-            string s = $"{RalseiPlugin.modName} : Skills : {SkillName} : ";
+            string s = Log.Combine("Skills", SkillName);
             SkillLocator skillLocator;
             string name = CharacterName;
             if (Modules.Skills.characterSkillLocators.ContainsKey(name))
@@ -101,7 +101,7 @@ namespace RalseiMod.Skills
                         skillFamily = skillLocator.special.skillFamily;
                         break;
                     case SkillSlot.None:
-                        Log.Warning("Special case!");
+                        Log.Warning(s + "Special case!");
                         break;
                 }
 

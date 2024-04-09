@@ -58,10 +58,10 @@ namespace RalseiMod
             Type[] allTypes = Assembly.GetExecutingAssembly().GetTypes();
 
             new RalseiSurvivor().Init();
-            //BeginInitializing(typeof(SurvivorBase), allTypes);
+            BeginInitializing<SurvivorBase>(allTypes);
             Modules.Language.TryPrintOutput("RalseiSurvivor.txt");
 
-            BeginInitializing(typeof(SkillBase), allTypes);
+            BeginInitializing<SkillBase>(allTypes);
             Modules.Language.TryPrintOutput("RalseiSkills.txt");
 
             // this has to be last
@@ -70,32 +70,37 @@ namespace RalseiMod
             ////refer to guide on how to build and distribute your mod with the proper folders
         }
 
+        private void BeginInitializing<T>(Type[] allTypes)
+        {
+            BeginInitializing(typeof(T), allTypes);
+        }
         private void BeginInitializing(Type baseType, Type[] allTypes)
         {
             //base types must be a base and not abstract
             if (!baseType.IsSubclassOf(typeof(SharedBase)) || !baseType.IsAbstract)
             {
-                Log.Error("Aaaahhhhh!!!");
+                Log.Error(Log.Combine() + "Incorrect BaseType: " + baseType.Name);
                 return;
             }
 
-            IEnumerable<Type> objTypesOfBaseType = allTypes.Where(type => !type.IsAbstract && type.IsSubclassOf(baseType));
+            Log.Debug(Log.Combine(baseType.Name) + "Initializing");
 
-            Log.Debug($"{modName} : {baseType.Name} : Initializing");
+            IEnumerable<Type> objTypesOfBaseType = allTypes.Where(type => !type.IsAbstract && type.IsSubclassOf(baseType));
 
             foreach (var objType in objTypesOfBaseType)
             {
-                Log.Debug($"{modName} : {baseType.Name} : {objType.Name}");
+                Log.Debug(Log.Combine(baseType.Name, objType.Name));
                 object obj = System.Activator.CreateInstance(objType);
-                if (ValidateBaseContent(baseType, obj))
+                if (ValidateBaseType(baseType, obj))
                 {
-                    Log.Debug($"{modName} : {baseType.Name} : {objType.Name} : Validated");
-                    InitializeBaseContent(baseType, obj);
+                    Log.Debug(Log.Combine(baseType.Name, objType.Name) + "Validated");
+                    InitializeBaseType(baseType, obj);
+                    Log.Debug(Log.Combine(baseType.Name, objType.Name) + "Initialized");
                 }
             }
         }
 
-        bool ValidateBaseContent(Type baseType, object obj)
+        bool ValidateBaseType(Type baseType, object obj)
         {
             TypeInfo typeInfo = obj.GetType().GetTypeInfo();
             PropertyInfo isEnabled = baseType.GetProperties().Where(x => x.Name == nameof(SharedBase.isEnabled)).First();
@@ -106,11 +111,10 @@ namespace RalseiMod
 
             return false;
         }
-        void InitializeBaseContent(Type baseType, object obj)
+        void InitializeBaseType(Type baseType, object obj)
         {
             MethodInfo method = baseType.GetMethods().Where(x => x.Name == nameof(SharedBase.Init)).First();
             method.Invoke(obj, new object[] { });
-            Log.Debug($"{modName} : {baseType.Name} : {obj.GetType().Name} : Initialized");
         }
     }
 }

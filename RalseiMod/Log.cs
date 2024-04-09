@@ -1,4 +1,5 @@
 ﻿using BepInEx.Logging;
+using System.Collections.Generic;
 using System.Security;
 using System.Security.Permissions;
 
@@ -12,7 +13,15 @@ namespace RalseiMod
         {
             _logSource = logSource;
         }
-
+        internal static string Combine(params string[] parameters)
+        {
+            string s = $"{RalseiPlugin.modName} : ";
+            foreach (string s2 in parameters)
+            {
+                s += $"{s2} : ";
+            }
+            return s;
+        }
         internal static void Debug(object data) => _logSource.LogDebug(data);
         internal static void Error(object data) => _logSource.LogError(data);
         internal static void ErrorAssetBundle(string assetName, string bundleName) =>
