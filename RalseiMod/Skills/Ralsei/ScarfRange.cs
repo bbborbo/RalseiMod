@@ -23,7 +23,7 @@ namespace RalseiMod.Skills
 
         public override string SkillName => "Thread Whip";
 
-        public override string SkillDescription => "";
+        public override string SkillDescription => "Use your scarf to throw magic threads for X% damage. Every 4th attack deals Y% damage and Paints enemies hit.";
 
         public override string SkillLangTokenName => "SCARFRANGE";
 
@@ -33,7 +33,7 @@ namespace RalseiMod.Skills
 
         public override Type ActivationState => typeof(Idle);
 
-        public override Type BaseSkillDef => typeof(ComboSkillDef);
+        public override Type BaseSkillDef => typeof(SkillDef);
 
         public override string CharacterName => RalseiSurvivor.instance.bodyName;
 
@@ -47,13 +47,13 @@ namespace RalseiMod.Skills
         public override void Init()
         {
             base.Init();
-            ((ComboSkillDef)SkillDef).comboList = new ComboSkillDef.Combo[4]
+            /*(SkillDef as ComboSkillDef).comboList = new ComboSkillDef.Combo[4]
             {
                 Modules.Skills.ComboFromType(typeof(Idle)),
                 Modules.Skills.ComboFromType(typeof(Idle)),
                 Modules.Skills.ComboFromType(typeof(Idle)),
-                Modules.Skills.ComboFromType(typeof(Idle)),
-            };
+                Modules.Skills.ComboFromType(typeof(Idle))
+            };*/
         }
         public override void Hooks()
         {

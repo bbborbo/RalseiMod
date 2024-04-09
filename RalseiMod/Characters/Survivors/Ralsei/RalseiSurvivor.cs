@@ -118,11 +118,6 @@ namespace RalseiMod.Survivors.Ralsei
             ///
             base.InitializeCharacter();
 
-            #region Achievements
-            Modules.Language.Add(Tokens.GetAchievementNameToken(RalseiMasteryAchievement.identifier), $"{CharacterName}: Mastery");
-            Modules.Language.Add(Tokens.GetAchievementDescriptionToken(RalseiMasteryAchievement.identifier), $"As {CharacterName}, beat the game or obliterate on Monsoon.");
-            #endregion
-
             HenryAssets.Init(assetBundle);
             HenryBuffs.Init(assetBundle);
 
@@ -169,17 +164,23 @@ namespace RalseiMod.Survivors.Ralsei
             //add our own
             SkillLocator skillLocator = bodyPrefab.GetComponent<SkillLocator>();
             if (skillLocator != null)
+            {
                 Modules.Skills.characterSkillLocators[bodyName] = skillLocator;
 
-            //add passive skill
-            bodyPrefab.GetComponent<SkillLocator>().passiveSkill = new SkillLocator.PassiveSkill
-            {
-                enabled = true,
-                skillNameToken = RALSEI_PREFIX + "PASSIVE_NAME",
-                skillDescriptionToken = RALSEI_PREFIX + "PASSIVE_DESCRIPTION",
-                keywordToken = "KEYWORD_STUNNING",
-                icon = assetBundle.LoadAsset<Sprite>("texPassiveIcon"),
-            };
+                #region Achievements
+                Modules.Language.Add(RALSEI_PREFIX + "PASSIVE_NAME", $"Tension Points: Cunning");
+                Modules.Language.Add(RALSEI_PREFIX + "PASSIVE_DESCRIPTION", $"Blocking attacks or putting enemies to Sleep reduces your skill cooldowns.");
+                #endregion
+
+                //add passive skill
+                skillLocator.passiveSkill = new SkillLocator.PassiveSkill
+                {
+                    enabled = true,
+                    skillNameToken = RALSEI_PREFIX + "PASSIVE_NAME",
+                    skillDescriptionToken = RALSEI_PREFIX + "PASSIVE_DESCRIPTION",
+                    icon = assetBundle.LoadAsset<Sprite>("texPassiveIcon"),
+                };
+            }
             //GenericSkill passiveGenericSkill = Modules.Skills.CreateGenericSkillWithSkillFamily(bodyPrefab, "PassiveSkill");
             Modules.Skills.CreateGenericSkillWithSkillFamily(bodyPrefab, SkillSlot.Primary);
             Modules.Skills.CreateGenericSkillWithSkillFamily(bodyPrefab, SkillSlot.Secondary);
@@ -199,6 +200,11 @@ namespace RalseiMod.Survivors.Ralsei
         #region skins
         public override void InitializeSkins()
         {
+            #region Achievements
+            Modules.Language.Add(Tokens.GetAchievementNameToken(RalseiMasteryAchievement.identifier), $"{CharacterName}: Mastery");
+            Modules.Language.Add(Tokens.GetAchievementDescriptionToken(RalseiMasteryAchievement.identifier), $"As {CharacterName}, beat the game or obliterate on Monsoon.");
+            #endregion
+
             ModelSkinController skinController = prefabCharacterModel.gameObject.AddComponent<ModelSkinController>();
             ChildLocator childLocator = prefabCharacterModel.GetComponent<ChildLocator>();
 

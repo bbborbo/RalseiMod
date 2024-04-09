@@ -21,9 +21,9 @@ namespace RalseiMod.Skills
         #endregion
         public override AssetBundle assetBundle => RalseiPlugin.mainAssetBundle;
 
-        public override string SkillName => "Thread Whip";
+        public override string SkillName => "Hover Prayer";
 
-        public override string SkillDescription => "";
+        public override string SkillDescription => "Float high into the air for X seconds, then slowly hover back down. Effect ends upon landing or recasting the ability.";
 
         public override string SkillLangTokenName => "LIFTPRAYER";
 
@@ -33,7 +33,7 @@ namespace RalseiMod.Skills
 
         public override Type ActivationState => typeof(Idle);
 
-        public override Type BaseSkillDef => typeof(ComboSkillDef);
+        public override Type BaseSkillDef => typeof(SkillDef);
 
         public override string CharacterName => RalseiSurvivor.instance.bodyName;
 
@@ -47,13 +47,6 @@ namespace RalseiMod.Skills
         public override void Init()
         {
             base.Init();
-            ((ComboSkillDef)SkillDef).comboList = new ComboSkillDef.Combo[4]
-            {
-                Modules.Skills.ComboFromType(typeof(Idle)),
-                Modules.Skills.ComboFromType(typeof(Idle)),
-                Modules.Skills.ComboFromType(typeof(Idle)),
-                Modules.Skills.ComboFromType(typeof(Idle)),
-            };
         }
         public override void Hooks()
         {

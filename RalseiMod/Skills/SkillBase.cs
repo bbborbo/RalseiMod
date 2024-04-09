@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using RalseiMod.Modules;
+using RalseiMod.Survivors.Ralsei;
 
 namespace RalseiMod.Skills
 {
@@ -43,6 +44,11 @@ namespace RalseiMod.Skills
         public virtual bool useSteppedDef { get; set; } = false;
         public SkillDef SkillDef;
 
+        public override void Init()
+        {
+            base.Init();
+            CreateSkill();
+        }
         public override void Lang()
         {
             LanguageAPI.Add(Token + SkillLangTokenName, SkillName);
@@ -51,6 +57,7 @@ namespace RalseiMod.Skills
 
         protected void CreateSkill()
         {
+            string s = $"{RalseiPlugin.modName} : Skills : {SkillName} : ";
             SkillLocator skillLocator;
             string name = CharacterName;
             if (Modules.Skills.characterSkillLocators.ContainsKey(name))
@@ -59,15 +66,21 @@ namespace RalseiMod.Skills
             }
             else
             {
-                GameObject body = LegacyResourcesAPI.Load<GameObject>("prefabs/characterbodies/" + name);
+                GameObject body = RalseiSurvivor.instance.bodyPrefab;
+                skillLocator = body?.GetComponent<SkillLocator>();
+                if (skillLocator)
+                {
+                    Modules.Skills.characterSkillLocators.Add(name, skillLocator);
+                }
+
+                /*LegacyResourcesAPI.Load<GameObject>("prefabs/characterbodies/" + name);
                 skillLocator = body?.GetComponent<SkillLocator>();
 
                 if (skillLocator)
                 {
                     Modules.Skills.characterSkillLocators.Add(name, skillLocator);
-                }
+                }*/
             }
-            string s = $"{RalseiPlugin.modName} : Skills : {SkillName} : ";
             if (skillLocator != null)
             {
                 SkillFamily skillFamily = null;
@@ -94,7 +107,7 @@ namespace RalseiMod.Skills
 
                 if (skillFamily != null)
                 {
-                    //Log.Debug(s + "initializing!");
+                    Log.Debug(s + "initializing!");
 
 
                     SkillDef = (SkillDef)ScriptableObject.CreateInstance(BaseSkillDef);
@@ -108,7 +121,7 @@ namespace RalseiMod.Skills
                     SkillDef.activationStateMachineName = "Weapon";
 
                     SkillDef.keywordTokens = KeywordTokens;
-                    SkillDef.icon = assetBundle.LoadAsset<Sprite>(RalseiPlugin.iconsPath + "Skill/" + IconName + ".png");
+                    SkillDef.icon = null;// assetBundle.LoadAsset<Sprite>(RalseiPlugin.iconsPath + "Skill/" + IconName + ".png");
 
                     #region SkillData
                     SkillDef.baseMaxStock = SkillData.baseMaxStock;
@@ -135,6 +148,7 @@ namespace RalseiMod.Skills
                         unlockableDef = UnlockDef,
                         viewableNode = new ViewablesCatalog.Node(SkillDef.skillNameToken, false, null)
                     };
+                    Log.Debug(s + "success!");
                 }
                 else
                 {

@@ -21,9 +21,9 @@ namespace RalseiMod.Skills
         #endregion
         public override AssetBundle assetBundle => RalseiPlugin.mainAssetBundle;
 
-        public override string SkillName => "Thread Whip";
+        public override string SkillName => "Pacify";
 
-        public override string SkillDescription => "";
+        public override string SkillDescription => "Has 2 charges. Target an enemy to put to Sleep. If an enemy is spared with this ability, they will convert to an ally after X seconds and become Empowered for Y seconds.";
 
         public override string SkillLangTokenName => "PACIFY";
 
@@ -33,7 +33,7 @@ namespace RalseiMod.Skills
 
         public override Type ActivationState => typeof(Idle);
 
-        public override Type BaseSkillDef => typeof(ComboSkillDef);
+        public override Type BaseSkillDef => typeof(SkillDef);
 
         public override string CharacterName => RalseiSurvivor.instance.bodyName;
 
@@ -47,13 +47,6 @@ namespace RalseiMod.Skills
         public override void Init()
         {
             base.Init();
-            ((ComboSkillDef)SkillDef).comboList = new ComboSkillDef.Combo[4]
-            {
-                Modules.Skills.ComboFromType(typeof(Idle)),
-                Modules.Skills.ComboFromType(typeof(Idle)),
-                Modules.Skills.ComboFromType(typeof(Idle)),
-                Modules.Skills.ComboFromType(typeof(Idle)),
-            };
         }
         public override void Hooks()
         {

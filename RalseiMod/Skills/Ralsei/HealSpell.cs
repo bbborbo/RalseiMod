@@ -21,9 +21,9 @@ namespace RalseiMod.Skills
         #endregion
         public override AssetBundle assetBundle => RalseiPlugin.mainAssetBundle;
 
-        public override string SkillName => "Thread Whip";
+        public override string SkillName => "Dual Heal";
 
-        public override string SkillDescription => "";
+        public override string SkillDescription => "Cast a healing spell on yourself and all allies within Xm, restoring Y% health and granting Regenerative for Z seconds.";
 
         public override string SkillLangTokenName => "HEALSPELL";
 
@@ -33,7 +33,7 @@ namespace RalseiMod.Skills
 
         public override Type ActivationState => typeof(Idle);
 
-        public override Type BaseSkillDef => typeof(ComboSkillDef);
+        public override Type BaseSkillDef => typeof(SkillDef);
 
         public override string CharacterName => RalseiSurvivor.instance.bodyName;
 
@@ -47,13 +47,6 @@ namespace RalseiMod.Skills
         public override void Init()
         {
             base.Init();
-            ((ComboSkillDef)SkillDef).comboList = new ComboSkillDef.Combo[4]
-            {
-                Modules.Skills.ComboFromType(typeof(Idle)),
-                Modules.Skills.ComboFromType(typeof(Idle)),
-                Modules.Skills.ComboFromType(typeof(Idle)),
-                Modules.Skills.ComboFromType(typeof(Idle)),
-            };
         }
         public override void Hooks()
         {
