@@ -12,8 +12,8 @@ using RalseiMod.Modules;
 
 namespace RalseiMod.Skills
 {
-    public abstract class SkillBase<T> : SharedBase<T> where T : SkillBase<T>, new()
-{
+    public abstract class SkillBase<T> : SharedBase<T> where T : SkillBase<T>
+    {
         public static string Token = RalseiPlugin.DEVELOPER_PREFIX + "SKILL";
         public abstract string SkillName { get; }
         public abstract string SkillDescription { get; }
@@ -39,69 +39,28 @@ namespace RalseiMod.Skills
 
         protected void CreateSkill()
         {
-            SkillDef = ScriptableObject.CreateInstance<SkillDef>();
-            if (useSteppedDef)
-            {
-                SkillDef = ScriptableObject.CreateInstance<SteppedSkillDef>();
-            }
-
-            Content.AddEntityState(ActivationState);
-            SkillDef.activationState = new SerializableEntityStateType(ActivationState);
-
-            SkillDef.skillNameToken = Token + SkillLangTokenName;
-            SkillDef.skillName = SkillName;
-            SkillDef.skillDescriptionToken = Token + SkillLangTokenName + "_DESCRIPTION";
-            SkillDef.activationStateMachineName = "Weapon";
-
-            SkillDef.keywordTokens = KeywordTokens;
-            SkillDef.icon = assetBundle.LoadAsset<Sprite>(RalseiPlugin.iconsPath + "Skill/" + IconName + ".png");
-
-            #region SkillData
-            SkillDef.baseMaxStock = SkillData.baseMaxStock;
-            SkillDef.baseRechargeInterval = SkillData.baseRechargeInterval;
-            SkillDef.beginSkillCooldownOnSkillEnd = SkillData.beginSkillCooldownOnSkillEnd;
-            SkillDef.canceledFromSprinting = RalseiPlugin.autoSprintLoaded ? false : SkillData.canceledFromSprinting;
-            SkillDef.cancelSprintingOnActivation = SkillData.cancelSprintingOnActivation;
-            SkillDef.dontAllowPastMaxStocks = SkillData.dontAllowPastMaxStocks;
-            SkillDef.fullRestockOnAssign = SkillData.fullRestockOnAssign;
-            SkillDef.interruptPriority = SkillData.interruptPriority;
-            SkillDef.isCombatSkill = SkillData.isCombatSkill;
-            SkillDef.mustKeyPress = SkillData.mustKeyPress;
-            SkillDef.rechargeStock = SkillData.rechargeStock;
-            SkillDef.requiredStock = SkillData.requiredStock;
-            SkillDef.resetCooldownTimerOnUse = SkillData.resetCooldownTimerOnUse;
-            SkillDef.stockToConsume = SkillData.stockToConsume;
-            #endregion
-
-            Content.AddSkillDef(SkillDef);
-            AddSkillDefToCharacter();
-        }
-
-        private void AddSkillDefToCharacter()
-        {
-            if (CharacterName == "")
-                return;
-
             SkillLocator skillLocator;
-            if (Modules.Skills.characterSkillLocators.ContainsKey(CharacterName))
+            string name = CharacterName;
+            if (Modules.Skills.characterSkillLocators.ContainsKey(name))
             {
-                skillLocator = Modules.Skills.characterSkillLocators[CharacterName];
+                skillLocator = Modules.Skills.characterSkillLocators[name];
             }
             else
             {
-                GameObject body = LegacyResourcesAPI.Load<GameObject>("prefabs/characterbodies/" + CharacterName);
+                GameObject body = LegacyResourcesAPI.Load<GameObject>("prefabs/characterbodies/" + name);
                 skillLocator = body?.GetComponent<SkillLocator>();
 
                 if (skillLocator)
                 {
-                    Modules.Skills.characterSkillLocators.Add(CharacterName, skillLocator);
+                    Modules.Skills.characterSkillLocators.Add(name, skillLocator);
                 }
             }
-
+            string s = $"{RalseiPlugin.modName} : Skills : {SkillName} : ";
             if (skillLocator != null)
             {
                 SkillFamily skillFamily = null;
 
+                //get skill family from skill slot
                 switch (SkillSlot)
                 {
                     case SkillSlot.Primary:
@@ -117,14 +76,46 @@ namespace RalseiMod.Skills
                         skillFamily = skillLocator.special.skillFamily;
                         break;
                     case SkillSlot.None:
-                        Debug.Log("Special case!");
+                        Log.Warning("Special case!");
                         break;
                 }
 
                 if (skillFamily != null)
                 {
-                    //Debug.Log(s);
+                    //Log.Debug(s + "initializing!");
 
+
+                    SkillDef = (SkillDef)ScriptableObject.CreateInstance(BaseSkillDef);
+
+                    Content.AddEntityState(ActivationState);
+                    SkillDef.activationState = new SerializableEntityStateType(ActivationState);
+
+                    SkillDef.skillNameToken = Token + SkillLangTokenName;
+                    SkillDef.skillName = SkillName;
+                    SkillDef.skillDescriptionToken = Token + SkillLangTokenName + "_DESCRIPTION";
+                    SkillDef.activationStateMachineName = "Weapon";
+
+                    SkillDef.keywordTokens = KeywordTokens;
+                    SkillDef.icon = assetBundle.LoadAsset<Sprite>(RalseiPlugin.iconsPath + "Skill/" + IconName + ".png");
+
+                    #region SkillData
+                    SkillDef.baseMaxStock = SkillData.baseMaxStock;
+                    SkillDef.baseRechargeInterval = SkillData.baseRechargeInterval;
+                    SkillDef.beginSkillCooldownOnSkillEnd = SkillData.beginSkillCooldownOnSkillEnd;
+                    SkillDef.canceledFromSprinting = RalseiPlugin.autoSprintLoaded ? false : SkillData.canceledFromSprinting;
+                    SkillDef.cancelSprintingOnActivation = SkillData.cancelSprintingOnActivation;
+                    SkillDef.dontAllowPastMaxStocks = SkillData.dontAllowPastMaxStocks;
+                    SkillDef.fullRestockOnAssign = SkillData.fullRestockOnAssign;
+                    SkillDef.interruptPriority = SkillData.interruptPriority;
+                    SkillDef.isCombatSkill = SkillData.isCombatSkill;
+                    SkillDef.mustKeyPress = SkillData.mustKeyPress;
+                    SkillDef.rechargeStock = SkillData.rechargeStock;
+                    SkillDef.requiredStock = SkillData.requiredStock;
+                    SkillDef.resetCooldownTimerOnUse = SkillData.resetCooldownTimerOnUse;
+                    SkillDef.stockToConsume = SkillData.stockToConsume;
+                    #endregion
+
+                    Content.AddSkillDef(SkillDef);
                     Array.Resize(ref skillFamily.variants, skillFamily.variants.Length + 1);
                     skillFamily.variants[skillFamily.variants.Length - 1] = new SkillFamily.Variant
                     {
@@ -135,12 +126,12 @@ namespace RalseiMod.Skills
                 }
                 else
                 {
-                    Debug.Log($"No skill family {SkillSlot.ToString()} found from " + CharacterName);
+                    Log.Error(s + $"No skill family {SkillSlot.ToString()} found from " + CharacterName);
                 }
             }
             else
             {
-                Debug.Log("No skill locator found from " + CharacterName);
+                Log.Error(s + "No skill locator found from " + CharacterName);
             }
         }
 

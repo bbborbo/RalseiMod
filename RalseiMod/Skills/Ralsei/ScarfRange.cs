@@ -16,7 +16,7 @@ namespace RalseiMod.Skills
         #region config
         public override string ConfigName => SkillName;
 
-        [AutoConfig("Step Count", 4)]
+        //[AutoConfig("Step Count", 4)]
         public static int stepCount;
         #endregion
         public override AssetBundle assetBundle => RalseiPlugin.mainAssetBundle;

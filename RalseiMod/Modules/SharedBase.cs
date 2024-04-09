@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace RalseiMod.Modules
 {
-    public abstract class SharedBase<T> where T : SharedBase<T>, new()
+    public abstract class SharedBase<T> where T : SharedBase<T>
     {
         public static T instance { get; private set; }
 
