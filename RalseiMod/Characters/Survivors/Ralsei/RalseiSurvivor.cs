@@ -18,10 +18,12 @@ namespace RalseiMod.Survivors.Ralsei
         #region config
         public override string ConfigName => "Ralsei";
 
-        [AutoConfig("Jump Power", "Ralsei's jump power. 15 is standard for most survivors.", 18f)]
+        [AutoConfig("Jump Power", "Ralsei's jump power. 15 is standard for most survivors.", 21f)]
         public static float ralseiJumpPower;
-        [AutoConfig("Movement Speed", "Ralsei's movement speed. 11 is standard for most survivors.", 12f)]
+        [AutoConfig("Movement Speed", "Ralsei's movement speed. 11 is standard for most survivors.", 11f)]
         public static float ralseiMoveSpeed;
+        [AutoConfig("Base Health", "Ralsei's base health. 110 is standard for most survivors.", 70f)]
+        public static float ralseiBaseHealth;
         #endregion
         #region language
         public override string CharacterName => "Ralsei";
@@ -59,7 +61,7 @@ namespace RalseiMod.Survivors.Ralsei
             crosshair = Assets.LoadCrosshair("Standard"),
             podPrefab = LegacyResourcesAPI.Load<GameObject>("Prefabs/NetworkedObjects/SurvivorPod"),
 
-            maxHealth = 75f,
+            maxHealth = ralseiBaseHealth,
             healthRegen = 1f,
             armor = 0f,
             moveSpeed = ralseiMoveSpeed,

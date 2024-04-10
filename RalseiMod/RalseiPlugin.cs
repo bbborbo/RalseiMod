@@ -45,6 +45,9 @@ namespace RalseiMod
         public static bool iabMissilesLoaded => ModLoaded("com.HouseOfFruits.IAmBecomeMissiles");
         #endregion
 
+        [AutoConfig("Enable Debugging", "Enable debug outputs to the log for troubleshooting purposes. Enabling this will slow down the game.", false)]
+        public static bool enableDebugging;
+
         void Awake()
         {
             instance = this;
@@ -52,12 +55,15 @@ namespace RalseiMod
             Log.Init(Logger);
 
             mainAssetBundle = Modules.Assets.LoadAssetBundle("henrybundle");
+
             Modules.Config.Init();
             Modules.Language.Init();
 
+            ConfigManager.HandleConfigAttributes(GetType(), "Ralsei", Modules.Config.MyConfig);
+
             Type[] allTypes = Assembly.GetExecutingAssembly().GetTypes();
 
-            new RalseiSurvivor().Init();
+            //new RalseiSurvivor().Init();
             BeginInitializing<SurvivorBase>(allTypes);
             Modules.Language.TryPrintOutput("RalseiSurvivor.txt");
 
@@ -69,13 +75,9 @@ namespace RalseiMod
 
             ////refer to guide on how to build and distribute your mod with the proper folders
         }
-
         private void BeginInitializing<T>(Type[] allTypes)
         {
-            BeginInitializing(typeof(T), allTypes);
-        }
-        private void BeginInitializing(Type baseType, Type[] allTypes)
-        {
+            Type baseType = typeof(T);
             //base types must be a base and not abstract
             if (!baseType.IsSubclassOf(typeof(SharedBase)) || !baseType.IsAbstract)
             {
@@ -89,32 +91,35 @@ namespace RalseiMod
 
             foreach (var objType in objTypesOfBaseType)
             {
-                Log.Debug(Log.Combine(baseType.Name, objType.Name));
-                object obj = System.Activator.CreateInstance(objType);
-                if (ValidateBaseType(baseType, obj))
+                string s = Log.Combine(baseType.Name, objType.Name);
+                Log.Debug(s);
+                T obj = (T)System.Activator.CreateInstance(objType);
+                if (ValidateBaseType(obj as SharedBase))
                 {
-                    Log.Debug(Log.Combine(baseType.Name, objType.Name) + "Validated");
-                    InitializeBaseType(baseType, obj);
-                    Log.Debug(Log.Combine(baseType.Name, objType.Name) + "Initialized");
+                    Log.Debug(s + "Validated");
+                    InitializeBaseType(obj as SharedBase);
+                    Log.Debug(s + "Initialized");
                 }
             }
         }
 
-        bool ValidateBaseType(Type baseType, object obj)
+        bool ValidateBaseType(SharedBase obj)
         {
-            TypeInfo typeInfo = obj.GetType().GetTypeInfo();
-            PropertyInfo isEnabled = baseType.GetProperties().Where(x => x.Name == nameof(SharedBase.isEnabled)).First();
+            return obj.isEnabled;
+            /*TypeInfo typeInfo = obj.GetType().GetTypeInfo();
+            PropertyInfo isEnabled = typeof(baseType).GetProperties().Where(x => x.Name == nameof(SharedBase.isEnabled)).First();
             if (isEnabled != null && isEnabled.PropertyType == typeof(bool))
             {
                 return (bool)isEnabled.GetValue(obj);
             }
 
-            return false;
+            return false;*/
         }
-        void InitializeBaseType(Type baseType, object obj)
+        void InitializeBaseType(SharedBase obj)
         {
-            MethodInfo method = baseType.GetMethods().Where(x => x.Name == nameof(SharedBase.Init)).First();
-            method.Invoke(obj, new object[] { });
+            obj.Init();
+            /*MethodInfo method = typeof(baseType).GetMethods().Where(x => x.Name == nameof(SharedBase.Init)).First();
+            method.Invoke(obj, new object[] { });*/
         }
     }
 }

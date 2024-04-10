@@ -33,7 +33,7 @@ namespace RalseiMod.Skills
 
         public override Type ActivationState => typeof(Idle);
 
-        public override Type BaseSkillDef => typeof(SkillDef);
+        public override Type BaseSkillDef => typeof(ComboSkillDef);
 
         public override string CharacterName => RalseiSurvivor.instance.bodyName;
 
@@ -47,13 +47,13 @@ namespace RalseiMod.Skills
         public override void Init()
         {
             base.Init();
-            /*(SkillDef as ComboSkillDef).comboList = new ComboSkillDef.Combo[4]
+            (SkillDef as ComboSkillDef).comboList = new ComboSkillDef.Combo[4]
             {
                 Modules.Skills.ComboFromType(typeof(Idle)),
                 Modules.Skills.ComboFromType(typeof(Idle)),
                 Modules.Skills.ComboFromType(typeof(Idle)),
                 Modules.Skills.ComboFromType(typeof(Idle))
-            };*/
+            };
         }
         public override void Hooks()
         {

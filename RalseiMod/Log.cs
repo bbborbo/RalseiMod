@@ -22,7 +22,11 @@ namespace RalseiMod
             }
             return s;
         }
-        internal static void Debug(object data) => _logSource.LogDebug(data);
+        internal static void Debug(object data) 
+        {
+            if (RalseiPlugin.enableDebugging)
+                _logSource.LogDebug(data);
+        } 
         internal static void Error(object data) => _logSource.LogError(data);
         internal static void ErrorAssetBundle(string assetName, string bundleName) =>
             Log.Error($"failed to load asset, {assetName}, because it does not exist in asset bundle, {bundleName}");        

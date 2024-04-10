@@ -35,7 +35,7 @@ namespace RalseiMod.Modules
         public static void Init()
         {
             MyConfig = RalseiPlugin.instance.Config;
-            BackupConfig = new ConfigFile(Paths.ConfigPath + "\\BALLS.WellRoundedBalance.Backup.cfg", true);
+            BackupConfig = new ConfigFile(Paths.ConfigPath + $"\\{RalseiPlugin.guid}.cfg", true);
             BackupConfig.Bind(": DO NOT MODIFY THIS FILES CONTENTS :", ": DO NOT MODIFY THIS FILES CONTENTS :", ": DO NOT MODIFY THIS FILES CONTENTS :", ": DO NOT MODIFY THIS FILES CONTENTS :");
         }
 
