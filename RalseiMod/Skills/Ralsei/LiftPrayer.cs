@@ -8,13 +8,14 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using static RalseiMod.Modules.Language.Styling;
 
 namespace RalseiMod.Skills
 {
     class LiftPrayer : SkillBase<LiftPrayer>
     {
         #region config
-        public override string ConfigName => SkillName;
+        public override string ConfigName => "Skill : " + SkillName;
 
         //[AutoConfig("Step Count", 4)]
         public static int stepCount;
@@ -23,7 +24,10 @@ namespace RalseiMod.Skills
 
         public override string SkillName => "Hover Prayer";
 
-        public override string SkillDescription => "Float high into the air for X seconds, then slowly hover back down. Effect ends upon landing or recasting the ability.";
+        public override string SkillDescription => 
+            $"Float {UtilityColor("high into the air")} for a short time, " +
+            $"then slowly {UtilityColor("hover")} back down. " +
+            $"{DamageColor("Hover effect ends upon landing or recasting the ability")}.";
 
         public override string SkillLangTokenName => "LIFTPRAYER";
 

@@ -8,22 +8,25 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using static RalseiMod.Modules.Language.Styling;
 
 namespace RalseiMod.Skills
 {
     class Pacify : SkillBase<Pacify>
     {
         #region config
-        public override string ConfigName => SkillName;
+        public override string ConfigName => "Skill : " + SkillName;
 
-        //[AutoConfig("Step Count", 4)]
-        public static int stepCount;
+        [AutoConfig("Sleep Conversion Delay", "The amount of seconds an enemy should sleep before converting to an ally.", 10)]
+        public static float convertDelay;
         #endregion
         public override AssetBundle assetBundle => RalseiPlugin.mainAssetBundle;
 
         public override string SkillName => "Pacify";
 
-        public override string SkillDescription => "Has 2 charges. Target an enemy to put to Sleep. If an enemy is spared with this ability, they will convert to an ally after X seconds and become Empowered for Y seconds.";
+        public override string SkillDescription => 
+            $"Has {UtilityColor("2")} charges. Target an enemy to put to {UtilityColor("Sleep")}. " +
+            $"Spared enemies {DamageColor("convert to an Empowered ally")} after {UtilityColor(convertDelay.ToString())} seconds.";
 
         public override string SkillLangTokenName => "PACIFY";
 

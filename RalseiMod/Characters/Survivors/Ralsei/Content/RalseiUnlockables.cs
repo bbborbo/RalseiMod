@@ -13,7 +13,7 @@ namespace RalseiMod.Survivors.Ralsei
         {
             masterySkinUnlockableDef = Modules.Content.CreateAndAddUnlockbleDef(
                 RalseiMasteryAchievement.unlockableIdentifier,
-                Modules.Tokens.GetAchievementNameToken(RalseiMasteryAchievement.identifier),
+                Modules.Language.Styling.GetAchievementNameToken(RalseiMasteryAchievement.identifier),
                 RalseiSurvivor.instance.assetBundle.LoadAsset<Sprite>("texMasteryAchievement"));
         }
     }

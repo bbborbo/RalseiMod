@@ -10,13 +10,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using RalseiMod.Skills;
 using RalseiMod.Survivors.Ralsei.Achievements;
+using static RalseiMod.Modules.Language.Styling;
 
 namespace RalseiMod.Survivors.Ralsei
 {
     public class RalseiSurvivor : SurvivorBase<RalseiSurvivor>
     {
         #region config
-        public override string ConfigName => "Ralsei";
+        public override string ConfigName => "Survivor : " + CharacterName;
 
         [AutoConfig("Jump Power", "Ralsei's jump power. 15 is standard for most survivors.", 21f)]
         public static float ralseiJumpPower;
@@ -55,7 +56,7 @@ namespace RalseiMod.Survivors.Ralsei
             subtitleNameToken = RALSEI_PREFIX + "SUBTITLE",
 
             characterPortrait = assetBundle.LoadAsset<Texture>("texHenryIcon"),
-            bodyColor = Color.green,
+            bodyColor = new Color32(0,255,127,100),
             sortPosition = 100,
 
             crosshair = Assets.LoadCrosshair("Standard"),
@@ -171,7 +172,8 @@ namespace RalseiMod.Survivors.Ralsei
 
                 #region Achievements
                 Modules.Language.Add(RALSEI_PREFIX + "PASSIVE_NAME", $"Tension Points: Cunning");
-                Modules.Language.Add(RALSEI_PREFIX + "PASSIVE_DESCRIPTION", $"Blocking attacks or putting enemies to Sleep reduces your skill cooldowns.");
+                Modules.Language.Add(RALSEI_PREFIX + "PASSIVE_DESCRIPTION", 
+                    $"{UtilityColor("Blocking")} attacks or putting enemies to {UtilityColor("Sleep")} will {DamageColor("reduce your skill cooldowns")}.");
                 #endregion
 
                 //add passive skill
@@ -203,8 +205,8 @@ namespace RalseiMod.Survivors.Ralsei
         public override void InitializeSkins()
         {
             #region Achievements
-            Modules.Language.Add(Tokens.GetAchievementNameToken(RalseiMasteryAchievement.identifier), $"{CharacterName}: Mastery");
-            Modules.Language.Add(Tokens.GetAchievementDescriptionToken(RalseiMasteryAchievement.identifier), $"As {CharacterName}, beat the game or obliterate on Monsoon.");
+            Modules.Language.Add(GetAchievementNameToken(RalseiMasteryAchievement.identifier), $"{CharacterName}: Mastery");
+            Modules.Language.Add(GetAchievementDescriptionToken(RalseiMasteryAchievement.identifier), $"As {CharacterName}, beat the game or obliterate on Monsoon.");
             #endregion
 
             ModelSkinController skinController = prefabCharacterModel.gameObject.AddComponent<ModelSkinController>();

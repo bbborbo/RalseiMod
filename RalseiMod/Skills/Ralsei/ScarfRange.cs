@@ -8,22 +8,27 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using static RalseiMod.Modules.Language.Styling;
 
 namespace RalseiMod.Skills
 {
     class ScarfRange : SkillBase<ScarfRange>
     {
         #region config
-        public override string ConfigName => SkillName;
+        public override string ConfigName => "Skill : " + SkillName;
 
-        //[AutoConfig("Step Count", 4)]
-        public static int stepCount;
+        [AutoConfig("Base Attack Damage", 0.7f)]
+        public static float baseDamage;
+        [AutoConfig("Combo Attack Base Damage", 2f)]
+        public static float baseDamageCombo;
         #endregion
         public override AssetBundle assetBundle => RalseiPlugin.mainAssetBundle;
 
         public override string SkillName => "Thread Whip";
 
-        public override string SkillDescription => "Use your scarf to throw magic threads for X% damage. Every 4th attack deals Y% damage and Paints enemies hit.";
+        public override string SkillDescription => 
+            $"Use your scarf to throw {UtilityColor("magic threads")} for {DamageValueText(baseDamage)}. " +
+            $"Every {DamageColor("fourth")} attack {UtilityColor("Paints")} enemies for {DamageValueText(baseDamageCombo)}.";
 
         public override string SkillLangTokenName => "SCARFRANGE";
 
