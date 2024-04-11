@@ -1,5 +1,4 @@
 ﻿using BepInEx.Configuration;
-using RalseiMod.Modules.Characters;
 using RalseiMod.Modules;
 using RalseiMod.Survivors.Ralsei.Components;
 using RalseiMod.Survivors.Ralsei.SkillStates;
@@ -9,8 +8,9 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using RalseiMod.Skills;
-using RalseiMod.Survivors.Ralsei.Achievements;
+using RalseiMod.Achievements;
 using static RalseiMod.Modules.Language.Styling;
+using RalseiMod.Characters;
 
 namespace RalseiMod.Survivors.Ralsei
 {
@@ -21,7 +21,7 @@ namespace RalseiMod.Survivors.Ralsei
 
         [AutoConfig("Jump Power", "Ralsei's jump power. 15 is standard for most survivors.", 21f)]
         public static float ralseiJumpPower;
-        [AutoConfig("Movement Speed", "Ralsei's movement speed. 11 is standard for most survivors.", 11f)]
+        [AutoConfig("Movement Speed", "Ralsei's movement speed. 7 is standard for most survivors.", 8f)]
         public static float ralseiMoveSpeed;
         [AutoConfig("Base Health", "Ralsei's base health. 110 is standard for most survivors.", 70f)]
         public static float ralseiBaseHealth;
@@ -42,8 +42,8 @@ namespace RalseiMod.Survivors.Ralsei
         public override string masterName => "RalseiMonsterMaster";
 
         //the names of the prefabs you set up in unity that we will use to build your character
-        public override string modelPrefabName => "mdlHenry";
-        public override string displayPrefabName => "HenryDisplay";
+        public override string modelPrefabName => "mdlRalsei";
+        public override string displayPrefabName => "RalseiDisplay";
 
         public const string RALSEI_PREFIX = RalseiPlugin.DEVELOPER_PREFIX + "_RALSEI_";
         public override string survivorTokenPrefix => RALSEI_PREFIX;
@@ -73,19 +73,6 @@ namespace RalseiMod.Survivors.Ralsei
 
         public override CustomRendererInfo[] customRendererInfos => new CustomRendererInfo[]
         {
-                new CustomRendererInfo
-                {
-                    childName = "SwordModel",
-                    material = assetBundle.LoadMaterial("matHenry"),
-                },
-                new CustomRendererInfo
-                {
-                    childName = "GunModel",
-                },
-                new CustomRendererInfo
-                {
-                    childName = "Model",
-                }
         };
 
         public override UnlockableDef characterUnlockableDef => RalseiUnlockables.characterUnlockableDef;
@@ -143,7 +130,7 @@ namespace RalseiMod.Survivors.Ralsei
         public void AddHitboxes()
         {
             //example of how to create a HitBoxGroup. see summary for more details
-            Modules.Prefabs.SetupHitBoxGroup(characterModelObject, "SwordGroup", "SwordHitbox");
+            //Modules.Prefabs.SetupHitBoxGroup(characterModelObject, "SwordGroup", "SwordHitbox");
         }
 
         public override void InitializeEntityStateMachines() 
@@ -216,9 +203,14 @@ namespace RalseiMod.Survivors.Ralsei
 
             List<SkinDef> skins = new List<SkinDef>();
 
+            #region Achievements
+            Modules.Language.Add(RALSEI_PREFIX + "DEFAULT_SKIN_NAME", $"Default");
+            Modules.Language.Add(RALSEI_PREFIX + "MASTERY_SKIN_NAME", $"Peeled");
+            #endregion
+
             #region DefaultSkin
             //this creates a SkinDef with all default fields
-            SkinDef defaultSkin = Modules.Skins.CreateSkinDef("DEFAULT_SKIN",
+            SkinDef defaultSkin = Modules.Skins.CreateSkinDef(RALSEI_PREFIX + "DEFAULT_SKIN_NAME",
                 assetBundle.LoadAsset<Sprite>("texMainSkin"),
                 defaultRendererinfos,
                 prefabCharacterModel.gameObject);
@@ -239,15 +231,15 @@ namespace RalseiMod.Survivors.Ralsei
             //uncomment this when you have a mastery skin
             #region MasterySkin
             
-            ////creating a new skindef as we did before
-            //SkinDef masterySkin = Modules.Skins.CreateSkinDef(HENRY_PREFIX + "MASTERY_SKIN_NAME",
-            //    assetBundle.LoadAsset<Sprite>("texMasteryAchievement"),
-            //    defaultRendererinfos,
-            //    prefabCharacterModel.gameObject,
-            //    HenryUnlockables.masterySkinUnlockableDef);
+            //creating a new skindef as we did before
+            SkinDef masterySkin = Modules.Skins.CreateSkinDef(RALSEI_PREFIX + "MASTERY_SKIN_NAME",
+                assetBundle.LoadAsset<Sprite>("texMasteryAchievement"),
+                defaultRendererinfos,
+                prefabCharacterModel.gameObject,
+                RalseiUnlockables.masterySkinUnlockableDef);
 
-            ////adding the mesh replacements as above. 
-            ////if you don't want to replace the mesh (for example, you only want to replace the material), pass in null so the order is preserved
+            //adding the mesh replacements as above. 
+            //if you don't want to replace the mesh (for example, you only want to replace the material), pass in null so the order is preserved
             //masterySkin.meshReplacements = Modules.Skins.getMeshReplacements(assetBundle, defaultRendererinfos,
             //    "meshHenrySwordAlt",
             //    null,//no gun mesh replacement. use same gun mesh
@@ -255,7 +247,7 @@ namespace RalseiMod.Survivors.Ralsei
 
             ////masterySkin has a new set of RendererInfos (based on default rendererinfos)
             ////you can simply access the RendererInfos' materials and set them to the new materials for your skin.
-            //masterySkin.rendererInfos[0].defaultMaterial = assetBundle.LoadMaterial("matHenryAlt");
+            masterySkin.rendererInfos[0].defaultMaterial = assetBundle.LoadMaterial("RalseiHatless_Base_Color");
             //masterySkin.rendererInfos[1].defaultMaterial = assetBundle.LoadMaterial("matHenryAlt");
             //masterySkin.rendererInfos[2].defaultMaterial = assetBundle.LoadMaterial("matHenryAlt");
 
@@ -270,7 +262,7 @@ namespace RalseiMod.Survivors.Ralsei
             //};
             ////simply find an object on your child locator you want to activate/deactivate and set if you want to activate/deacitvate it with this skin
 
-            //skins.Add(masterySkin);
+            skins.Add(masterySkin);
             
             #endregion
 

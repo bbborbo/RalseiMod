@@ -1,7 +1,8 @@
 ﻿using RoR2;
 using RalseiMod.Modules.Achievements;
+using RalseiMod.Survivors.Ralsei;
 
-namespace RalseiMod.Survivors.Ralsei.Achievements
+namespace RalseiMod.Achievements
 {
     //automatically creates language tokens "ACHIEVMENT_{identifier.ToUpper()}_NAME" and "ACHIEVMENT_{identifier.ToUpper()}_DESCRIPTION" 
     [RegisterAchievement(identifier, unlockableIdentifier, null, null)]

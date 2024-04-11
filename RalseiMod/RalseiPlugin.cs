@@ -7,12 +7,12 @@ using System.Security;
 using System.Security.Permissions;
 using UnityEngine;
 using System.Reflection;
-using RalseiMod.Modules.Characters;
 using RalseiMod.Skills;
 using System.Linq;
 using RoR2.Skills;
 using System;
 using RalseiMod.Modules;
+using RalseiMod.Survivors;
 
 [module: UnverifiableCode]
 [assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
@@ -54,7 +54,7 @@ namespace RalseiMod
 
             Log.Init(Logger);
 
-            mainAssetBundle = Modules.Assets.LoadAssetBundle("henrybundle");
+            mainAssetBundle = Modules.Assets.LoadAssetBundle("ralseibundle");
 
             Modules.Config.Init();
             Modules.Language.Init();
@@ -75,11 +75,11 @@ namespace RalseiMod
 
             ////refer to guide on how to build and distribute your mod with the proper folders
         }
-        private void BeginInitializing<T>(Type[] allTypes)
+        private void BeginInitializing<T>(Type[] allTypes) where T : SharedBase
         {
             Type baseType = typeof(T);
             //base types must be a base and not abstract
-            if (!baseType.IsSubclassOf(typeof(SharedBase)) || !baseType.IsAbstract)
+            if (!baseType.IsAbstract)
             {
                 Log.Error(Log.Combine() + "Incorrect BaseType: " + baseType.Name);
                 return;

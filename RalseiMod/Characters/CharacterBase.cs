@@ -1,9 +1,10 @@
-﻿using RoR2;
+﻿using RalseiMod.Modules;
+using RoR2;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace RalseiMod.Modules.Characters
+namespace RalseiMod.Characters
 {
     public abstract class CharacterBase : SharedBase
     {

@@ -4,8 +4,10 @@ using UnityEngine;
 using System.Collections.Generic;
 using RoR2.Skills;
 using System;
+using RalseiMod.Characters;
+using RalseiMod.Modules;
 
-namespace RalseiMod.Modules.Characters
+namespace RalseiMod.Survivors
 {
     public abstract class SurvivorBase<T> : SurvivorBase where T : SurvivorBase<T>
     {

@@ -62,6 +62,21 @@ namespace RalseiMod.Modules {
             {
                 return $"ACHIEVEMENT_{identifier.ToUpperInvariant()}_DESCRIPTION";
             }
+
+            public static string NumToAdj(int num)
+            {
+                switch (num)
+                {
+                    default:
+                        return num + "th";
+                    case 1:
+                        return num + "st";
+                    case 2:
+                        return num + "nd";
+                    case 3:
+                        return num + "rd";
+                }
+            }
         }
 
         public static string TokensOutput = "";

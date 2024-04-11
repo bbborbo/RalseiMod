@@ -1,7 +1,8 @@
-﻿using RoR2;
+﻿using RalseiMod.Modules;
+using RoR2;
 using System.Collections.Generic;
 
-namespace RalseiMod.Modules.Characters
+namespace RalseiMod.Characters
 {
     public abstract class ItemDisplaysBase
     {

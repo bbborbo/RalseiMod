@@ -1,4 +1,4 @@
-﻿using RalseiMod.Survivors.Ralsei.Achievements;
+﻿using RalseiMod.Achievements;
 using RoR2;
 using UnityEngine;
 

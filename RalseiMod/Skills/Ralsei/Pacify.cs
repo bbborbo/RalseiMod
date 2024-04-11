@@ -17,7 +17,7 @@ namespace RalseiMod.Skills
         #region config
         public override string ConfigName => "Skill : " + SkillName;
 
-        [AutoConfig("Sleep Conversion Delay", "The amount of seconds an enemy should sleep before converting to an ally.", 10)]
+        [AutoConfig("Sleep Conversion Delay", "The amount of seconds an enemy should sleep before converting to an ally.", 15)]
         public static float convertDelay;
         #endregion
         public override AssetBundle assetBundle => RalseiPlugin.mainAssetBundle;

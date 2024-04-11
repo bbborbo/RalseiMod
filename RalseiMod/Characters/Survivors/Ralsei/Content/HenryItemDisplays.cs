@@ -1,5 +1,5 @@
-﻿using RalseiMod.Modules;
-using RalseiMod.Modules.Characters;
+﻿using RalseiMod.Characters;
+using RalseiMod.Modules;
 using RoR2;
 using System.Collections.Generic;
 using UnityEngine;
