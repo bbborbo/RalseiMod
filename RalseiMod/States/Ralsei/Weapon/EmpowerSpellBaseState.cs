@@ -23,7 +23,7 @@ namespace RalseiMod.States.Ralsei.Weapon
 		public static string loopSoundString = Paint.loopSoundString;
 		public static string lockOnSoundString = Paint.lockOnSoundString;
 		public static string stopLoopSoundString = Paint.stopLoopSoundString;
-		public static float maxAngle = Paint.maxAngle * 0.5f;
+		public static float maxAngle = Paint.maxAngle * 0.75f;
 		public static float maxDistance = Paint.maxDistance;
 
 		private HurtBox currentTarget;
