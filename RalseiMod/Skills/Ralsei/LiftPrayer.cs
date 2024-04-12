@@ -1,6 +1,7 @@
 ﻿using BepInEx.Configuration;
 using EntityStates;
 using RalseiMod.Modules;
+using RalseiMod.States.Ralsei;
 using RalseiMod.Survivors.Ralsei;
 using RoR2;
 using RoR2.Skills;
@@ -17,9 +18,16 @@ namespace RalseiMod.Skills
         #region config
         public override string ConfigName => "Skill : " + SkillName;
 
-        //[AutoConfig("Step Count", 4)]
-        public static int stepCount;
+        [AutoConfig("Lift Duration", 3f)]
+        public static float liftDuration;
+        [AutoConfig("Lift Speed", 3f)]
+        public static float liftSpeed;
+        [AutoConfig("Hover Velocity", -4.5f)]
+        public static float hoverVelocity;
+        [AutoConfig("Hover Acceleration", 30)]
+        public static float hoverAcceleration;
         #endregion
+        public static SkillDef cancelSkillDef => CancelHoverSkill.instance.SkillDef;
         public override AssetBundle assetBundle => RalseiPlugin.mainAssetBundle;
 
         public override string SkillName => "Hover Prayer";
@@ -35,17 +43,21 @@ namespace RalseiMod.Skills
 
         public override string IconName => "";
 
-        public override Type ActivationState => typeof(Idle);
+        public override Type ActivationState => typeof(LiftState);
 
         public override Type BaseSkillDef => typeof(SkillDef);
 
         public override string CharacterName => RalseiSurvivor.instance.bodyName;
 
         public override SkillSlot SkillSlot => SkillSlot.Utility;
+        public override string ActivationStateMachineName => "Body";
 
         public override SimpleSkillData SkillData => new SimpleSkillData()
         {
-            stockToConsume = 0
+            stockToConsume = 1,
+            baseRechargeInterval = 9,
+            beginSkillCooldownOnSkillEnd = true,
+            fullRestockOnAssign = false
         };
 
         public override void Init()

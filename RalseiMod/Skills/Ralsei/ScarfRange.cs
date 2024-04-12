@@ -30,7 +30,7 @@ namespace RalseiMod.Skills
 
         [AutoConfig("Combo : Combo Count", "The number of attacks in the Thread Whip attack combo. Combo attack will always be last. Min of 1.", 4)]
         public static int comboCount;
-        [AutoConfig("Combo : Grace Duration", "The time in seconds that Thread Whip should wait after attacking for a new input that continues the combo. Min of 0.1", 0.25f)]
+        [AutoConfig("Combo : Grace Duration", "The time in seconds that Thread Whip should wait after attacking for a new input that continues the combo. Min of 0.05", 0.15f)]
         public static float comboGraceDuration;
 
         [AutoConfig("Duration : Base Attack Entry Duration", 0f)]

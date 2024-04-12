@@ -41,22 +41,63 @@ namespace RalseiMod.Skills
         public abstract SkillSlot SkillSlot { get; }
         public abstract SimpleSkillData SkillData { get; }
         public string[] KeywordTokens;
-        public virtual bool useSteppedDef { get; set; } = false;
+        public virtual string ActivationStateMachineName { get; set; } = "Weapon";
         public SkillDef SkillDef;
 
         public override void Init()
         {
             base.Init();
             CreateSkill();
+            AddSkillToSkillFamily();
         }
+
+
         public override void Lang()
         {
             LanguageAPI.Add(Token + SkillLangTokenName, SkillName);
             LanguageAPI.Add(Token + SkillLangTokenName + "_DESCRIPTION", SkillDescription);
         }
 
-        protected void CreateSkill()
+        private void CreateSkill()
         {
+            SkillDef = (SkillDef)ScriptableObject.CreateInstance(BaseSkillDef);
+
+            Content.AddEntityState(ActivationState);
+            SkillDef.activationState = new SerializableEntityStateType(ActivationState);
+
+            SkillDef.skillNameToken = Token + SkillLangTokenName;
+            SkillDef.skillName = SkillName;
+            SkillDef.skillDescriptionToken = Token + SkillLangTokenName + "_DESCRIPTION";
+            SkillDef.activationStateMachineName = ActivationStateMachineName;
+
+            SkillDef.keywordTokens = KeywordTokens;
+            SkillDef.icon = null;// assetBundle.LoadAsset<Sprite>(RalseiPlugin.iconsPath + "Skill/" + IconName + ".png");
+
+            #region SkillData
+            SkillDef.baseMaxStock = SkillData.baseMaxStock;
+            SkillDef.baseRechargeInterval = SkillData.baseRechargeInterval;
+            SkillDef.beginSkillCooldownOnSkillEnd = SkillData.beginSkillCooldownOnSkillEnd;
+            SkillDef.canceledFromSprinting = RalseiPlugin.autoSprintLoaded ? false : SkillData.canceledFromSprinting;
+            SkillDef.cancelSprintingOnActivation = SkillData.cancelSprintingOnActivation;
+            SkillDef.dontAllowPastMaxStocks = SkillData.dontAllowPastMaxStocks;
+            SkillDef.fullRestockOnAssign = SkillData.fullRestockOnAssign;
+            SkillDef.interruptPriority = SkillData.interruptPriority;
+            SkillDef.isCombatSkill = SkillData.isCombatSkill;
+            SkillDef.mustKeyPress = SkillData.mustKeyPress;
+            SkillDef.rechargeStock = SkillData.rechargeStock;
+            SkillDef.requiredStock = SkillData.requiredStock;
+            SkillDef.resetCooldownTimerOnUse = SkillData.resetCooldownTimerOnUse;
+            SkillDef.stockToConsume = SkillData.stockToConsume;
+            #endregion
+
+            Content.AddSkillDef(SkillDef);
+        }
+        protected void AddSkillToSkillFamily()
+        {
+            //if the skill shouldnt initialize to a character
+            if (/*SkillSlot != SkillSlot.None ||*/ string.IsNullOrEmpty(CharacterName))
+                return;
+
             string s = Log.Combine("Skills", SkillName);
             SkillLocator skillLocator;
             string name = CharacterName;
@@ -109,38 +150,6 @@ namespace RalseiMod.Skills
                 {
                     Log.Debug(s + "initializing!");
 
-
-                    SkillDef = (SkillDef)ScriptableObject.CreateInstance(BaseSkillDef);
-
-                    Content.AddEntityState(ActivationState);
-                    SkillDef.activationState = new SerializableEntityStateType(ActivationState);
-
-                    SkillDef.skillNameToken = Token + SkillLangTokenName;
-                    SkillDef.skillName = SkillName;
-                    SkillDef.skillDescriptionToken = Token + SkillLangTokenName + "_DESCRIPTION";
-                    SkillDef.activationStateMachineName = "Weapon";
-
-                    SkillDef.keywordTokens = KeywordTokens;
-                    SkillDef.icon = null;// assetBundle.LoadAsset<Sprite>(RalseiPlugin.iconsPath + "Skill/" + IconName + ".png");
-
-                    #region SkillData
-                    SkillDef.baseMaxStock = SkillData.baseMaxStock;
-                    SkillDef.baseRechargeInterval = SkillData.baseRechargeInterval;
-                    SkillDef.beginSkillCooldownOnSkillEnd = SkillData.beginSkillCooldownOnSkillEnd;
-                    SkillDef.canceledFromSprinting = RalseiPlugin.autoSprintLoaded ? false : SkillData.canceledFromSprinting;
-                    SkillDef.cancelSprintingOnActivation = SkillData.cancelSprintingOnActivation;
-                    SkillDef.dontAllowPastMaxStocks = SkillData.dontAllowPastMaxStocks;
-                    SkillDef.fullRestockOnAssign = SkillData.fullRestockOnAssign;
-                    SkillDef.interruptPriority = SkillData.interruptPriority;
-                    SkillDef.isCombatSkill = SkillData.isCombatSkill;
-                    SkillDef.mustKeyPress = SkillData.mustKeyPress;
-                    SkillDef.rechargeStock = SkillData.rechargeStock;
-                    SkillDef.requiredStock = SkillData.requiredStock;
-                    SkillDef.resetCooldownTimerOnUse = SkillData.resetCooldownTimerOnUse;
-                    SkillDef.stockToConsume = SkillData.stockToConsume;
-                    #endregion
-
-                    Content.AddSkillDef(SkillDef);
                     Array.Resize(ref skillFamily.variants, skillFamily.variants.Length + 1);
                     skillFamily.variants[skillFamily.variants.Length - 1] = new SkillFamily.Variant
                     {

@@ -8,7 +8,7 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
 
-namespace RalseiMod.States.Ralsei
+namespace RalseiMod.States.Ralsei.Weapon
 {
     abstract class ScarfAttackBaseState : BaseSkillState, SteppedSkillDef.IStepSetter
     {
