@@ -193,8 +193,8 @@ namespace RalseiMod.Survivors.Ralsei
             orig(self);
             self.UpdateSingleTemporaryVisualEffect(
                 ref self.warbannerEffectInstance, 
-                CharacterBody.AssetReferences.warbannerEffectPrefab,
-                self.radius * 3, self.HasBuff(empowerBuff), "");
+                CharacterBody.AssetReferences.teamWarCryEffectPrefab,
+                self.radius, self.HasBuff(empowerBuff), "");
         }
 
         public override void Lang()

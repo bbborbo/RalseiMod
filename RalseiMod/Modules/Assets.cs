@@ -151,6 +151,21 @@ namespace RalseiMod.Modules
             return ghostPrefab;
         }
 
+        internal static GameObject CreateProjectileGhostPrefab(GameObject ghostObject, string newName)
+        {
+            if (ghostObject == null)
+            {
+                Log.Error($"Failed to load ghost prefab {ghostObject.name}");
+            }
+            GameObject go = PrefabAPI.InstantiateClone(ghostObject, newName);
+            if (!go.GetComponent<NetworkIdentity>()) go.AddComponent<NetworkIdentity>();
+            if (!go.GetComponent<ProjectileGhostController>()) go.AddComponent<ProjectileGhostController>();
+
+            //Modules.Assets.ConvertAllRenderersToHopooShader(go);
+
+            return go;
+        }
+
         internal static GameObject CloneProjectilePrefab(string prefabName, string newPrefabName)
         {
             GameObject newPrefab = PrefabAPI.InstantiateClone(RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/Projectiles/" + prefabName), newPrefabName);

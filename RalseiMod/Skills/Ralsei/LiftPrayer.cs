@@ -20,7 +20,7 @@ namespace RalseiMod.Skills
 
         [AutoConfig("Lift Duration", 1.5f)]
         public static float liftDuration;
-        [AutoConfig("Lift Speed", 4f)]
+        [AutoConfig("Lift Speed", 3.5f)]
         public static float liftSpeed;
         [AutoConfig("Hover Velocity", -5.5f)]
         public static float hoverVelocity;
@@ -55,7 +55,7 @@ namespace RalseiMod.Skills
         public override SimpleSkillData SkillData => new SimpleSkillData()
         {
             stockToConsume = 1,
-            baseRechargeInterval = 9,
+            baseRechargeInterval = 6,
             beginSkillCooldownOnSkillEnd = true,
             fullRestockOnAssign = false,
             mustKeyPress = true,

@@ -84,7 +84,7 @@ namespace RalseiMod.States.Ralsei.Weapon
 			Deployable deployable = victimMaster.gameObject.AddComponent<Deployable>();
 			deployable.onUndeploy = new UnityEvent();
 			deployable.onUndeploy.AddListener(new UnityAction(characterMaster.TrueKill));
-			ownerBody.master.AddDeployable(deployable, DeployableSlot.EngiTurret);
+			ownerBody.master.AddDeployable(deployable, DeployableSlot.LoaderPylon);
 
 			CharacterBody body = characterMaster.GetBody();
 			if ((bool)body)

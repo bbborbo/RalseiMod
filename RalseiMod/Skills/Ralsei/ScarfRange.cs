@@ -19,9 +19,9 @@ namespace RalseiMod.Skills
         #region config
         public override string ConfigName => "Skill : " + SkillName;
 
-        [AutoConfig("Damage : Base Attack Damage", 0.7f)]
+        [AutoConfig("Damage : Base Attack Damage", 0.9f)]
         public static float baseDamage;
-        [AutoConfig("Damage : Combo Attack Base Damage", 2f)]
+        [AutoConfig("Damage : Combo Attack Base Damage", 2.1f)]
         public static float baseDamageCombo;
         [AutoConfig("Damage : Base Attack Proc Coefficient", 1f)]
         public static float baseProcCoeff;

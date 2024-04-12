@@ -51,6 +51,7 @@ namespace RalseiMod.Skills
         {
             stockToConsume = 1,
             baseRechargeInterval = 40,
+            resetCooldownTimerOnUse = false,
             canceledFromSprinting = true,
             cancelSprintingOnActivation = true,
             baseMaxStock = 2,
