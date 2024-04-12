@@ -211,7 +211,7 @@ namespace RalseiMod.Survivors.Ralsei
             #region DefaultSkin
             //this creates a SkinDef with all default fields
             SkinDef defaultSkin = Modules.Skins.CreateSkinDef(RALSEI_PREFIX + "DEFAULT_SKIN_NAME",
-                assetBundle.LoadAsset<Sprite>("texMainSkin"),
+                null,//assetBundle.LoadAsset<Sprite>("texMainSkin"),
                 defaultRendererinfos,
                 prefabCharacterModel.gameObject);
 
@@ -229,11 +229,11 @@ namespace RalseiMod.Survivors.Ralsei
             #endregion
 
             //uncomment this when you have a mastery skin
-            #region MasterySkin
+            /*#region MasterySkin
             
             //creating a new skindef as we did before
             SkinDef masterySkin = Modules.Skins.CreateSkinDef(RALSEI_PREFIX + "MASTERY_SKIN_NAME",
-                assetBundle.LoadAsset<Sprite>("texMasteryAchievement"),
+                null,//assetBundle.LoadAsset<Sprite>("texMasteryAchievement"),
                 defaultRendererinfos,
                 prefabCharacterModel.gameObject,
                 RalseiUnlockables.masterySkinUnlockableDef);
@@ -263,8 +263,7 @@ namespace RalseiMod.Survivors.Ralsei
             ////simply find an object on your child locator you want to activate/deactivate and set if you want to activate/deacitvate it with this skin
 
             skins.Add(masterySkin);
-            
-            #endregion
+            #endregion*/
 
             skinController.skins = skins.ToArray();
         }

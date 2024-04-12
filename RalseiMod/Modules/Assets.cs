@@ -928,6 +928,47 @@ namespace RalseiMod.Modules
     }
     internal static class Materials
     {
+        internal static void GetMaterial(GameObject model, string childObject, Color color, ref Material material, float scaleMultiplier = 1, bool replaceAll = false)
+        {
+            Renderer[] renderers = model.GetComponentsInChildren<Renderer>();
+
+            foreach (Renderer renderer in renderers)
+            {
+                Renderer smr = renderer;
+
+                if (string.Equals(renderer.name, childObject))
+                {
+                    if (color == Color.clear)
+                    {
+                        UnityEngine.GameObject.Destroy(renderer);
+                        return;
+                    }
+
+                    if (material == null)
+                    {
+                        material = new Material(renderer.material);
+                        material.mainTexture = renderer.material.mainTexture;
+                        material.shader = renderer.material.shader;
+                        material.color = color;
+                    }
+                    renderer.material = material;
+                    renderer.transform.localScale *= scaleMultiplier;
+                    if (!replaceAll)
+                        break;
+                }
+            }
+        }
+        internal static void DebugMaterial(GameObject model)
+        {
+            Renderer[] renderers = model.GetComponentsInChildren<Renderer>();
+
+            foreach (Renderer renderer in renderers)
+            {
+                Renderer smr = renderer;
+                Debug.Log("Material: " + smr.name.ToString());
+            }
+        }
+
         private static List<Material> cachedMaterials = new List<Material>();
 
         internal static Shader hotpoo = RoR2.LegacyResourcesAPI.Load<Shader>("Shaders/Deferred/HGStandard");
@@ -1062,6 +1103,41 @@ namespace RalseiMod.Modules
             material.SetFloat("_SpecularStrength", strength);
             material.SetFloat("SpecularExponent", exponent);
             return material;
+        }
+    }
+    internal static class Particles
+    {
+        internal static void GetParticle(GameObject model, string childObject, Color color, float sizeMultiplier = 1, bool replaceAll = false)
+        {
+            ParticleSystem[] partSystems = model.GetComponentsInChildren<ParticleSystem>();
+
+            foreach (ParticleSystem partSys in partSystems)
+            {
+                ParticleSystem ps = partSys;
+                var main = ps.main;
+                var lifetime = ps.colorOverLifetime;
+                var speed = ps.colorBySpeed;
+
+                if (string.Equals(ps.name, childObject))
+                {
+                    main.startColor = color;
+                    main.startSizeMultiplier *= sizeMultiplier;
+                    lifetime.color = color;
+                    speed.color = color;
+                    if (!replaceAll)
+                        break;
+                }
+            }
+        }
+        internal static void DebugParticleSystem(GameObject model)
+        {
+            ParticleSystem[] partSystems = model.GetComponentsInChildren<ParticleSystem>();
+
+            foreach (ParticleSystem partSys in partSystems)
+            {
+                ParticleSystem ps = partSys;
+                Debug.Log("Particle: " + ps.name.ToString());
+            }
         }
     }
     internal class Content

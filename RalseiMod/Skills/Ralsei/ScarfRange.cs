@@ -1,6 +1,8 @@
 ﻿using BepInEx.Configuration;
 using EntityStates;
+using R2API;
 using RalseiMod.Modules;
+using RalseiMod.States.Ralsei.Weapon;
 using RalseiMod.Survivors.Ralsei;
 using RoR2;
 using RoR2.Skills;
@@ -28,19 +30,21 @@ namespace RalseiMod.Skills
 
         [AutoConfig("Combo : Combo Count", "The number of attacks in the Thread Whip attack combo. Combo attack will always be last. Min of 1.", 4)]
         public static int comboCount;
-        [AutoConfig("Combo : Grace Duration", "The time in seconds that Thread Whip should wait after attacking for a new input that continues the combo. Min of 0.1", 0.3f)]
+        [AutoConfig("Combo : Grace Duration", "The time in seconds that Thread Whip should wait after attacking for a new input that continues the combo. Min of 0.1", 0.25f)]
         public static float comboGraceDuration;
 
-        [AutoConfig("Duration : Combo Attack Entry Duration", 0f)]
+        [AutoConfig("Duration : Base Attack Entry Duration", 0f)]
         public static float baseEntryDuration;
-        [AutoConfig("Duration : Combo Attack Entry Duration", 0.7f)]
+        [AutoConfig("Duration : Base Attack Exit Duration", 0.45f)]
         public static float baseExitDuration;
         [AutoConfig("Duration : Combo Attack Entry Duration", 0.3f)]
         public static float comboEntryDuration;
-        [AutoConfig("Duration : Combo Attack Entry Duration", 0.8f)]
+        [AutoConfig("Duration : Combo Attack Exit Duration", 0.55f)]
         public static float comboExitDuration;
         #endregion
         internal static int lastCombo => comboCount - 1;
+        public static GameObject tracerThread;
+        public static GameObject tracerImpact;
 
         public override AssetBundle assetBundle => RalseiPlugin.mainAssetBundle;
 
@@ -56,7 +60,7 @@ namespace RalseiMod.Skills
 
         public override string IconName => "";
 
-        public override Type ActivationState => typeof(Idle);
+        public override Type ActivationState => typeof(ScarfAttackLong);
 
         public override Type BaseSkillDef => typeof(SteppedSkillDef);
 
@@ -66,7 +70,8 @@ namespace RalseiMod.Skills
 
         public override SimpleSkillData SkillData => new SimpleSkillData()
         {
-            stockToConsume = 0
+            stockToConsume = 0,
+            interruptPriority = InterruptPriority.Any
         };
 
         public override void Init()
@@ -74,6 +79,27 @@ namespace RalseiMod.Skills
             base.Init();
             (SkillDef as SteppedSkillDef).stepCount = Mathf.Max(comboCount, 1);
             (SkillDef as SteppedSkillDef).stepGraceDuration = Mathf.Max(comboGraceDuration, 0.1f);
+
+            CreateTracer();
+        }
+
+        private void CreateTracer()
+        {
+            tracerThread = Assets.CloneTracer("TracerGolem", "TracerRalseiThread");
+            /*tracerThread = RoR2.LegacyResourcesAPI.Load<GameObject>("prefabs/effects/tracers/TracerGolem").InstantiateClone("tracerRalseiThread", false);
+            Tracer buckshotTracer = tracerThread.GetComponent<Tracer>();
+            buckshotTracer.speed = 300f;
+            buckshotTracer.length = 15f;
+            buckshotTracer.beamDensity = 10f;
+            VFXAttributes buckshotAttributes = tracerThread.AddComponent<VFXAttributes>();
+            buckshotAttributes.vfxPriority = VFXAttributes.VFXPriority.Always;
+            buckshotAttributes.vfxIntensity = VFXAttributes.VFXIntensity.High;*/
+
+            Particles.GetParticle(tracerThread, "SmokeBeam", new Color(0.81f, 0.4f, 1f), 0.66f);
+            ParticleSystem.MainModule main = tracerThread.GetComponentInChildren<ParticleSystem>().main;
+            main.startSizeXMultiplier *= 0.4f;
+            main.startSizeYMultiplier *= 0.4f;
+            main.startSizeZMultiplier *= 2f;
         }
         public override void Hooks()
         {
