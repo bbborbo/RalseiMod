@@ -39,7 +39,7 @@ namespace RalseiMod.Skills
 
         public override UnlockableDef UnlockDef => null;
 
-        public override string IconName => "";
+        public override Sprite Icon => LoadSpriteFromRorSkill("RoR2/Base/Captain/CallSupplyDropHealing.asset");
 
         public override Type ActivationState => typeof(Idle);
 

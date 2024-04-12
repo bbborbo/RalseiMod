@@ -18,11 +18,11 @@ namespace RalseiMod.Skills
         #region config
         public override string ConfigName => "Skill : " + SkillName;
 
-        [AutoConfig("Lift Duration", 3f)]
+        [AutoConfig("Lift Duration", 2f)]
         public static float liftDuration;
-        [AutoConfig("Lift Speed", 3f)]
+        [AutoConfig("Lift Speed", 3.5f)]
         public static float liftSpeed;
-        [AutoConfig("Hover Velocity", -4.5f)]
+        [AutoConfig("Hover Velocity", -5.5f)]
         public static float hoverVelocity;
         [AutoConfig("Hover Acceleration", 30)]
         public static float hoverAcceleration;
@@ -41,7 +41,7 @@ namespace RalseiMod.Skills
 
         public override UnlockableDef UnlockDef => null;
 
-        public override string IconName => "";
+        public override Sprite Icon => LoadSpriteFromRorSkill("RoR2/Base/Mage/MageBodyFlyUp.asset");
 
         public override Type ActivationState => typeof(LiftState);
 
@@ -57,7 +57,9 @@ namespace RalseiMod.Skills
             stockToConsume = 1,
             baseRechargeInterval = 9,
             beginSkillCooldownOnSkillEnd = true,
-            fullRestockOnAssign = false
+            fullRestockOnAssign = false,
+            mustKeyPress = true,
+            interruptPriority = InterruptPriority.Any
         };
 
         public override void Init()

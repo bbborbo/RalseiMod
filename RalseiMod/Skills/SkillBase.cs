@@ -10,6 +10,7 @@ using System.Text;
 using UnityEngine;
 using RalseiMod.Modules;
 using RalseiMod.Survivors.Ralsei;
+using UnityEngine.AddressableAssets;
 
 namespace RalseiMod.Skills
 {
@@ -34,7 +35,7 @@ namespace RalseiMod.Skills
 
         //public abstract string UnlockString { get; }
         public abstract UnlockableDef UnlockDef { get; }
-        public abstract string IconName { get; }
+        public abstract Sprite Icon { get; }
         public abstract Type ActivationState { get; }
         public abstract Type BaseSkillDef { get; }
         public abstract string CharacterName { get; }
@@ -57,7 +58,9 @@ namespace RalseiMod.Skills
             LanguageAPI.Add(Token + SkillLangTokenName, SkillName);
             LanguageAPI.Add(Token + SkillLangTokenName + "_DESCRIPTION", SkillDescription);
         }
-
+        public Sprite LoadSpriteFromBundle(string name) { return assetBundle.LoadAsset<Sprite>(RalseiPlugin.iconsPath + "Skill/" + name + ".png"); }
+        public Sprite LoadSpriteFromRor(string path) { return Addressables.LoadAssetAsync<Sprite>(path).WaitForCompletion(); }
+        public Sprite LoadSpriteFromRorSkill(string path) { return Addressables.LoadAssetAsync<SkillDef>(path).WaitForCompletion().icon; }
         private void CreateSkill()
         {
             SkillDef = (SkillDef)ScriptableObject.CreateInstance(BaseSkillDef);
@@ -71,7 +74,7 @@ namespace RalseiMod.Skills
             SkillDef.activationStateMachineName = ActivationStateMachineName;
 
             SkillDef.keywordTokens = KeywordTokens;
-            SkillDef.icon = null;// assetBundle.LoadAsset<Sprite>(RalseiPlugin.iconsPath + "Skill/" + IconName + ".png");
+            SkillDef.icon = Icon; // assetBundle.LoadAsset<Sprite>(RalseiPlugin.iconsPath + "Skill/" + IconName + ".png");
 
             #region SkillData
             SkillDef.baseMaxStock = SkillData.baseMaxStock;

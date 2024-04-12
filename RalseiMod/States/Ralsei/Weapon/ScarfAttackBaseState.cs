@@ -75,6 +75,9 @@ namespace RalseiMod.States.Ralsei.Weapon
 
         public virtual void TryAttack()
         {
+            if (fired)
+                return;
+
             fired = true;
             if (isComboFinisher)
             {
@@ -82,6 +85,13 @@ namespace RalseiMod.States.Ralsei.Weapon
                 return;
             }
             FireAttack(hand);
+
+            if (base.isAuthority)
+            {
+                if (!characterMotor.isGrounded)
+                    characterMotor.velocity.y = Mathf.Min(characterMotor.velocity.y + 7, 3);
+                    //base.SmallHop(characterMotor, 7/* / this.attackSpeedStat*/);
+            }
         }
         public abstract void FireAttackCombo();
         public abstract void FireAttack(Hand hand);

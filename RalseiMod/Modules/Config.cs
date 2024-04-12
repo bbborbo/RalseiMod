@@ -149,9 +149,9 @@ namespace RalseiMod.Modules
                 if (!ConfigEqual(backupVal.DefaultValue, backupVal.BoxedValue))
                 {
                     // Main.WRBLogger.LogDebug("Config Updated: " + section + " : " + configattr.name + " from " + val.BoxedValue + " to " + val.DefaultValue);
-                    if (VersionChanged)
+                    if (true)//VersionChanged)
                     {
-                        // Main.WRBLogger.LogDebug("Autosyncing...");
+                        Log.Warning("Syncing config to new version");
                         val.BoxedValue = val.DefaultValue;
                         backupVal.BoxedValue = backupVal.DefaultValue;
                     }

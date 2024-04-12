@@ -51,5 +51,9 @@ namespace RalseiMod.States.Ralsei
             base.skillLocator.utility.UnsetSkillOverride(this, CancelHoverSkill.instance.SkillDef, RoR2.GenericSkill.SkillOverridePriority.Contextual);
             base.characterMotor.onHitGroundServer -= this.CharacterMotor_onHitGround;
         }
+        public override InterruptPriority GetMinimumInterruptPriority()
+        {
+            return InterruptPriority.Pain;
+        }
     }
 }

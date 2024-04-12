@@ -61,7 +61,7 @@ namespace RalseiMod.States.Ralsei.Weapon
             bulletAttack.muzzleName = this.muzzleString;
             bulletAttack.hitEffectPrefab = ScarfRange.tracerImpact;
             bulletAttack.isCrit = Util.CheckRoll(this.critStat, base.characterBody.master);
-            bulletAttack.radius = 0.45f;
+            bulletAttack.radius = 0.8f;
             bulletAttack.falloffModel = BulletAttack.FalloffModel.None;
             //maxDistance = maxRange;
             bulletAttack.smartCollision = true;

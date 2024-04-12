@@ -47,10 +47,15 @@ namespace RalseiMod.States.Ralsei
 
         private float GetLiftVelocity()
         {
-            AnimationCurve upSpeed = AnimationCurve.EaseInOut(0, 0.25f, 1, 1);
+            AnimationCurve upSpeed = AnimationCurve.EaseInOut(0, 0.2f, 1, 1);
             float time = base.fixedAge / this.duration;
             float b = /*new VoidBlinkBase().*/upSpeed.Evaluate(time);
             return b * this.liftRate * this.moveSpeedStat;
+        }
+
+        public override InterruptPriority GetMinimumInterruptPriority()
+        {
+            return InterruptPriority.Pain;
         }
     }
 }
