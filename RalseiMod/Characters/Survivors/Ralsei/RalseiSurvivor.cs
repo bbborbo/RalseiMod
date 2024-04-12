@@ -38,6 +38,7 @@ namespace RalseiMod.Survivors.Ralsei
              + "< ! > Roll has a lingering armor buff that helps to use it aggressively." + Environment.NewLine + Environment.NewLine
              + "< ! > Bomb can be used to wipe crowds with ease.";
         #endregion
+        public static BuffDef empowerBuff;
         public override string bodyName => "RalseiBody"; 
         public override string masterName => "RalseiMonsterMaster";
 
@@ -107,6 +108,8 @@ namespace RalseiMod.Survivors.Ralsei
             /// And registers the survivor
             ///
             base.InitializeCharacter();
+
+            empowerBuff = Content.CreateAndAddBuff("RalseiEmpower", null, Color.yellow, true, false);
 
             HenryAssets.Init(assetBundle);
             HenryBuffs.Init(assetBundle);
@@ -182,7 +185,18 @@ namespace RalseiMod.Survivors.Ralsei
         public override void Hooks()
         {
             R2API.RecalculateStatsAPI.GetStatCoefficients += RecalculateStatsAPI_GetStatCoefficients;
+            On.RoR2.CharacterBody.UpdateAllTemporaryVisualEffects += EmpowerVisualEffect;
         }
+
+        private void EmpowerVisualEffect(On.RoR2.CharacterBody.orig_UpdateAllTemporaryVisualEffects orig, CharacterBody self)
+        {
+            orig(self);
+            self.UpdateSingleTemporaryVisualEffect(
+                ref self.warbannerEffectInstance, 
+                CharacterBody.AssetReferences.warbannerEffectPrefab,
+                self.radius * 3, self.HasBuff(empowerBuff), "");
+        }
+
         public override void Lang()
         {
             base.Lang();
@@ -272,10 +286,13 @@ namespace RalseiMod.Survivors.Ralsei
 
         private void RecalculateStatsAPI_GetStatCoefficients(CharacterBody sender, R2API.RecalculateStatsAPI.StatHookEventArgs args)
         {
-
-            if (sender.HasBuff(HenryBuffs.armorBuff))
+            int empowerCount = sender.GetBuffCount(empowerBuff);
+            if (empowerCount > 0)
             {
-                args.armorAdd += 300;
+                args.attackSpeedMultAdd += 1 * empowerCount;
+                args.moveSpeedMultAdd += 1 * empowerCount;
+                args.armorAdd += 100 * empowerCount;
+                args.cooldownMultAdd *= Mathf.Pow(0.5f, empowerCount);
             }
         }
     }

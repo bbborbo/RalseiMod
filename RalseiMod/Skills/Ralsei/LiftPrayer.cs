@@ -18,9 +18,9 @@ namespace RalseiMod.Skills
         #region config
         public override string ConfigName => "Skill : " + SkillName;
 
-        [AutoConfig("Lift Duration", 2f)]
+        [AutoConfig("Lift Duration", 1.5f)]
         public static float liftDuration;
-        [AutoConfig("Lift Speed", 3.5f)]
+        [AutoConfig("Lift Speed", 4f)]
         public static float liftSpeed;
         [AutoConfig("Hover Velocity", -5.5f)]
         public static float hoverVelocity;
@@ -59,12 +59,16 @@ namespace RalseiMod.Skills
             beginSkillCooldownOnSkillEnd = true,
             fullRestockOnAssign = false,
             mustKeyPress = true,
-            interruptPriority = InterruptPriority.Any
+            interruptPriority = InterruptPriority.Any,
+            cancelSprintingOnActivation = false,
+            isCombatSkill = false
         };
 
         public override void Init()
         {
             base.Init();
+
+            Content.AddEntityState(typeof(States.Ralsei.HoverState));
         }
         public override void Hooks()
         {

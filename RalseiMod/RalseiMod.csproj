@@ -36,6 +36,12 @@
 		<PackageReference Include="R2API.Sound" Version="1.*" />
 	</ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="BorboStatUtils">
+      <HintPath>libs\BorboStatUtils.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 	<ItemGroup>
 	  <Folder Include="Modules\BaseContent\Characters\" />
 	  <Folder Include="Skills\SkillDefTypes\" />
