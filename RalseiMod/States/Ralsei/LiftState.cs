@@ -1,6 +1,7 @@
 ﻿using EntityStates;
 using EntityStates.VoidSurvivor;
 using RalseiMod.Skills;
+using RoR2;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -10,11 +11,16 @@ namespace RalseiMod.States.Ralsei
 {
     class LiftState : GenericCharacterMain
     {
-        float liftRate;
+        static bool useMoveSpeed => LiftPrayer.useMoveSpeed;
+        float liftRateStart;
+        float liftRateMin;
+        float liftRateMax;
         float duration;
         public override void OnEnter()
         {
-            liftRate = LiftPrayer.liftSpeed * this.attackSpeedStat;
+            liftRateMin = LiftPrayer.liftSpeedMin * this.attackSpeedStat;
+            liftRateMax = LiftPrayer.liftSpeedMax * this.attackSpeedStat;
+            liftRateStart = liftRateMax > 0 ? liftRateMin / liftRateMax : 0;
             duration = LiftPrayer.liftDuration / this.attackSpeedStat;
             base.OnEnter();
         }
@@ -47,10 +53,13 @@ namespace RalseiMod.States.Ralsei
 
         private float GetLiftVelocity()
         {
-            AnimationCurve upSpeed = AnimationCurve.EaseInOut(0, 0.2f, 1, 1);
+            AnimationCurve upSpeed = AnimationCurve.EaseInOut(0, liftRateStart, 1, 1);
+
             float time = base.fixedAge / this.duration;
-            float b = /*new VoidBlinkBase().*/upSpeed.Evaluate(time);
-            return b * this.liftRate * this.moveSpeedStat;
+            float b = Util.Remap(upSpeed.Evaluate(time), liftRateStart, 1, liftRateMin, liftRateMax);
+            if (useMoveSpeed)
+                b *= this.moveSpeedStat;
+            return b;
         }
 
         public override InterruptPriority GetMinimumInterruptPriority()

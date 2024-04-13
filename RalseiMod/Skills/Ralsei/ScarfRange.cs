@@ -19,9 +19,9 @@ namespace RalseiMod.Skills
         #region config
         public override string ConfigName => "Skill : " + SkillName;
 
-        [AutoConfig("Damage : Base Attack Damage", 0.9f)]
+        [AutoConfig("Damage : Base Attack Damage", 1.1f)]
         public static float baseDamage;
-        [AutoConfig("Damage : Combo Attack Base Damage", 2.1f)]
+        [AutoConfig("Damage : Combo Attack Base Damage", 2.7f)]
         public static float baseDamageCombo;
         [AutoConfig("Damage : Base Attack Proc Coefficient", 1f)]
         public static float baseProcCoeff;
@@ -35,11 +35,11 @@ namespace RalseiMod.Skills
 
         [AutoConfig("Duration : Base Attack Entry Duration", 0f)]
         public static float baseEntryDuration;
-        [AutoConfig("Duration : Base Attack Exit Duration", 0.45f)]
+        [AutoConfig("Duration : Base Attack Exit Duration", 0.33f)]
         public static float baseExitDuration;
-        [AutoConfig("Duration : Combo Attack Entry Duration", 0.3f)]
+        [AutoConfig("Duration : Combo Attack Entry Duration", 0.2f)]
         public static float comboEntryDuration;
-        [AutoConfig("Duration : Combo Attack Exit Duration", 0.55f)]
+        [AutoConfig("Duration : Combo Attack Exit Duration", 0.4f)]
         public static float comboExitDuration;
         #endregion
         internal static int lastCombo => comboCount - 1;

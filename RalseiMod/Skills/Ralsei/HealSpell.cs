@@ -22,6 +22,9 @@ namespace RalseiMod.Skills
         #region config
         public override string ConfigName => "Skill : " + SkillName;
 
+        [AutoConfig("Ability Cooldown", 12)]
+        public static float cooldown;
+
         [AutoConfig("Heal Range", 60f)]
         public static float healRange;
 
@@ -59,7 +62,7 @@ namespace RalseiMod.Skills
         public override SimpleSkillData SkillData => new SimpleSkillData()
         {
             stockToConsume = 1,
-            baseRechargeInterval = 12,
+            baseRechargeInterval = cooldown,
             fullRestockOnAssign = false,
             interruptPriority = InterruptPriority.Skill
         };
