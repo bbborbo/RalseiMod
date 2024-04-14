@@ -153,7 +153,8 @@ namespace RalseiMod.States.Ralsei.Weapon
 				aiComponent.enemyAttention = 0f;
 				aiComponent.ForceAcquireNearestEnemyIfNoCurrentEnemy();
 				aiComponent.currentEnemy.Reset();
-				victimMaster.gameObject.AddComponent<ThisSucks>();
+				ThisSucks ts = victimMaster.gameObject.AddComponent<ThisSucks>();
+				ts.ai = aiComponent;
 				//aiComponent.UpdateTargets();
 			}
 
@@ -184,6 +185,8 @@ namespace RalseiMod.States.Ralsei.Weapon
 		void FixedUpdate()
         {
 			if (ai == null)
+				return;
+			if (ai.currentEnemy.gameObject == null)
 				return;
 			if(ai.currentEnemy.characterBody.teamComponent.teamIndex == ai.body.teamComponent.teamIndex)
             {
