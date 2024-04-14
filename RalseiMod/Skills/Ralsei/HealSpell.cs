@@ -22,11 +22,14 @@ namespace RalseiMod.Skills
         #region config
         public override string ConfigName => "Skill : " + SkillName;
 
-        [AutoConfig("Ability Cooldown", 12)]
+        [AutoConfig("Ability Cooldown", 16)]
         public static float cooldown;
 
         [AutoConfig("Heal Range", 60f)]
         public static float healRange;
+
+        [AutoConfig("Minimum Cast Time", 0.5f)]
+        public static float minCastTime;
 
         [AutoConfig("Immediate Heal Fraction", 0.2f)]
         public static float instantHealPercent;
@@ -64,6 +67,9 @@ namespace RalseiMod.Skills
             stockToConsume = 1,
             baseRechargeInterval = cooldown,
             fullRestockOnAssign = false,
+            isCombatSkill = false,
+            canceledFromSprinting = true,
+            cancelSprintingOnActivation = true,
             interruptPriority = InterruptPriority.Skill
         };
 

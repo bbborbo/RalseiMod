@@ -16,7 +16,7 @@ namespace RalseiMod.States.Ralsei
         {
             base.OnEnter();
             base.skillLocator.utility.SetSkillOverride(this, CancelHoverSkill.instance.SkillDef, RoR2.GenericSkill.SkillOverridePriority.Contextual);
-            characterBody.AddBuff(LiftPrayer.speedBoost);
+            characterBody.AddBuff(LiftPrayer.hoverBuff);
 
             base.characterMotor.onHitGroundServer += this.CharacterMotor_onHitGround;
         }
@@ -50,7 +50,7 @@ namespace RalseiMod.States.Ralsei
         {
             base.OnExit();
             base.skillLocator.utility.UnsetSkillOverride(this, CancelHoverSkill.instance.SkillDef, RoR2.GenericSkill.SkillOverridePriority.Contextual);
-            characterBody.RemoveBuff(LiftPrayer.speedBoost);
+            characterBody.RemoveBuff(LiftPrayer.hoverBuff);
 
             base.characterMotor.onHitGroundServer -= this.CharacterMotor_onHitGround;
         }

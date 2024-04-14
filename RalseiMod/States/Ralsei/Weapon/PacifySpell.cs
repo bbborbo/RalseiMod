@@ -2,6 +2,7 @@
 using RalseiMod.Skills;
 using RalseiMod.Survivors.Ralsei;
 using RoR2;
+using RoR2.CharacterAI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,37 +22,69 @@ namespace RalseiMod.States.Ralsei.Weapon
         {
             CharacterBody victimBody = hurtBox.healthComponent?.body;
             if (victimBody)
-            {
-                if (!victimBody.isBoss && !victimBody.isPlayerControlled && !victimBody.bodyFlags.HasFlag(CharacterBody.BodyFlags.ImmuneToExecutes))
+			{
+				EffectManager.SpawnEffect(StealthMode.smokeBombEffectPrefab, new EffectData
+				{
+					origin = victimBody.footPosition
+				}, true);
+
+				//if the victim is not a boss OR, if they are a boss and they have the umbra item
+				//and also require that the victim be not player controlled or immune to executes
+				if ((!victimBody.isBoss || victimBody.inventory?.GetItemCount(RoR2Content.Items.InvadingDoppelganger) > 0)
+					&& !victimBody.isPlayerControlled && !victimBody.bodyFlags.HasFlag(CharacterBody.BodyFlags.ImmuneToExecutes))
                 {
-                    victimBody.AddBuff(Pacify.spareBuff);
-                    hurtBox.healthComponent.Suicide();
-					CharacterBody b = TryToCreatePacifiedAlly(victimBody, characterBody); 
+					//CharacterBody b = KillAndRespawnEnemyMinion(hurtBox.healthComponent, victimBody, characterBody); 
+					CharacterBody b = PacifyAndRecruitEnemyMinion(hurtBox.healthComponent, victimBody, characterBody); 
 					if (b)
-					{
-						b.AddBuff(RalseiSurvivor.empowerBuff);
-						b.AddTimedBuff(RoR2Content.Buffs.HiddenInvincibility, 5f);
-					}
+                    {
+                        ReplaceMinionAI(b);
+
+                        RalseiSurvivor.EmpowerCharacter(b);
+
+                        if (Pacify.convertDelay > 0)
+                        {
+                            SetStateOnHurt ssoh = b.GetComponent<SetStateOnHurt>();
+                            if (ssoh)
+                            {
+                                ssoh.SetStun(Pacify.convertDelay);
+                                b.AddTimedBuff(RoR2Content.Buffs.HiddenInvincibility, Pacify.convertDelay);
+                                victimBody.AddTimedBuff(RoR2Content.Buffs.Cloak, Pacify.convertDelay);
+                            }
+                        }
+                    }
                     else
                     {
 						Log.Error("Ralsei Pacify failed to empower its target!");
-                    }
+					}
 
-					EffectManager.SpawnEffect(StealthMode.smokeBombEffectPrefab, new EffectData
-                    {
-                        origin = victimBody.footPosition
-                    }, true);
+					SkillLocator skillLocator = characterBody.skillLocator;
+					if (skillLocator)
+					{
+						skillLocator.DeductCooldownFromAllSkillsServer(3f);
+					}
+
                     return;
                 }
+
+				//if the previous check was false, apply the sleepy buff instead
                 hurtBox.healthComponent.body.AddTimedBuffAuthority(Pacify.sleepyBuff.buffIndex, 15f);
             }
+		}
+
+        private static void ReplaceMinionAI(CharacterBody b)
+        {
+            b.inventory.GiveItem(RoR2Content.Items.TeleportWhenOob);
         }
-        public static CharacterBody TryToCreatePacifiedAlly(CharacterBody victimBody, CharacterBody ownerBody)
+
+        public static CharacterBody KillAndRespawnEnemyMinion(HealthComponent victimHealthComponent, CharacterBody victimBody, CharacterBody ownerBody)
 		{
-			if (!victimBody)
+			if (!victimBody || !victimHealthComponent)
 			{
 				return null;
 			}
+			victimBody.AddBuff(Pacify.spareBuff);
+			victimHealthComponent.Suicide();
+
 			GameObject bodyPrefab = BodyCatalog.FindBodyPrefab(victimBody);
 			if (!bodyPrefab)
 			{
@@ -62,31 +95,31 @@ namespace RalseiMod.States.Ralsei.Weapon
 			{
 				return null;
 			}
-			MasterSummon obj = new MasterSummon
+			MasterSummon summon = new MasterSummon
 			{
 				masterPrefab = victimMaster.gameObject,
 				ignoreTeamMemberLimit = false,
 				position = victimBody.footPosition
 			};
 			CharacterDirection component = victimBody.GetComponent<CharacterDirection>();
-			obj.rotation = (component ? Quaternion.Euler(0f, component.yaw, 0f) : victimBody.transform.rotation);
-			obj.summonerBodyObject = (ownerBody ? ownerBody.gameObject : null);
-			obj.inventoryToCopy = victimBody.inventory;
-			obj.useAmbientLevel = Pacify.useAmbientLevel;
-			obj.preSpawnSetupCallback = (Action<CharacterMaster>)Delegate.Combine(obj.preSpawnSetupCallback, new Action<CharacterMaster>(PreSpawnSetup));
-			CharacterMaster characterMaster = obj.Perform();
+			summon.rotation = (component ? Quaternion.Euler(0f, component.yaw, 0f) : victimBody.transform.rotation);
+			summon.summonerBodyObject = (ownerBody ? ownerBody.gameObject : null);
+			summon.inventoryToCopy = victimBody.inventory;
+			summon.useAmbientLevel = Pacify.useAmbientLevel;
+			summon.preSpawnSetupCallback = (Action<CharacterMaster>)Delegate.Combine(summon.preSpawnSetupCallback, new Action<CharacterMaster>(PreSpawnSetup));
+			CharacterMaster minionMaster = summon.Perform();
 
-			if (!characterMaster)
+			if (!minionMaster)
 			{
 				return null;
 			}
 
-			Deployable deployable = victimMaster.gameObject.AddComponent<Deployable>();
+			Deployable deployable = minionMaster.gameObject.AddComponent<Deployable>();
 			deployable.onUndeploy = new UnityEvent();
-			deployable.onUndeploy.AddListener(new UnityAction(characterMaster.TrueKill));
+			deployable.onUndeploy.AddListener(new UnityAction(minionMaster.TrueKill));
 			ownerBody.master.AddDeployable(deployable, DeployableSlot.LoaderPylon);
 
-			CharacterBody body = characterMaster.GetBody();
+			CharacterBody body = minionMaster.GetBody();
 			if ((bool)body)
 			{
 				EntityStateMachine[] components = body.GetComponents<EntityStateMachine>();
@@ -98,11 +131,64 @@ namespace RalseiMod.States.Ralsei.Weapon
 			return body;
 			void PreSpawnSetup(CharacterMaster newMaster)
 			{
-				newMaster.inventory.GiveItem(RoR2Content.Items.TeleportWhenOob);
 				//newMaster.inventory.GiveItem(RoR2Content.Items.Ghost);
 				//newMaster.inventory.GiveItem(RoR2Content.Items.HealthDecay, duration);
 				//newMaster.inventory.GiveItem(RoR2Content.Items.BoostDamage, 150);
 			}
 		}
+		public static CharacterBody PacifyAndRecruitEnemyMinion(HealthComponent victimHealthComponent, CharacterBody victimBody, CharacterBody ownerBody)
+		{
+			if (!victimBody || !victimHealthComponent)
+			{
+				return null;
+			}
+
+			CharacterMaster victimMaster = victimBody.master;
+			victimMaster.teamIndex = ownerBody.teamComponent.teamIndex;
+			victimBody.teamComponent.teamIndex = ownerBody.teamComponent.teamIndex;
+			//victimBody.inventory.SetEquipmentIndex(DLC1Content.Elites.Void.eliteEquipmentDef.equipmentIndex);
+			BaseAI aiComponent = victimMaster.GetComponent<BaseAI>();
+			if (aiComponent)
+			{
+				aiComponent.enemyAttention = 0f;
+				aiComponent.ForceAcquireNearestEnemyIfNoCurrentEnemy();
+				aiComponent.currentEnemy.Reset();
+				victimMaster.gameObject.AddComponent<ThisSucks>();
+				//aiComponent.UpdateTargets();
+			}
+
+			AIOwnership ownershipComponent = victimMaster.gameObject.GetComponent<AIOwnership>();
+			if (ownershipComponent)
+			{
+				if (ownerBody.master)
+				{
+					ownershipComponent.ownerMaster = ownerBody.master;
+				}
+			}
+			if (aiComponent)
+			{
+				aiComponent.leader.gameObject = ownerBody.gameObject;
+			}
+
+			Deployable deployable = victimMaster.gameObject.AddComponent<Deployable>();
+			deployable.onUndeploy = new UnityEvent();
+			deployable.onUndeploy.AddListener(new UnityAction(victimMaster.TrueKill));
+			ownerBody.master.AddDeployable(deployable, DeployableSlot.LoaderPylon);
+
+			return victimBody;
+		}
+	}
+	public class ThisSucks : MonoBehaviour
+    {
+		public BaseAI ai;
+		void FixedUpdate()
+        {
+			if (ai == null)
+				return;
+			if(ai.currentEnemy.characterBody.teamComponent.teamIndex == ai.body.teamComponent.teamIndex)
+            {
+				ai.currentEnemy.Reset();
+			}
+        }
     }
 }

@@ -22,7 +22,7 @@ namespace RalseiMod.States.Ralsei.Weapon
         //however in this state, both attacks are essentially identical aside from their AVFX, so they are using a common BulletAttack 
         public override void FireAttackCombo()
         {
-            float recoil = 5.5f / this.attackSpeedStat;
+            float recoil = 2.8f / this.attackSpeedStat;
             base.AddRecoil(-recoil, -2f * recoil, -recoil, recoil);
             base.characterBody.SetAimTimer(2f);
 
@@ -35,7 +35,7 @@ namespace RalseiMod.States.Ralsei.Weapon
         }
         public override void FireAttack(Hand hand)
         {
-            float recoil = 3.2f / this.attackSpeedStat;
+            float recoil = 1.2f / this.attackSpeedStat;
             base.AddRecoil(-recoil, -2f * recoil, -recoil, recoil);
             base.characterBody.SetAimTimer(2f);
 
@@ -61,7 +61,7 @@ namespace RalseiMod.States.Ralsei.Weapon
             bulletAttack.muzzleName = this.muzzleString;
             bulletAttack.hitEffectPrefab = ScarfRange.tracerImpact;
             bulletAttack.isCrit = Util.CheckRoll(this.critStat, base.characterBody.master);
-            bulletAttack.radius = 0.8f;
+            bulletAttack.radius = 1.2f;
             bulletAttack.falloffModel = BulletAttack.FalloffModel.None;
             //maxDistance = maxRange;
             bulletAttack.smartCollision = true;

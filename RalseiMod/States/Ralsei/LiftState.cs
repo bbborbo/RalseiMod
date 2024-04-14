@@ -21,6 +21,7 @@ namespace RalseiMod.States.Ralsei
             liftRateMin = LiftPrayer.liftSpeedMin * this.attackSpeedStat;
             liftRateMax = LiftPrayer.liftSpeedMax * this.attackSpeedStat;
             duration = LiftPrayer.liftDuration / this.attackSpeedStat;
+            characterBody.AddBuff(LiftPrayer.hoverBuff);
             base.OnEnter();
         }
         public override void FixedUpdate()
@@ -48,6 +49,7 @@ namespace RalseiMod.States.Ralsei
         public override void OnExit()
         {
             base.OnExit();
+            characterBody.RemoveBuff(LiftPrayer.hoverBuff);
         }
 
         private float GetLiftVelocity()
@@ -60,7 +62,7 @@ namespace RalseiMod.States.Ralsei
             if (useMoveSpeed)
                 b *= this.moveSpeedStat;
             else
-                b *= RalseiSurvivor.ralseiMoveSpeed;
+                b *= 8;
 
             return b;
         }

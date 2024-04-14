@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using static RalseiMod.Modules.Language.Styling;
+using static R2API.RecalculateStatsAPI;
 
 namespace RalseiMod.Skills
 {
@@ -23,8 +24,10 @@ namespace RalseiMod.Skills
 
         [AutoConfig("Should Pacified Enemies Use Ambient Level", "If set to false, pacified enemies will be revived using player level. This can be used to balance enemy strength, if desired.", true)]
         public static bool useAmbientLevel;
-        [AutoConfig("Sleep Conversion Delay", "The amount of seconds an enemy should sleep before converting to an ally.", 15)]
+        [AutoConfig("Sleep Conversion Delay", "The amount of seconds an enemy should sleep before converting to an ally.", 5)]
         public static float convertDelay;
+        [AutoConfig("Drowsy Attack Speed Penalty", "How much should Drowsy increase the victim's attack speed reduction stat.", 0.8f)]
+        public static float drowsyPenalty;
         #endregion
         public static BuffDef spareBuff;
         public static BuffDef sleepyBuff;
@@ -80,7 +83,16 @@ namespace RalseiMod.Skills
         }
         public override void Hooks()
         {
+            GetStatCoefficients += StatsHook;
             On.RoR2.GlobalEventManager.OnCharacterDeath += SpareHook;
+        }
+
+        private void StatsHook(CharacterBody sender, StatHookEventArgs args)
+        {
+            if (sender.HasBuff(sleepyBuff))
+            {
+                args.attackSpeedReductionMultAdd += drowsyPenalty;
+            }
         }
 
         private void SpareHook(On.RoR2.GlobalEventManager.orig_OnCharacterDeath orig, GlobalEventManager self, DamageReport damageReport)

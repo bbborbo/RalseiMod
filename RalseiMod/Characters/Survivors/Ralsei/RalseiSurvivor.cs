@@ -19,11 +19,11 @@ namespace RalseiMod.Survivors.Ralsei
         #region config
         public override string ConfigName => "Survivor : " + CharacterName;
 
-        [AutoConfig("Jump Power", "Ralsei's jump power. 15 is standard for most survivors.", 21f)]
+        [AutoConfig("Jump Power", "Ralsei's jump power. 15 is standard for most survivors.", 19f)]
         public static float ralseiJumpPower;
         [AutoConfig("Movement Speed", "Ralsei's movement speed. 7 is standard for most survivors.", 8f)]
         public static float ralseiMoveSpeed;
-        [AutoConfig("Base Health", "Ralsei's base health. 110 is standard for most survivors.", 70f)]
+        [AutoConfig("Base Health", "Ralsei's base health. 110 is standard for most survivors.", 55f)]
         public static float ralseiBaseHealth;
         #endregion
         #region language
@@ -290,9 +290,28 @@ namespace RalseiMod.Survivors.Ralsei
             if (empowerCount > 0)
             {
                 args.attackSpeedMultAdd += 1 * empowerCount;
-                args.moveSpeedMultAdd += 1 * empowerCount;
+                args.moveSpeedMultAdd += 0.25f * empowerCount;
                 //args.armorAdd += 100 * empowerCount;
                 args.cooldownMultAdd *= Mathf.Pow(0.5f, empowerCount);
+                args.regenMultAdd += 1 * (1 + 0.3f * (sender.level - 1));
+            }
+        }
+
+        public static void EmpowerCharacter(CharacterBody recipient, float duration = 0)
+        {
+            HealthComponent hc = recipient.healthComponent;
+            if(hc != null)
+            {
+                hc.HealFraction(1, default(ProcChainMask));
+            }
+
+            if(duration <= 0)
+            {
+                recipient.AddBuff(empowerBuff);
+            }
+            else
+            {
+                recipient.AddTimedBuff(empowerBuff, duration);
             }
         }
     }

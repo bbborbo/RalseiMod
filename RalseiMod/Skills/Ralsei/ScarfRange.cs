@@ -19,27 +19,26 @@ namespace RalseiMod.Skills
         #region config
         public override string ConfigName => "Skill : " + SkillName;
 
-        [AutoConfig("Damage : Base Attack Damage", 1.1f)]
+        [AutoConfig("Damage : Base Attack Damage", 0.9f)]
         public static float baseDamage;
-        [AutoConfig("Damage : Combo Attack Base Damage", 2.7f)]
+        [AutoConfig("Damage : Combo Attack Base Damage", 2.5f)]
         public static float baseDamageCombo;
         [AutoConfig("Damage : Base Attack Proc Coefficient", 1f)]
         public static float baseProcCoeff;
         [AutoConfig("Damage : Combo Attack Proc Coefficient", "Proc coefficient will affect the duration of the Painting status effect", 1f)]
         public static float comboProcCoeff;
 
-        [AutoConfig("Combo : Combo Count", "The number of attacks in the Thread Whip attack combo. Combo attack will always be last. Min of 1.", 4)]
-        public static int comboCount;
+        public static int comboCount = 4;
         [AutoConfig("Combo : Grace Duration", "The time in seconds that Thread Whip should wait after attacking for a new input that continues the combo. Min of 0.05", 0.15f)]
         public static float comboGraceDuration;
 
         [AutoConfig("Duration : Base Attack Entry Duration", 0f)]
         public static float baseEntryDuration;
-        [AutoConfig("Duration : Base Attack Exit Duration", 0.33f)]
+        [AutoConfig("Duration : Base Attack Exit Duration", 0.4f)]
         public static float baseExitDuration;
         [AutoConfig("Duration : Combo Attack Entry Duration", 0.2f)]
         public static float comboEntryDuration;
-        [AutoConfig("Duration : Combo Attack Exit Duration", 0.4f)]
+        [AutoConfig("Duration : Combo Attack Exit Duration", 0.45f)]
         public static float comboExitDuration;
         #endregion
         internal static int lastCombo => comboCount - 1;
@@ -77,8 +76,8 @@ namespace RalseiMod.Skills
         public override void Init()
         {
             base.Init();
-            (SkillDef as SteppedSkillDef).stepCount = Mathf.Max(comboCount, 1);
-            (SkillDef as SteppedSkillDef).stepGraceDuration = Mathf.Max(comboGraceDuration, 0.1f);
+            (SkillDef as SteppedSkillDef).stepCount = 4;// Mathf.Max(comboCount, 1);
+            (SkillDef as SteppedSkillDef).stepGraceDuration = Mathf.Max(comboGraceDuration, 0.05f);
 
             CreateTracer();
         }

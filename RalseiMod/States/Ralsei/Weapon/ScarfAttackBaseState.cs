@@ -88,9 +88,8 @@ namespace RalseiMod.States.Ralsei.Weapon
 
             if (base.isAuthority)
             {
-                if (!characterMotor.isGrounded)
-                    characterMotor.velocity.y = Mathf.Max(characterMotor.velocity.y, Mathf.Min(characterMotor.velocity.y + 7, 3));
-                    //base.SmallHop(characterMotor, 7/* / this.attackSpeedStat*/);
+                if (!characterMotor.isGrounded && characterBody.HasBuff(LiftPrayer.hoverBuff))
+                    base.SmallHop(characterMotor, 7/* / this.attackSpeedStat*/);
             }
         }
         public abstract void FireAttackCombo();

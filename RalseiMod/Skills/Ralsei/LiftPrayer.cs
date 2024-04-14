@@ -19,32 +19,32 @@ namespace RalseiMod.Skills
         #region config
         public override string ConfigName => "Skill : " + SkillName;
 
-        [AutoConfig("Ability Cooldown", 6)]
+        [AutoConfig("Ability Cooldown", 14)]
         public static float cooldown;
 
         [AutoConfig("Ascent Duration", 1.5f)]
         public static float liftDuration;
-        [AutoConfig("Ascent Minimum Speed", 1f)]
+        [AutoConfig("Ascent Rate Minimum", 0.2f)]
         public static float liftSpeedMin;
-        [AutoConfig("Ascent Maximum Speed", 2.5f)]
+        [AutoConfig("Ascent Rate Maximum", 4f)]
         public static float liftSpeedMax;
-        [AutoConfig("Ascent Speed Affected By Movement Speed", "Should Ralsei's Ascent State be affected by movement speed?", false)]
+        [AutoConfig("Ascent Rate Affected By Movement Speed", "Should Ralsei's Ascent State be affected by movement speed?", false)]
         public static bool useMoveSpeed;
-        [AutoConfig("Hover Vertical Speed", -5.5f)]
+        [AutoConfig("Hover Vertical Speed", -6f)]
         public static float hoverVelocity;
         [AutoConfig("Hover Acceleration", "How fast should Ralsei accelerate towards the hover vertical speed while hovering", 30)]
         public static float hoverAcceleration;
         [AutoConfig("Hover Horizontal Speed Increase", 1.3f)]
         public static float hoverSpeedBoost;
         #endregion
-        public static BuffDef speedBoost;
+        public static BuffDef hoverBuff;
         public static SkillDef cancelSkillDef => CancelHoverSkill.instance.SkillDef;
         public override AssetBundle assetBundle => RalseiPlugin.mainAssetBundle;
 
         public override string SkillName => "Hover Prayer";
 
         public override string SkillDescription => 
-            $"Float {UtilityColor("high into the air")} for a short time, " +
+            $"Ascend {UtilityColor("high into the air")}, " +
             $"then slowly {UtilityColor("hover")} back down. " +
             $"{DamageColor("Hover effect ends upon landing or recasting the ability")}.";
 
@@ -79,8 +79,8 @@ namespace RalseiMod.Skills
         {
             base.Init();
 
-            speedBoost = Content.CreateAndAddBuff("RalseiHoverSpeed", null, Color.green, true, false);
-            speedBoost.isHidden = true;
+            hoverBuff = Content.CreateAndAddBuff("RalseiHoverSpeed", null, Color.green, true, false);
+            hoverBuff.isHidden = true;
             Content.AddEntityState(typeof(States.Ralsei.HoverState));
         }
         public override void Hooks()
@@ -90,7 +90,7 @@ namespace RalseiMod.Skills
 
         private void HoverSpeedBoost(CharacterBody sender, StatHookEventArgs args)
         {
-            if (sender.HasBuff(speedBoost))
+            if (sender.HasBuff(hoverBuff))
                 args.moveSpeedMultAdd += hoverSpeedBoost - 1;
         }
     }
