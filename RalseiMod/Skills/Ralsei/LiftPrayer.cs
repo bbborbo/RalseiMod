@@ -19,7 +19,7 @@ namespace RalseiMod.Skills
         #region config
         public override string ConfigName => "Skill : " + SkillName;
 
-        [AutoConfig("Ability Cooldown", 14)]
+        [AutoConfig("Ability Cooldown", 6)]
         public static float cooldown;
 
         [AutoConfig("Ascent Duration", 1.5f)]

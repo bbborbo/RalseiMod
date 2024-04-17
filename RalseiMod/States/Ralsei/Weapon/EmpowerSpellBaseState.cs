@@ -11,7 +11,8 @@ using UnityEngine;
 namespace RalseiMod.States.Ralsei.Weapon
 {
     public abstract class EmpowerSpellBaseState : BaseSkillState
-    {
+	{
+		Animator animator;
 		public abstract float maxHealthValue { get; }
 		public abstract bool useFriendlyTeam { get; }
 
@@ -54,7 +55,8 @@ namespace RalseiMod.States.Ralsei.Weapon
 			}
 
 			//play animations/sounds
-			base.PlayCrossfade("Gesture, Additive", "PrepHarpoons", 0.1f);
+			animator = GetModelAnimator();
+			PlayCrossfade("Gesture, Override", "PrepareSpellEntry", 0.1f);
 			Util.PlaySound(EmpowerSpellBaseState.enterSoundString, base.gameObject);
 			this.loopSoundID = Util.PlaySound(EmpowerSpellBaseState.loopSoundString, base.gameObject);
 
@@ -73,9 +75,17 @@ namespace RalseiMod.States.Ralsei.Weapon
 
 		public override void OnExit()
 		{
-			if (base.isAuthority && !this.outer.destroying && !this.queuedFiringState)
+			if (base.isAuthority && !this.outer.destroying)
 			{
-				base.activatorSkillSlot.AddOneStock();
+				if(!this.queuedFiringState || CastToTargetAuthority(currentTarget) == false)
+				{
+					PlayCrossfade("FullBody, Override", "CastSpellSpecial", 0.1f);
+					base.activatorSkillSlot.ApplyAmmoPack();
+				}
+                else
+                {
+					PlayCrossfade("Gesture, Override", "PrepareSpellCancel", 0.1f);
+				}
 			}
 			//unset skill overrides
 			base.skillLocator.secondary.UnsetSkillOverride(this, this.cancelTargetingDummySkillDef, GenericSkill.SkillOverridePriority.Contextual);
@@ -126,7 +136,7 @@ namespace RalseiMod.States.Ralsei.Weapon
 			Util.PlaySound(EmpowerSpellBaseState.lockOnSoundString, base.gameObject);
 		}
 
-		public abstract void CastToTargetAuthority(HurtBox hurtBox);
+		public abstract bool CastToTargetAuthority(HurtBox hurtBox);
 
 		public override void FixedUpdate()
 		{
@@ -162,7 +172,6 @@ namespace RalseiMod.States.Ralsei.Weapon
             if (m1Released && currentTarget)
 			{
 				this.queuedFiringState = true;
-				this.CastToTargetAuthority(currentTarget);
 				this.outer.SetNextStateToMain();
 				return;
 			}

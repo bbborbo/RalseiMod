@@ -11,6 +11,7 @@ using System.Text;
 using UnityEngine;
 using static RalseiMod.Modules.Language.Styling;
 using static R2API.RecalculateStatsAPI;
+using R2API;
 
 namespace RalseiMod.Skills
 {
@@ -27,10 +28,21 @@ namespace RalseiMod.Skills
         [AutoConfig("Sleep Conversion Delay", "The amount of seconds an enemy should sleep before converting to an ally.", 5)]
         public static float convertDelay;
         [AutoConfig("Drowsy Attack Speed Penalty", "How much should Drowsy increase the victim's attack speed reduction stat.", 0.8f)]
-        public static float drowsyPenalty;
+        public static float drowsySpeedPenalty;
+        [AutoConfig("Drowsy Armor Penalty", "How much should Drowsy reduce the victim's armor.", -60)]
+        public static int drowsyArmorPenalty;
+
+        [AutoConfig("Minion Max Base", "The maximum amount of pacified minions Ralsei should be allowed to have at base.", 3)]
+        public static int maxMinionBase;
+        [AutoConfig("Minion Max Upgraded", "The maximum amount of pacified minions Ralsei should be allowed to have with at least one lysate cell.", 5)]
+        public static int maxMinionUpgrade;
+        [AutoConfig("Duplicate Pacified Minions With Swarms", true)]
+        public static bool swarmsDuplicate;
         #endregion
         public static BuffDef spareBuff;
         public static BuffDef sleepyBuff;
+        public static DeployableSlot pacifyDeployableSlot;
+
         public override AssetBundle assetBundle => RalseiPlugin.mainAssetBundle;
 
         public override string SkillName => "Pacify";
@@ -76,11 +88,30 @@ namespace RalseiMod.Skills
             Content.AddBuffDef(spareBuff);
 
             sleepyBuff = ScriptableObject.CreateInstance<BuffDef>();
-            spareBuff.name = "SleepyBuff";
-            spareBuff.isDebuff = true;
-            spareBuff.canStack = false;
+            sleepyBuff.name = "SleepyBuff";
+            sleepyBuff.isHidden = false;
+            sleepyBuff.isDebuff = true;
+            sleepyBuff.canStack = false;
             Content.AddBuffDef(spareBuff);
+
+            GetPacifySlotLimit += GetMaxPacifyMinions;
+            pacifyDeployableSlot = DeployableAPI.RegisterDeployableSlot(GetPacifySlotLimit);
         }
+
+        private int GetMaxPacifyMinions(CharacterMaster self, int deployableCountMultiplier)
+        {
+            int i = maxMinionBase;
+            if (self.inventory.GetItemCount(DLC1Content.Items.EquipmentMagazineVoid) > 0)
+                i = maxMinionUpgrade;
+
+            if (swarmsDuplicate && RunArtifactManager.instance.IsArtifactEnabled(RoR2Content.Artifacts.Swarms))
+            {
+                i *= 2;
+            }
+            return i;
+        }
+
+        public DeployableAPI.GetDeployableSameSlotLimit GetPacifySlotLimit;
         public override void Hooks()
         {
             GetStatCoefficients += StatsHook;
@@ -91,7 +122,8 @@ namespace RalseiMod.Skills
         {
             if (sender.HasBuff(sleepyBuff))
             {
-                args.attackSpeedReductionMultAdd += drowsyPenalty;
+                args.attackSpeedReductionMultAdd += drowsySpeedPenalty;
+                args.armorAdd += drowsyArmorPenalty;
             }
         }
 

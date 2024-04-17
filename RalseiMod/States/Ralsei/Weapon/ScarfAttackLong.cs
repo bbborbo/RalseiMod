@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using R2API;
 
 namespace RalseiMod.States.Ralsei.Weapon
 {
@@ -16,7 +17,26 @@ namespace RalseiMod.States.Ralsei.Weapon
         public override float baseExitDuration => isComboFinisher ? ScarfRange.comboExitDuration : ScarfRange.baseExitDuration;
         public override float damageCoefficient => isComboFinisher ? ScarfRange.baseDamageCombo : ScarfRange.baseDamage;
 
-
+        public override string GetAnimationLayer()
+        {
+            if (isComboFinisher)
+                return "FullBody, Override";
+            return base.GetAnimationLayer();
+        }
+        public override string GetAnimationName()
+        {
+            if (isComboFinisher)
+                return "PrimaryComboLong";
+            return base.GetAnimationName();
+        }
+        public override string GetMuzzleName()
+        {
+            if (step == ScarfRange.lastCombo)
+                return "SwingSpin";
+            if (step == ScarfRange.lastCombo - 1)
+                return "SwingJab";
+            return base.GetAnimationName();
+        }
 
         //fire attack combo and regular are split because some applications of the base state would want to do two different kinds of attacks
         //however in this state, both attacks are essentially identical aside from their AVFX, so they are using a common BulletAttack 
@@ -30,6 +50,7 @@ namespace RalseiMod.States.Ralsei.Weapon
             {
                 BulletAttack ba = GetBulletAttack();
                 ba.damageType = DamageType.WeakOnHit;
+                ba.AddModdedDamageType(Ror2AggroTools.AggroToolsPlugin.AggroOnHit);
                 ba.Fire();
             }
         }

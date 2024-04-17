@@ -2,6 +2,7 @@
 using EntityStates.Mage;
 using RalseiMod.Skills;
 using RoR2;
+using Ror2AggroTools;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -15,6 +16,7 @@ namespace RalseiMod.States.Ralsei
         public override void OnEnter()
         {
             base.OnEnter();
+            Aggro.ShedAggroFromCharacter(characterBody);
             base.skillLocator.utility.SetSkillOverride(this, CancelHoverSkill.instance.SkillDef, RoR2.GenericSkill.SkillOverridePriority.Contextual);
             characterBody.AddBuff(LiftPrayer.hoverBuff);
 

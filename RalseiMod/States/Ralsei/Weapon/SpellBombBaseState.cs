@@ -12,6 +12,7 @@ namespace RalseiMod.States.Ralsei.Weapon
 {
     class SpellBombBaseState : AimThrowableBase
     {
+        Animator animator;
         public override void OnEnter()
         {
             base.detonationRadius = HealSpell.healRange;
@@ -28,10 +29,28 @@ namespace RalseiMod.States.Ralsei.Weapon
                 this.endpointVisualizerTransform.localScale = new Vector3(this.detonationRadius, this.detonationRadius, this.detonationRadius);
             }
             characterBody.AddBuff(RoR2Content.Buffs.Slow50);
+
+            animator = GetModelAnimator();
+            PlayCrossfade("Gesture, Override", "PrepareSpellEntry", base.minimumDuration);
+        }
+        public override void FixedUpdate()
+        {
+            base.FixedUpdate();
+            if(fixedAge >= minimumDuration)
+            {
+                animator.SetBool("spellReady", true);
+                PlayCrossfade("Gesture, Override", "PrepareSpellLoop", 0.1f);
+            }
+        }
+        public override void FireProjectile()
+        {
+
         }
         public override void OnExit()
         {
             base.OnExit();
+            animator.SetBool("spellReady", false);
+            PlayCrossfade("FullBody, Override", "CastSpellSecondary", 0.1f);
             if (characterBody.HasBuff(RoR2Content.Buffs.Slow50))
                 characterBody.RemoveBuff(RoR2Content.Buffs.Slow50);
         }

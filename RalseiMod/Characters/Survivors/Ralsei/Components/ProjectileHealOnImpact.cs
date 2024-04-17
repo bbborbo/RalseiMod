@@ -14,13 +14,15 @@ namespace RalseiMod.Survivors.Ralsei.Components
     [RequireComponent(typeof(ProjectileController))]
     class ProjectileHealOnImpact : MonoBehaviour, IProjectileImpactBehavior
     {
+		bool done = false;
 		public float healFraction => HealSpell.instantHealPercent;
 		public float healDuration => HealSpell.healDuration;
 		public float healRange => HealSpell.healRange;
 		public void OnProjectileImpact(ProjectileImpactInfo impactInfo)
 		{
-			if (NetworkServer.active)
+			if (NetworkServer.active && !done)
 			{
+				done = true;
 				List<HealthComponent> list = new List<HealthComponent>();
 				SphereSearch sphereSearch = new SphereSearch();
 				sphereSearch.radius = healRange;

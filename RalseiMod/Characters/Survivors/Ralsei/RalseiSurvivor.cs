@@ -293,7 +293,7 @@ namespace RalseiMod.Survivors.Ralsei
                 args.moveSpeedMultAdd += 0.25f * empowerCount;
                 //args.armorAdd += 100 * empowerCount;
                 args.cooldownMultAdd *= Mathf.Pow(0.5f, empowerCount);
-                args.regenMultAdd += 1 * (1 + 0.3f * (sender.level - 1));
+                args.regenMultAdd += 3 * (1 + 0.3f * (sender.level - 1));
             }
         }
 

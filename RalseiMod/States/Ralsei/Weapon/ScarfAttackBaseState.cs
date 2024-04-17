@@ -24,6 +24,17 @@ namespace RalseiMod.States.Ralsei.Weapon
             Left,
             Right
         }
+        public override void OnSerialize(NetworkWriter writer)
+        {
+            base.OnSerialize(writer);
+            writer.Write(step);
+        }
+
+        public override void OnDeserialize(NetworkReader reader)
+        {
+            base.OnDeserialize(reader);
+            step = reader.ReadInt32();
+        }
 
         public abstract float baseEnterDuration { get; }
         public abstract float baseExitDuration { get; }
@@ -31,7 +42,7 @@ namespace RalseiMod.States.Ralsei.Weapon
         float exitDuration;
         float stopwatch;
         bool fired = false;
-        internal string muzzleString = "MuzzleScarf";
+        internal string muzzleString;
 
         public abstract float damageCoefficient { get; }
         public static float force = 0;
@@ -44,8 +55,11 @@ namespace RalseiMod.States.Ralsei.Weapon
             base.OnEnter();
 
             exitDuration = baseExitDuration / attackSpeedStat;
+            this.muzzleString = GetMuzzleName();
+            PlayCrossfade(GetAnimationLayer(), GetAnimationName(), "ScarfPrimary.playbackRate", 
+                baseEnterDuration + baseExitDuration, 0.1f * (baseEnterDuration + baseExitDuration));
 
-            if(baseEnterDuration > 0)
+            if (baseEnterDuration > 0)
             {
                 enterDuration = baseEnterDuration / attackSpeedStat;
             }
@@ -53,6 +67,18 @@ namespace RalseiMod.States.Ralsei.Weapon
             {
                 TryAttack();
             }
+        }
+        public virtual string GetAnimationLayer()
+        {
+            return "Gesture, Override";
+        }
+        public virtual string GetAnimationName()
+        {
+            return "Primary" + (this.step + 1);
+        }
+        public virtual string GetMuzzleName()
+        {
+            return "SwingCenter";
         }
         public override void OnExit()
         {

@@ -13,7 +13,7 @@ using RoR2.Skills;
 using System;
 using RalseiMod.Modules;
 using RalseiMod.Survivors;
-using BorboStatUtils;
+using R2API;
 
 [module: UnverifiableCode]
 [assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
@@ -22,8 +22,9 @@ namespace RalseiMod
 {
     //[BepInDependency(BorboStatUtils.BorboStatUtils.guid, BepInDependency.DependencyFlags.HardDependency)]
     [BepInDependency("com.johnedwa.RTAutoSprintEx", BepInDependency.DependencyFlags.SoftDependency)]
-    [BepInDependency("com.HouseOfFruits.IAmBecomeMissiles", BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInDependency("com.RiskOfBrainrot.Ror2AggroTools", BepInDependency.DependencyFlags.HardDependency)]
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
+    [R2APISubmoduleDependency(nameof(DeployableAPI), nameof(LanguageAPI), nameof(LoadoutAPI), nameof(PrefabAPI), nameof(DamageAPI))]
     [BepInPlugin(guid, modName, version)]
     public class RalseiPlugin : BaseUnityPlugin
     {

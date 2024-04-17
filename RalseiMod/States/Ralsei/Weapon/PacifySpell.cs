@@ -3,6 +3,7 @@ using RalseiMod.Skills;
 using RalseiMod.Survivors.Ralsei;
 using RoR2;
 using RoR2.CharacterAI;
+using Ror2AggroTools;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,9 +19,13 @@ namespace RalseiMod.States.Ralsei.Weapon
 
         public override bool useFriendlyTeam => false;
 
-        public override void CastToTargetAuthority(HurtBox hurtBox)
+        public override bool CastToTargetAuthority(HurtBox hurtBox)
         {
-            CharacterBody victimBody = hurtBox.healthComponent?.body;
+			HealthComponent victimHealthComponent = hurtBox.healthComponent;
+			if (!victimHealthComponent || !victimHealthComponent.alive)
+				return false;
+
+            CharacterBody victimBody = victimHealthComponent.body;
             if (victimBody)
 			{
 				EffectManager.SpawnEffect(StealthMode.smokeBombEffectPrefab, new EffectData
@@ -30,28 +35,25 @@ namespace RalseiMod.States.Ralsei.Weapon
 
 				//if the victim is not a boss OR, if they are a boss and they have the umbra item
 				//and also require that the victim be not player controlled or immune to executes
-				if ((!victimBody.isBoss || victimBody.inventory?.GetItemCount(RoR2Content.Items.InvadingDoppelganger) > 0)
-					&& !victimBody.isPlayerControlled && !victimBody.bodyFlags.HasFlag(CharacterBody.BodyFlags.ImmuneToExecutes))
-                {
-					//CharacterBody b = KillAndRespawnEnemyMinion(hurtBox.healthComponent, victimBody, characterBody); 
+				if ((!victimBody.isBoss && !victimBody.isPlayerControlled && !victimBody.bodyFlags.HasFlag(CharacterBody.BodyFlags.ImmuneToExecutes))
+					|| victimBody.inventory?.GetItemCount(RoR2Content.Items.InvadingDoppelganger) > 0)
+				{
 					CharacterBody b = PacifyAndRecruitEnemyMinion(hurtBox.healthComponent, victimBody, characterBody); 
 					if (b)
                     {
                         ReplaceMinionAI(b);
+						EmpowerAndStunMinion(b);
 
-                        RalseiSurvivor.EmpowerCharacter(b);
-
-                        if (Pacify.convertDelay > 0)
-                        {
-                            SetStateOnHurt ssoh = b.GetComponent<SetStateOnHurt>();
-                            if (ssoh)
-                            {
-                                ssoh.SetStun(Pacify.convertDelay);
-                                b.AddTimedBuff(RoR2Content.Buffs.HiddenInvincibility, Pacify.convertDelay);
-                                victimBody.AddTimedBuff(RoR2Content.Buffs.Cloak, Pacify.convertDelay);
-                            }
-                        }
-                    }
+						if (Pacify.swarmsDuplicate && RunArtifactManager.instance.IsArtifactEnabled(RoR2Content.Artifacts.Swarms))
+						{
+							CharacterBody a = RespawnEnemyMinion(hurtBox.healthComponent, victimBody, characterBody);
+							if (a)
+							{
+								ReplaceMinionAI(a);
+								EmpowerAndStunMinion(a);
+							}
+						}
+					}
                     else
                     {
 						Log.Error("Ralsei Pacify failed to empower its target!");
@@ -63,27 +65,47 @@ namespace RalseiMod.States.Ralsei.Weapon
 						skillLocator.DeductCooldownFromAllSkillsServer(3f);
 					}
 
-                    return;
+                    return true;
                 }
 
 				//if the previous check was false, apply the sleepy buff instead
                 hurtBox.healthComponent.body.AddTimedBuffAuthority(Pacify.sleepyBuff.buffIndex, 15f);
+				return true;
             }
+			return false;
+		}
+
+        private void EmpowerAndStunMinion(CharacterBody body)
+        {
+			RalseiSurvivor.EmpowerCharacter(body);
+
+			if (Pacify.convertDelay > 0)
+			{
+				SetStateOnHurt ssoh = body.GetComponent<SetStateOnHurt>();
+				if (ssoh)
+				{
+					ssoh.SetStun(Pacify.convertDelay);
+					body.AddTimedBuff(RoR2Content.Buffs.HiddenInvincibility, Pacify.convertDelay);
+					body.AddTimedBuff(RoR2Content.Buffs.Cloak, Pacify.convertDelay);
+					body.AddTimedBuff(RoR2Content.Buffs.Nullified, Pacify.convertDelay);
+				}
+			}
 		}
 
         private static void ReplaceMinionAI(CharacterBody b)
         {
-            b.inventory.GiveItem(RoR2Content.Items.TeleportWhenOob);
+			if(b.inventory)
+				b.inventory.GiveItem(RoR2Content.Items.TeleportWhenOob);
         }
 
-        public static CharacterBody KillAndRespawnEnemyMinion(HealthComponent victimHealthComponent, CharacterBody victimBody, CharacterBody ownerBody)
+        public static CharacterBody RespawnEnemyMinion(HealthComponent victimHealthComponent, CharacterBody victimBody, CharacterBody ownerBody)
 		{
 			if (!victimBody || !victimHealthComponent)
 			{
 				return null;
 			}
-			victimBody.AddBuff(Pacify.spareBuff);
-			victimHealthComponent.Suicide();
+			//victimBody.AddBuff(Pacify.spareBuff);
+			//victimHealthComponent.Suicide();
 
 			GameObject bodyPrefab = BodyCatalog.FindBodyPrefab(victimBody);
 			if (!bodyPrefab)
@@ -117,7 +139,7 @@ namespace RalseiMod.States.Ralsei.Weapon
 			Deployable deployable = minionMaster.gameObject.AddComponent<Deployable>();
 			deployable.onUndeploy = new UnityEvent();
 			deployable.onUndeploy.AddListener(new UnityAction(minionMaster.TrueKill));
-			ownerBody.master.AddDeployable(deployable, DeployableSlot.LoaderPylon);
+			ownerBody.master.AddDeployable(deployable, Pacify.pacifyDeployableSlot);
 
 			CharacterBody body = minionMaster.GetBody();
 			if ((bool)body)
@@ -131,6 +153,7 @@ namespace RalseiMod.States.Ralsei.Weapon
 			return body;
 			void PreSpawnSetup(CharacterMaster newMaster)
 			{
+				newMaster.inventory.GiveItem(RoR2Content.Items.TeleportWhenOob);
 				//newMaster.inventory.GiveItem(RoR2Content.Items.Ghost);
 				//newMaster.inventory.GiveItem(RoR2Content.Items.HealthDecay, duration);
 				//newMaster.inventory.GiveItem(RoR2Content.Items.BoostDamage, 150);
@@ -143,6 +166,11 @@ namespace RalseiMod.States.Ralsei.Weapon
 				return null;
 			}
 
+			//debuffs, buffs, cooldowns, dots, stuns, projectiles
+			Util.CleanseBody(victimBody, true, false, true, true, false, false);
+			if(victimBody.inventory.GetItemCount(RoR2Content.Items.InvadingDoppelganger) > 0)
+				victimBody.inventory.RemoveItem(RoR2Content.Items.InvadingDoppelganger);
+
 			CharacterMaster victimMaster = victimBody.master;
 			victimMaster.teamIndex = ownerBody.teamComponent.teamIndex;
 			victimBody.teamComponent.teamIndex = ownerBody.teamComponent.teamIndex;
@@ -153,8 +181,9 @@ namespace RalseiMod.States.Ralsei.Weapon
 				aiComponent.enemyAttention = 0f;
 				aiComponent.ForceAcquireNearestEnemyIfNoCurrentEnemy();
 				aiComponent.currentEnemy.Reset();
-				ThisSucks ts = victimMaster.gameObject.AddComponent<ThisSucks>();
-				ts.ai = aiComponent;
+				Aggro.ShedAggroFromCharacter(victimBody);
+				//ThisSucks ts = victimMaster.gameObject.AddComponent<ThisSucks>();
+				//ts.ai = aiComponent;
 				//aiComponent.UpdateTargets();
 			}
 
@@ -174,7 +203,7 @@ namespace RalseiMod.States.Ralsei.Weapon
 			Deployable deployable = victimMaster.gameObject.AddComponent<Deployable>();
 			deployable.onUndeploy = new UnityEvent();
 			deployable.onUndeploy.AddListener(new UnityAction(victimMaster.TrueKill));
-			ownerBody.master.AddDeployable(deployable, DeployableSlot.LoaderPylon);
+			ownerBody.master.AddDeployable(deployable, Pacify.pacifyDeployableSlot);
 
 			return victimBody;
 		}

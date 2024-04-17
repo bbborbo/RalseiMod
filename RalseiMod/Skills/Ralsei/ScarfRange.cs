@@ -21,7 +21,7 @@ namespace RalseiMod.Skills
 
         [AutoConfig("Damage : Base Attack Damage", 0.9f)]
         public static float baseDamage;
-        [AutoConfig("Damage : Combo Attack Base Damage", 2.5f)]
+        [AutoConfig("Damage : Combo Attack Base Damage", 2.4f)]
         public static float baseDamageCombo;
         [AutoConfig("Damage : Base Attack Proc Coefficient", 1f)]
         public static float baseProcCoeff;
@@ -29,16 +29,16 @@ namespace RalseiMod.Skills
         public static float comboProcCoeff;
 
         public static int comboCount = 4;
-        [AutoConfig("Combo : Grace Duration", "The time in seconds that Thread Whip should wait after attacking for a new input that continues the combo. Min of 0.05", 0.15f)]
+        [AutoConfig("Combo : Grace Duration", "The time in seconds that Thread Whip should wait after attacking for a new input that continues the combo. Min of 0.02", 0.08f)]
         public static float comboGraceDuration;
 
         [AutoConfig("Duration : Base Attack Entry Duration", 0f)]
         public static float baseEntryDuration;
-        [AutoConfig("Duration : Base Attack Exit Duration", 0.4f)]
+        [AutoConfig("Duration : Base Attack Exit Duration", 0.42f)]
         public static float baseExitDuration;
-        [AutoConfig("Duration : Combo Attack Entry Duration", 0.2f)]
+        [AutoConfig("Duration : Combo Attack Entry Duration", 0.3f)]
         public static float comboEntryDuration;
-        [AutoConfig("Duration : Combo Attack Exit Duration", 0.45f)]
+        [AutoConfig("Duration : Combo Attack Exit Duration", 0.5f)]
         public static float comboExitDuration;
         #endregion
         internal static int lastCombo => comboCount - 1;
@@ -77,7 +77,7 @@ namespace RalseiMod.Skills
         {
             base.Init();
             (SkillDef as SteppedSkillDef).stepCount = 4;// Mathf.Max(comboCount, 1);
-            (SkillDef as SteppedSkillDef).stepGraceDuration = Mathf.Max(comboGraceDuration, 0.05f);
+            (SkillDef as SteppedSkillDef).stepGraceDuration = Mathf.Max(comboGraceDuration, 0.02f);
 
             CreateTracer();
         }
