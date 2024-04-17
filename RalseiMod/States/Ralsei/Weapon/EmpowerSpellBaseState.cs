@@ -57,6 +57,7 @@ namespace RalseiMod.States.Ralsei.Weapon
 			//play animations/sounds
 			animator = GetModelAnimator();
 			PlayCrossfade("Gesture, Override", "PrepareSpellEntry", 0.1f);
+			animator.SetBool("spellReady", true);
 			Util.PlaySound(EmpowerSpellBaseState.enterSoundString, base.gameObject);
 			this.loopSoundID = Util.PlaySound(EmpowerSpellBaseState.loopSoundString, base.gameObject);
 
@@ -79,12 +80,13 @@ namespace RalseiMod.States.Ralsei.Weapon
 			{
 				if(!this.queuedFiringState || CastToTargetAuthority(currentTarget) == false)
 				{
-					PlayCrossfade("FullBody, Override", "CastSpellSpecial", 0.1f);
+					animator.SetBool("spellReady", false);
 					base.activatorSkillSlot.ApplyAmmoPack();
 				}
                 else
-                {
-					PlayCrossfade("Gesture, Override", "PrepareSpellCancel", 0.1f);
+				{
+					PlayCrossfade("FullBody, Override", "CastSpellSpecial", 0.1f);
+					//PlayCrossfade("Gesture, Override", "PrepareSpellCancel", 0.1f);
 				}
 			}
 			//unset skill overrides

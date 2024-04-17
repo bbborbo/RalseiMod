@@ -42,15 +42,11 @@ namespace RalseiMod.States.Ralsei.Weapon
                 PlayCrossfade("Gesture, Override", "PrepareSpellLoop", 0.1f);
             }
         }
-        public override void FireProjectile()
-        {
-
-        }
         public override void OnExit()
         {
             base.OnExit();
             animator.SetBool("spellReady", false);
-            PlayCrossfade("FullBody, Override", "CastSpellSecondary", 0.1f);
+            PlayAnimation("FullBody, Override", "CastSpellSecondary");
             if (characterBody.HasBuff(RoR2Content.Buffs.Slow50))
                 characterBody.RemoveBuff(RoR2Content.Buffs.Slow50);
         }
