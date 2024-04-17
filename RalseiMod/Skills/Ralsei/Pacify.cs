@@ -49,7 +49,8 @@ namespace RalseiMod.Skills
 
         public override string SkillDescription => 
             $"Has {UtilityColor("2")} charges. Target an enemy to put to {UtilityColor("Sleep")}. " +
-            $"Spared enemies {DamageColor("convert to an Empowered ally")} after {UtilityColor(convertDelay.ToString())} seconds.";
+            $"Spared enemies {DamageColor("convert to an Empowered ally")} after {UtilityColor(convertDelay.ToString())} seconds. " +
+            $"Max of {maxMinionBase}.";
 
         public override string SkillLangTokenName => "PACIFY";
 

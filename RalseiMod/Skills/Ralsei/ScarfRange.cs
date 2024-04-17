@@ -19,9 +19,9 @@ namespace RalseiMod.Skills
         #region config
         public override string ConfigName => "Skill : " + SkillName;
 
-        [AutoConfig("Damage : Base Attack Damage", 0.9f)]
+        [AutoConfig("Damage : Base Attack Damage", 1.2f)]
         public static float baseDamage;
-        [AutoConfig("Damage : Combo Attack Base Damage", 2.4f)]
+        [AutoConfig("Damage : Combo Attack Base Damage", 1.9f)]
         public static float baseDamageCombo;
         [AutoConfig("Damage : Base Attack Proc Coefficient", 1f)]
         public static float baseProcCoeff;
@@ -45,13 +45,15 @@ namespace RalseiMod.Skills
         public static GameObject tracerThread;
         public static GameObject tracerImpact;
 
+        public const string ThreadKeywordToken = RalseiPlugin.DEVELOPER_PREFIX + "_KEYWORD_THREAD";
+
         public override AssetBundle assetBundle => RalseiPlugin.mainAssetBundle;
 
         public override string SkillName => "Thread Whip";
 
         public override string SkillDescription => 
             $"Use your scarf to throw {UtilityColor("magic threads")} for {DamageValueText(baseDamage)}. " +
-            $"Every {DamageColor(NumToAdj(comboCount))} attack {UtilityColor("Paints")} enemies for {DamageValueText(baseDamageCombo)}.";
+            $"Every {DamageColor(NumToAdj(comboCount))} attack {UtilityColor("Unravels")} enemies for {DamageValueText(baseDamageCombo)}.";
 
         public override string SkillLangTokenName => "SCARFRANGE";
 

@@ -25,7 +25,7 @@ namespace RalseiMod.Skills
         [AutoConfig("Ability Cooldown", 9)]
         public static float cooldown;
 
-        [AutoConfig("Heal Range", 40f)]
+        [AutoConfig("Heal Range", 50f)]
         public static float healRange;
 
         [AutoConfig("Minimum Cast Time", 0.5f)]
