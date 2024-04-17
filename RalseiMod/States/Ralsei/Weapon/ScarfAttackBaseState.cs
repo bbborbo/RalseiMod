@@ -56,8 +56,6 @@ namespace RalseiMod.States.Ralsei.Weapon
 
             exitDuration = baseExitDuration / attackSpeedStat;
             this.muzzleString = GetMuzzleName();
-            PlayCrossfade(GetAnimationLayer(), GetAnimationName(), "ScarfPrimary.playbackRate", 
-                baseEnterDuration + baseExitDuration, 0.1f * (baseEnterDuration + baseExitDuration));
 
             if (baseEnterDuration > 0)
             {
@@ -67,6 +65,9 @@ namespace RalseiMod.States.Ralsei.Weapon
             {
                 TryAttack();
             }
+
+            PlayCrossfade(GetAnimationLayer(), GetAnimationName(), "ScarfPrimary.playbackRate",
+                attackSpeedStat, 0.1f * (enterDuration + exitDuration));
         }
         public virtual string GetAnimationLayer()
         {

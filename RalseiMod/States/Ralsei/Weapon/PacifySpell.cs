@@ -21,6 +21,8 @@ namespace RalseiMod.States.Ralsei.Weapon
 
         public override bool CastToTargetAuthority(HurtBox hurtBox)
         {
+			if (!hurtBox)
+				return false;
 			HealthComponent victimHealthComponent = hurtBox.healthComponent;
 			if (!victimHealthComponent || !victimHealthComponent.alive)
 				return false;
@@ -72,6 +74,7 @@ namespace RalseiMod.States.Ralsei.Weapon
                 hurtBox.healthComponent.body.AddTimedBuffAuthority(Pacify.sleepyBuff.buffIndex, 15f);
 				return true;
             }
+
 			return false;
 		}
 

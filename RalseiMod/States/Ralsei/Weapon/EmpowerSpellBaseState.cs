@@ -56,7 +56,7 @@ namespace RalseiMod.States.Ralsei.Weapon
 
 			//play animations/sounds
 			animator = GetModelAnimator();
-			PlayCrossfade("Gesture, Override", "PrepareSpellEntry", 0.1f);
+			PlayAnimation("Gesture, Override", "PrepareSpellEntry", "SpellSpecial.playbackRate", attackSpeedStat);
 			animator.SetBool("spellReady", true);
 			Util.PlaySound(EmpowerSpellBaseState.enterSoundString, base.gameObject);
 			this.loopSoundID = Util.PlaySound(EmpowerSpellBaseState.loopSoundString, base.gameObject);
@@ -76,17 +76,12 @@ namespace RalseiMod.States.Ralsei.Weapon
 
 		public override void OnExit()
 		{
+			animator.SetBool("spellReady", false);
 			if (base.isAuthority && !this.outer.destroying)
 			{
-				if(!this.queuedFiringState || CastToTargetAuthority(currentTarget) == false)
+				if(!this.queuedFiringState)
 				{
-					animator.SetBool("spellReady", false);
 					base.activatorSkillSlot.ApplyAmmoPack();
-				}
-                else
-				{
-					PlayCrossfade("FullBody, Override", "CastSpellSpecial", 0.1f);
-					//PlayCrossfade("Gesture, Override", "PrepareSpellCancel", 0.1f);
 				}
 			}
 			//unset skill overrides
@@ -111,7 +106,7 @@ namespace RalseiMod.States.Ralsei.Weapon
 			}
 
 			//play sounds/aniamtions
-			base.PlayCrossfade("Gesture, Additive", "ExitHarpoons", 0.1f);
+			//base.PlayCrossfade("Gesture, Additive", "ExitHarpoons", 0.1f);
 			Util.PlaySound(EmpowerSpellBaseState.exitSoundString, base.gameObject);
 			Util.PlaySound(EmpowerSpellBaseState.stopLoopSoundString, base.gameObject);
 			base.OnExit();
@@ -174,12 +169,15 @@ namespace RalseiMod.States.Ralsei.Weapon
             if (m1Released && currentTarget)
 			{
 				this.queuedFiringState = true;
+				CastToTargetAuthority(currentTarget);
+				PlayAnimation("Gesture, Override", "CastSpellSpecial", "SpellSpecial.playbackRate", attackSpeedStat);
 				this.outer.SetNextStateToMain();
 				return;
 			}
 			//cancel target mode immediately - not setting targetModeEnding means it will clear all targets and refund stock
 			if (base.inputBank.skill2.justReleased /*|| base.inputBank.skill4.justReleased*/)
 			{
+				PlayAnimation("Gesture, Override", "PrepareSpellCancel", "SpellSpecial.playbackRate", attackSpeedStat);
 				this.outer.SetNextStateToMain();
 				return;
 			}
