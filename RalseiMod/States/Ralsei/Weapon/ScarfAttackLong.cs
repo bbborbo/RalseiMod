@@ -84,6 +84,7 @@ namespace RalseiMod.States.Ralsei.Weapon
             bulletAttack.isCrit = Util.CheckRoll(this.critStat, base.characterBody.master);
             bulletAttack.radius = 1.2f;
             bulletAttack.falloffModel = BulletAttack.FalloffModel.None;
+            bulletAttack.stopperMask = LayerIndex.world.mask;
             //maxDistance = maxRange;
             bulletAttack.smartCollision = true;
 

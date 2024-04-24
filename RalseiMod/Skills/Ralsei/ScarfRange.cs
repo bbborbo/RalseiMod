@@ -52,7 +52,7 @@ namespace RalseiMod.Skills
         public override string SkillName => "Thread Whip";
 
         public override string SkillDescription => 
-            $"Use your scarf to throw {UtilityColor("magic threads")} for {DamageValueText(baseDamage)}. " +
+            $"Use your scarf to sling {UtilityColor("piercing threads")} for {DamageValueText(baseDamage)}. " +
             $"Every {DamageColor(NumToAdj(comboCount))} attack {UtilityColor("Unravels")} enemies for {DamageValueText(baseDamageCombo)}.";
 
         public override string SkillLangTokenName => "SCARFRANGE";

@@ -67,6 +67,7 @@ namespace RalseiMod.Skills
             stockToConsume = 1,
             baseRechargeInterval = cooldown,
             fullRestockOnAssign = false,
+            beginSkillCooldownOnSkillEnd = true,
             isCombatSkill = false,
             canceledFromSprinting = true,
             cancelSprintingOnActivation = true,
