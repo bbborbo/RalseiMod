@@ -1,6 +1,7 @@
 ﻿using EntityStates.Bandit2;
 using RalseiMod.Skills;
 using RalseiMod.Survivors.Ralsei;
+using RalseiMod.Survivors.Ralsei.Components;
 using RoR2;
 using RoR2.CharacterAI;
 using Ror2AggroTools;
@@ -97,6 +98,7 @@ namespace RalseiMod.States.Ralsei.Weapon
 
         private static void ReplaceMinionAI(CharacterBody b)
         {
+			b.masterObject.AddComponent<WarpOnTeleporterBegin>();
 			if(b.inventory)
 				b.inventory.GiveItem(RoR2Content.Items.TeleportWhenOob);
         }

@@ -99,7 +99,6 @@ namespace RalseiMod.Modules
         /// <returns></returns>
         internal static SkinDef.MeshReplacement[] getMeshReplacements(AssetBundle assetBundle, CharacterModel.RendererInfo[] defaultRendererInfos, params string[] meshes)
         {
-
             List<SkinDef.MeshReplacement> meshReplacements = new List<SkinDef.MeshReplacement>();
 
             for (int i = 0; i < defaultRendererInfos.Length; i++)

@@ -93,7 +93,7 @@ namespace RalseiMod.Skills
             sleepyBuff.isHidden = false;
             sleepyBuff.isDebuff = true;
             sleepyBuff.canStack = false;
-            Content.AddBuffDef(spareBuff);
+            Content.AddBuffDef(sleepyBuff);
 
             GetPacifySlotLimit += GetMaxPacifyMinions;
             pacifyDeployableSlot = DeployableAPI.RegisterDeployableSlot(GetPacifySlotLimit);

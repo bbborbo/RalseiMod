@@ -40,6 +40,7 @@ namespace RalseiMod.States.Ralsei.Weapon
         public abstract float baseExitDuration { get; }
         float enterDuration;
         float exitDuration;
+        float totalDuration => enterDuration + exitDuration;
         float stopwatch;
         bool fired = false;
         internal string muzzleString;
@@ -67,7 +68,7 @@ namespace RalseiMod.States.Ralsei.Weapon
             }
 
             PlayCrossfade(GetAnimationLayer(), GetAnimationName(), "ScarfPrimary.playbackRate",
-                attackSpeedStat, 0.1f * (enterDuration + exitDuration));
+                totalDuration * 1.5f, 0.1f * totalDuration);
         }
         public virtual string GetAnimationLayer()
         {
@@ -92,7 +93,7 @@ namespace RalseiMod.States.Ralsei.Weapon
             {
                 TryAttack();
             }
-            if(base.fixedAge >= exitDuration + enterDuration)
+            if(base.fixedAge >= totalDuration)
             {
                 if (!fired)
                     TryAttack();

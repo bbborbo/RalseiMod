@@ -56,7 +56,7 @@ namespace RalseiMod.States.Ralsei.Weapon
 
 			//play animations/sounds
 			animator = GetModelAnimator();
-			PlayAnimation("Gesture, Override", "PrepareSpellEntry", "SpellSpecial.playbackRate", attackSpeedStat);
+			PlayAnimation("Gesture, Override", "PrepareSpellEntry", "SpellSecondary.playbackRate", 0.5f / attackSpeedStat);
 			animator.SetBool("spellReady", true);
 			Util.PlaySound(EmpowerSpellBaseState.enterSoundString, base.gameObject);
 			this.loopSoundID = Util.PlaySound(EmpowerSpellBaseState.loopSoundString, base.gameObject);
@@ -170,14 +170,14 @@ namespace RalseiMod.States.Ralsei.Weapon
 			{
 				this.queuedFiringState = true;
 				CastToTargetAuthority(currentTarget);
-				PlayAnimation("Gesture, Override", "CastSpellSpecial", "SpellSpecial.playbackRate", attackSpeedStat);
+				PlayAnimation("Gesture, Override", "CastSpellSpecial", "SpellSpecial.playbackRate", 1f / attackSpeedStat);
 				this.outer.SetNextStateToMain();
 				return;
 			}
 			//cancel target mode immediately - not setting targetModeEnding means it will clear all targets and refund stock
 			if (base.inputBank.skill2.justReleased /*|| base.inputBank.skill4.justReleased*/)
 			{
-				PlayAnimation("Gesture, Override", "PrepareSpellCancel", "SpellSpecial.playbackRate", attackSpeedStat);
+				PlayAnimation("Gesture, Override", "PrepareSpellCancel", "SpellSpecial.playbackRate", 0.73f / attackSpeedStat);
 				this.outer.SetNextStateToMain();
 				return;
 			}

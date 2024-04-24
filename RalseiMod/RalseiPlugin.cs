@@ -14,6 +14,7 @@ using System;
 using RalseiMod.Modules;
 using RalseiMod.Survivors;
 using R2API;
+using RalseiMod.Survivors.Ralsei.Components;
 
 [module: UnverifiableCode]
 [assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
@@ -64,6 +65,8 @@ namespace RalseiMod
 
             ConfigManager.HandleConfigAttributes(GetType(), "Ralsei", Modules.Config.MyConfig);
 
+            RoR2.TeleporterInteraction.onTeleporterBeginChargingGlobal += WarpMinions;
+
             Type[] allTypes = Assembly.GetExecutingAssembly().GetTypes();
 
             //new RalseiSurvivor().Init();
@@ -78,6 +81,29 @@ namespace RalseiMod
 
             ////refer to guide on how to build and distribute your mod with the proper folders
         }
+
+        private void WarpMinions(TeleporterInteraction tp)
+        {
+            WarpOnTeleporterBegin[] warpTargets = FindObjectsOfType<WarpOnTeleporterBegin>();
+            int count = warpTargets.Length;
+            int i = 0;
+            foreach (WarpOnTeleporterBegin warpTarget in warpTargets)
+            {
+                // 7.5 is the magic number to have all turrets on the teleporter platform
+                // needs to be slightly larger for the primordial telepot
+                float Radius = 7.5f;
+                float radianInc = Mathf.Deg2Rad * 360f / count;
+                Vector3 point1 = new Vector3(Mathf.Cos(radianInc * i) * Radius, 0.25f, Mathf.Sin(radianInc * i) * Radius);
+
+                i++;
+
+                var targetFootPos = tp.transform.position + point1;
+                var turretBody = warpTarget.master.GetBody();
+
+                TeleportHelper.TeleportBody(turretBody, targetFootPos);
+            }
+        }
+
         private void BeginInitializing<T>(Type[] allTypes) where T : SharedBase
         {
             Type baseType = typeof(T);

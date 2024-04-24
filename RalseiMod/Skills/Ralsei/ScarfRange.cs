@@ -21,7 +21,7 @@ namespace RalseiMod.Skills
 
         [AutoConfig("Damage : Base Attack Damage", 1.2f)]
         public static float baseDamage;
-        [AutoConfig("Damage : Combo Attack Base Damage", 1.9f)]
+        [AutoConfig("Damage : Combo Attack Base Damage", 1.7f)]
         public static float baseDamageCombo;
         [AutoConfig("Damage : Base Attack Proc Coefficient", 1f)]
         public static float baseProcCoeff;
@@ -32,9 +32,9 @@ namespace RalseiMod.Skills
         [AutoConfig("Combo : Grace Duration", "The time in seconds that Thread Whip should wait after attacking for a new input that continues the combo. Min of 0.02", 0.08f)]
         public static float comboGraceDuration;
 
-        [AutoConfig("Duration : Base Attack Entry Duration", 0f)]
+        [AutoConfig("Duration : Base Attack Entry Duration", 0.1f)]
         public static float baseEntryDuration;
-        [AutoConfig("Duration : Base Attack Exit Duration", 0.42f)]
+        [AutoConfig("Duration : Base Attack Exit Duration", 0.32f)]
         public static float baseExitDuration;
         [AutoConfig("Duration : Combo Attack Entry Duration", 0.3f)]
         public static float comboEntryDuration;

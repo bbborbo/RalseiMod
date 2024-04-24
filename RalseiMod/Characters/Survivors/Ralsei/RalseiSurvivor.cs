@@ -11,6 +11,7 @@ using RalseiMod.Skills;
 using RalseiMod.Achievements;
 using static RalseiMod.Modules.Language.Styling;
 using RalseiMod.Characters;
+using UnityEngine.AddressableAssets;
 
 namespace RalseiMod.Survivors.Ralsei
 {
@@ -39,6 +40,7 @@ namespace RalseiMod.Survivors.Ralsei
              + "< ! > Bomb can be used to wipe crowds with ease.";
         #endregion
         public static BuffDef empowerBuff;
+        public static Material empowerEffectMaterial;
         public override string bodyName => "RalseiBody"; 
         public override string masterName => "RalseiMonsterMaster";
 
@@ -74,11 +76,16 @@ namespace RalseiMod.Survivors.Ralsei
 
         public override CustomRendererInfo[] customRendererInfos => new CustomRendererInfo[]
         {
+            new CustomRendererInfo
+            {
+                //uses the name from ChildLocator
+                childName = "Model"
+            }
         };
 
         public override UnlockableDef characterUnlockableDef => RalseiUnlockables.characterUnlockableDef;
         
-        public override ItemDisplaysBase itemDisplays => new HenryItemDisplays();
+        public override ItemDisplaysBase itemDisplays => new RalseiItemDisplays();
 
         //set in base classes
         public override AssetBundle assetBundle => RalseiPlugin.mainAssetBundle;
@@ -110,6 +117,11 @@ namespace RalseiMod.Survivors.Ralsei
             base.InitializeCharacter();
 
             empowerBuff = Content.CreateAndAddBuff("RalseiEmpower", null, Color.yellow, true, false);
+
+            empowerEffectMaterial = UnityEngine.Object.Instantiate(Addressables.LoadAssetAsync<Material>("RoR2/Base/CritOnUse/matFullCrit.mat").WaitForCompletion());
+
+            empowerEffectMaterial.SetColor("_TintColor", new Color32(87, 63, 0, 191));
+            empowerEffectMaterial.SetTexture("_RemapTex", Addressables.LoadAssetAsync<Texture>("RoR2/Base/Common/ColorRamps/texRampBanditSplatter.png").WaitForCompletion());
 
             HenryAssets.Init(assetBundle);
             HenryBuffs.Init(assetBundle);
@@ -161,15 +173,15 @@ namespace RalseiMod.Survivors.Ralsei
                 Modules.Skills.characterSkillLocators[bodyName] = skillLocator;
 
                 #region Achievements
-                Modules.Language.Add(RALSEI_PREFIX + "PASSIVE_NAME", $"Tension Points: Cunning");
+                Modules.Language.Add(RALSEI_PREFIX + "PASSIVE_NAME", $"Tension Points: Arcana");
                 Modules.Language.Add(RALSEI_PREFIX + "PASSIVE_DESCRIPTION", 
-                    $"{UtilityColor("Blocking")} attacks or putting enemies to {UtilityColor("Sleep")} will {DamageColor("reduce your skill cooldowns")}.");
+                    $"{UtilityColor("Blocking")} attacks or {UtilityColor("Threading")} enemies will {DamageColor("reduce your skill cooldowns")}.");
                 #endregion
 
                 //add passive skill
                 skillLocator.passiveSkill = new SkillLocator.PassiveSkill
                 {
-                    enabled = true,
+                    enabled = false,
                     skillNameToken = RALSEI_PREFIX + "PASSIVE_NAME",
                     skillDescriptionToken = RALSEI_PREFIX + "PASSIVE_DESCRIPTION",
                     icon = assetBundle.LoadAsset<Sprite>("texPassiveIcon"),
@@ -185,12 +197,33 @@ namespace RalseiMod.Survivors.Ralsei
         public override void Hooks()
         {
             R2API.RecalculateStatsAPI.GetStatCoefficients += RecalculateStatsAPI_GetStatCoefficients;
+            On.RoR2.CharacterModel.UpdateOverlays += EmpowerOverlay;
             On.RoR2.CharacterBody.UpdateAllTemporaryVisualEffects += EmpowerVisualEffect;
+        }
+
+        private void EmpowerOverlay(On.RoR2.CharacterModel.orig_UpdateOverlays orig, CharacterModel self)
+        {
+            orig(self);
+            if (self.visibility == VisibilityLevel.Invisible || self.body == null)
+            {
+                return;
+            }
+
+            AddOverlay(empowerEffectMaterial, self.body.HasBuff(empowerBuff));
+
+            void AddOverlay(Material overlayMaterial, bool condition)
+            {
+                if (self.activeOverlayCount < CharacterModel.maxOverlays && condition)
+                {
+                    self.currentOverlays[self.activeOverlayCount++] = overlayMaterial;
+                }
+            }
         }
 
         private void EmpowerVisualEffect(On.RoR2.CharacterBody.orig_UpdateAllTemporaryVisualEffects orig, CharacterBody self)
         {
             orig(self);
+            return;
             self.UpdateSingleTemporaryVisualEffect(
                 ref self.warbannerEffectInstance, 
                 CharacterBody.AssetReferences.teamWarCryEffectPrefab,
@@ -205,9 +238,13 @@ namespace RalseiMod.Survivors.Ralsei
         #region skins
         public override void InitializeSkins()
         {
-            #region Achievements
+            #region Tokens
             Modules.Language.Add(GetAchievementNameToken(RalseiMasteryAchievement.identifier), $"{CharacterName}: Mastery");
             Modules.Language.Add(GetAchievementDescriptionToken(RalseiMasteryAchievement.identifier), $"As {CharacterName}, beat the game or obliterate on Monsoon.");
+
+            Modules.Language.Add(RALSEI_PREFIX + "DEFAULT_SKIN_NAME", $"Default");
+            Modules.Language.Add(RALSEI_PREFIX + "MASTERY_SKIN_NAME", $"Peeled");
+            Modules.Language.Add(RALSEI_PREFIX + "NIKO_SKIN_NAME", $"Solstice");
             #endregion
 
             ModelSkinController skinController = prefabCharacterModel.gameObject.AddComponent<ModelSkinController>();
@@ -217,15 +254,10 @@ namespace RalseiMod.Survivors.Ralsei
 
             List<SkinDef> skins = new List<SkinDef>();
 
-            #region Achievements
-            Modules.Language.Add(RALSEI_PREFIX + "DEFAULT_SKIN_NAME", $"Default");
-            Modules.Language.Add(RALSEI_PREFIX + "MASTERY_SKIN_NAME", $"Peeled");
-            #endregion
-
             #region DefaultSkin
             //this creates a SkinDef with all default fields
             SkinDef defaultSkin = Modules.Skins.CreateSkinDef(RALSEI_PREFIX + "DEFAULT_SKIN_NAME",
-                null,//assetBundle.LoadAsset<Sprite>("texMainSkin"),
+                R2API.Skins.CreateSkinIcon(Color.black, Color.green, Color.green, Color.magenta, Color.grey),//assetBundle.LoadAsset<Sprite>("texMainSkin"),
                 defaultRendererinfos,
                 prefabCharacterModel.gameObject);
 
@@ -233,51 +265,67 @@ namespace RalseiMod.Survivors.Ralsei
                 //pass in meshes as they are named in your assetbundle
             //currently not needed as with only 1 skin they will simply take the default meshes
                 //uncomment this when you have another skin
-            //defaultSkin.meshReplacements = Modules.Skins.getMeshReplacements(assetBundle, defaultRendererinfos,
-            //    "meshHenrySword",
-            //    "meshHenryGun",
-            //    "meshHenry");
+            defaultSkin.meshReplacements = Modules.Skins.getMeshReplacements(assetBundle, defaultRendererinfos, 
+                "RalseiMesh");
 
             //add new skindef to our list of skindefs. this is what we'll be passing to the SkinController
             skins.Add(defaultSkin);
             #endregion
 
             //uncomment this when you have a mastery skin
-            /*#region MasterySkin
-            
+            #region MasterySkin
+
             //creating a new skindef as we did before
             SkinDef masterySkin = Modules.Skins.CreateSkinDef(RALSEI_PREFIX + "MASTERY_SKIN_NAME",
-                null,//assetBundle.LoadAsset<Sprite>("texMasteryAchievement"),
+                R2API.Skins.CreateSkinIcon(Color.white, Color.green, Color.green, Color.magenta, Color.grey),//assetBundle.LoadAsset<Sprite>("texMasteryAchievement"),
                 defaultRendererinfos,
                 prefabCharacterModel.gameObject,
                 RalseiUnlockables.masterySkinUnlockableDef);
 
             //adding the mesh replacements as above. 
             //if you don't want to replace the mesh (for example, you only want to replace the material), pass in null so the order is preserved
-            //masterySkin.meshReplacements = Modules.Skins.getMeshReplacements(assetBundle, defaultRendererinfos,
-            //    "meshHenrySwordAlt",
-            //    null,//no gun mesh replacement. use same gun mesh
-            //    "meshHenryAlt");
+            masterySkin.meshReplacements = Modules.Skins.getMeshReplacements(assetBundle, defaultRendererinfos,
+                ""/*"RalseiPeeledMesh"*/);
 
             ////masterySkin has a new set of RendererInfos (based on default rendererinfos)
             ////you can simply access the RendererInfos' materials and set them to the new materials for your skin.
             masterySkin.rendererInfos[0].defaultMaterial = assetBundle.LoadMaterial("RalseiHatless_Base_Color");
-            //masterySkin.rendererInfos[1].defaultMaterial = assetBundle.LoadMaterial("matHenryAlt");
-            //masterySkin.rendererInfos[2].defaultMaterial = assetBundle.LoadMaterial("matHenryAlt");
 
             ////here's a barebones example of using gameobjectactivations that could probably be streamlined or rewritten entirely, truthfully, but it works
-            //masterySkin.gameObjectActivations = new SkinDef.GameObjectActivation[]
-            //{
-            //    new SkinDef.GameObjectActivation
-            //    {
-            //        gameObject = childLocator.FindChildGameObject("GunModel"),
-            //        shouldActivate = false,
-            //    }
-            //};
+            /*masterySkin.gameObjectActivations = new SkinDef.GameObjectActivation[]
+            {
+                new SkinDef.GameObjectActivation
+                {
+                    gameObject = childLocator.FindChildGameObject("GunModel"),
+                    shouldActivate = false,
+                }
+            };*/
             ////simply find an object on your child locator you want to activate/deactivate and set if you want to activate/deacitvate it with this skin
 
             skins.Add(masterySkin);
-            #endregion*/
+            #endregion
+
+            //uncomment this when you have a mastery skin
+            #region NikoSkin
+
+            //creating a new skindef as we did before
+            SkinDef nikoSkin = Modules.Skins.CreateSkinDef(RALSEI_PREFIX + "NIKO_SKIN_NAME",
+                R2API.Skins.CreateSkinIcon(Color.white, Color.green, Color.green, Color.magenta, Color.grey),//assetBundle.LoadAsset<Sprite>("texMasteryAchievement"),
+                defaultRendererinfos,
+                prefabCharacterModel.gameObject,
+                RalseiUnlockables.masterySkinUnlockableDef);
+
+            //adding the mesh replacements as above. 
+            //if you don't want to replace the mesh (for example, you only want to replace the material), pass in null so the order is preserved
+            nikoSkin.meshReplacements = Modules.Skins.getMeshReplacements(assetBundle, defaultRendererinfos,
+                "");
+
+            ////masterySkin has a new set of RendererInfos (based on default rendererinfos)
+            ////you can simply access the RendererInfos' materials and set them to the new materials for your skin.
+            nikoSkin.rendererInfos[0].defaultMaterial = assetBundle.LoadMaterial("Niko_Base_Color");
+
+            skins.Add(nikoSkin);
+            #endregion
 
             skinController.skins = skins.ToArray();
         }
@@ -290,10 +338,10 @@ namespace RalseiMod.Survivors.Ralsei
             if (empowerCount > 0)
             {
                 args.attackSpeedMultAdd += 1 * empowerCount;
-                args.moveSpeedMultAdd += 0.25f * empowerCount;
+                args.moveSpeedMultAdd += 0.5f * empowerCount;
                 //args.armorAdd += 100 * empowerCount;
                 args.cooldownMultAdd *= Mathf.Pow(0.5f, empowerCount);
-                args.regenMultAdd += 3 * (1 + 0.3f * (sender.level - 1));
+                args.baseRegenAdd += 1 * (1 + 0.3f * (sender.level - 1));
             }
         }
 

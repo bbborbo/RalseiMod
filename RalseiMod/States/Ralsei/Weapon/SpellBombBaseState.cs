@@ -31,7 +31,7 @@ namespace RalseiMod.States.Ralsei.Weapon
             characterBody.AddBuff(RoR2Content.Buffs.Slow50);
 
             animator = GetModelAnimator();
-            PlayAnimation("Gesture, Override", "PrepareSpellEntry", "spellSecondary.playbackRate", base.attackSpeedStat);
+            PlayAnimation("Gesture, Override", "PrepareSpellEntry", "SpellSecondary.playbackRate", this.minimumDuration);
             animator.SetBool("spellReady", true);
         }
         public override void FixedUpdate()
@@ -42,7 +42,7 @@ namespace RalseiMod.States.Ralsei.Weapon
         {
             base.OnExit();
             animator.SetBool("spellReady", false);
-            PlayAnimation("Gesture, Override", "CastSpellSecondary", "spellSecondary.playbackRate", base.attackSpeedStat);
+            PlayAnimation("Gesture, Override", "CastSpellSecondary", "SpellSecondary.playbackRate", 1f / base.attackSpeedStat);
             if (characterBody.HasBuff(RoR2Content.Buffs.Slow50))
                 characterBody.RemoveBuff(RoR2Content.Buffs.Slow50);
         }
