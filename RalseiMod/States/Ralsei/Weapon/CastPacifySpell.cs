@@ -60,7 +60,12 @@ namespace RalseiMod.States.Ralsei.Weapon
         {
 			duration = baseDuration / attackSpeedStat;
 			PlayAnimation("Gesture, Override", "CastSpellSpecial", "SpellSpecial.playbackRate", duration);
-			CastToTargetServer(target);
+			if (base.isAuthority)
+				Log.Warning("CastPacify authority, target real " + target != null);
+			if (NetworkServer.active)
+				Log.Warning("CastPacify server, target real " + target != null);
+			if (!CastToTargetServer(target))
+				Log.Error("AAAAAAAAAAAAAAAHHHHHHHHHHHHHHHHHHHHHH!!!!!!!!!!!!!!!!!");
 
 			base.OnEnter();
 		}
@@ -73,61 +78,62 @@ namespace RalseiMod.States.Ralsei.Weapon
             }
         }
         public bool CastToTargetServer(HurtBox hurtBox)
-        {
-			if (!NetworkServer.active)
-				return false;
+		{
 			if (!hurtBox)
 				return false;
 			HealthComponent victimHealthComponent = hurtBox.healthComponent;
 			if (!victimHealthComponent || !victimHealthComponent.alive)
 				return false;
 
-            CharacterBody victimBody = victimHealthComponent.body;
-            if (victimBody)
+			if (NetworkServer.active)
 			{
-				EffectManager.SpawnEffect(StealthMode.smokeBombEffectPrefab, new EffectData
+				CharacterBody victimBody = victimHealthComponent.body;
+				if (victimBody)
 				{
-					origin = victimBody.footPosition
-				}, true);
+					EffectManager.SpawnEffect(StealthMode.smokeBombEffectPrefab, new EffectData
+					{
+						origin = victimBody.footPosition
+					}, true);
 
-				//if the victim is not a boss OR, if they are a boss and they have the umbra item
-				//and also require that the victim be not player controlled or immune to executes
-				if (CanCharacterBePacified(victimBody))
-				{
-					CharacterBody b = PacifyAndRecruitEnemyMinion(hurtBox.healthComponent, victimBody, characterBody); 
-					if (b)
-                    {
-                        ReplaceMinionAI(b);
-						EmpowerAndStunMinion(b);
-
-						if (Pacify.swarmsDuplicate && RunArtifactManager.instance.IsArtifactEnabled(RoR2Content.Artifacts.Swarms))
+					//if the victim is not a boss OR, if they are a boss and they have the umbra item
+					//and also require that the victim be not player controlled or immune to executes
+					if (CanCharacterBePacified(victimBody))
+					{
+						CharacterBody b = PacifyAndRecruitEnemyMinion(hurtBox.healthComponent, victimBody, characterBody);
+						if (b)
 						{
-							CharacterBody a = RespawnEnemyMinion(hurtBox.healthComponent, victimBody, characterBody);
-							if (a)
+							ReplaceMinionAI(b);
+							EmpowerAndStunMinion(b);
+
+							if (Pacify.swarmsDuplicate && RunArtifactManager.instance.IsArtifactEnabled(RoR2Content.Artifacts.Swarms))
 							{
-								ReplaceMinionAI(a);
-								EmpowerAndStunMinion(a);
+								CharacterBody a = RespawnEnemyMinion(hurtBox.healthComponent, victimBody, characterBody);
+								if (a)
+								{
+									ReplaceMinionAI(a);
+									EmpowerAndStunMinion(a);
+								}
 							}
 						}
-					}
-                    else
-                    {
-						Log.Error("Ralsei Pacify failed to empower its target!");
+						else
+						{
+							Log.Error("Ralsei Pacify failed to empower its target!");
+						}
+
+						SkillLocator skillLocator = characterBody.skillLocator;
+						if (skillLocator)
+						{
+							skillLocator.DeductCooldownFromAllSkillsServer(3f);
+						}
+
+						return true;
 					}
 
-					SkillLocator skillLocator = characterBody.skillLocator;
-					if (skillLocator)
-					{
-						skillLocator.DeductCooldownFromAllSkillsServer(3f);
-					}
-
-                    return true;
-                }
-
-				//if the previous check was false, apply the sleepy buff instead
-                hurtBox.healthComponent.body.AddTimedBuffAuthority(Pacify.sleepyBuff.buffIndex, 15f);
-				return true;
-            }
+					//if the previous check was false, apply the sleepy buff instead
+					hurtBox.healthComponent.body.AddTimedBuffAuthority(RalseiSurvivor.sleepyDebuff.buffIndex, 15f);
+					return true;
+				}
+			}
 
 			return false;
 		}

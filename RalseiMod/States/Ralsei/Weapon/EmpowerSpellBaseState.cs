@@ -143,8 +143,9 @@ namespace RalseiMod.States.Ralsei.Weapon
 				overrideRequest.Dispose();
 			}
 
-			//unset the target, clearing the indicator
-			SetTarget(null);
+			//clearing the indicator
+			this.targetIndicator.active = false;
+			this.targetIndicator.targetTransform = null;
 
 			base.OnExit();
 		}
@@ -192,7 +193,8 @@ namespace RalseiMod.States.Ralsei.Weapon
         {
             base.Update();
 
-            SetTarget(GetCurrentTargetInfo());
+			if(base.isAuthority)
+				SetTarget(GetCurrentTargetInfo());
         }
 
         private void SetTarget(HurtBox hb)

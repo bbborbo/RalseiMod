@@ -27,10 +27,6 @@ namespace RalseiMod.Skills
         public static bool useAmbientLevel;
         [AutoConfig("Sleep Conversion Delay", "The amount of seconds an enemy should sleep before converting to an ally.", 5)]
         public static float convertDelay;
-        [AutoConfig("Drowsy Attack Speed Penalty", "How much should Drowsy increase the victim's attack speed reduction stat.", 0.8f)]
-        public static float drowsySpeedPenalty;
-        [AutoConfig("Drowsy Armor Penalty", "How much should Drowsy reduce the victim's armor.", -60)]
-        public static int drowsyArmorPenalty;
 
         [AutoConfig("Minion Max Base", "The maximum amount of pacified minions Ralsei should be allowed to have at base.", 3)]
         public static int maxMinionBase;
@@ -40,7 +36,6 @@ namespace RalseiMod.Skills
         public static bool swarmsDuplicate;
         #endregion
         public static BuffDef spareBuff;
-        public static BuffDef sleepyBuff;
         public static DeployableSlot pacifyDeployableSlot;
 
         public override AssetBundle assetBundle => RalseiPlugin.mainAssetBundle;
@@ -89,13 +84,6 @@ namespace RalseiMod.Skills
             spareBuff.isDebuff = false;
             Content.AddBuffDef(spareBuff);
 
-            sleepyBuff = ScriptableObject.CreateInstance<BuffDef>();
-            sleepyBuff.name = "SleepyBuff";
-            sleepyBuff.isHidden = false;
-            sleepyBuff.isDebuff = true;
-            sleepyBuff.canStack = false;
-            Content.AddBuffDef(sleepyBuff);
-
             GetPacifySlotLimit += GetMaxPacifyMinions;
             pacifyDeployableSlot = DeployableAPI.RegisterDeployableSlot(GetPacifySlotLimit);
         }
@@ -122,11 +110,6 @@ namespace RalseiMod.Skills
 
         private void StatsHook(CharacterBody sender, StatHookEventArgs args)
         {
-            if (sender.HasBuff(sleepyBuff))
-            {
-                args.attackSpeedReductionMultAdd += drowsySpeedPenalty;
-                args.armorAdd += drowsyArmorPenalty;
-            }
         }
 
         private void SpareHook(On.RoR2.GlobalEventManager.orig_OnCharacterDeath orig, GlobalEventManager self, DamageReport damageReport)

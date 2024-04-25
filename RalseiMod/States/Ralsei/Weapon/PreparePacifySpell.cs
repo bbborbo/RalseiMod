@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace RalseiMod.States.Ralsei.Weapon
 {
@@ -17,10 +18,18 @@ namespace RalseiMod.States.Ralsei.Weapon
 
         public override EntityState GetNextState()
         {
-            return new CastPacifySpell()
+            return new CastPacifySpell
             {
                 target = base.currentTarget
             };
+        }
+        public override void OnExit()
+        {
+            if (base.isAuthority)
+                Log.Warning("PreparePacify authority, target real " + base.currentTarget != null);
+            if (NetworkServer.active)
+                Log.Warning("PreparePacify server, target real " + base.currentTarget != null);
+            base.OnExit();
         }
     }
 }

@@ -13,6 +13,7 @@ using static RalseiMod.Modules.Language.Styling;
 using RalseiMod.Characters;
 using UnityEngine.AddressableAssets;
 using R2API;
+using static R2API.DamageAPI;
 
 namespace RalseiMod.Survivors.Ralsei
 {
@@ -27,6 +28,27 @@ namespace RalseiMod.Survivors.Ralsei
         public static float ralseiMoveSpeed;
         [AutoConfig("Base Health", "Ralsei's base health. 110 is standard for most survivors.", 55f)]
         public static float ralseiBaseHealth;
+
+        [AutoConfig("Empowerment Armor Bonus", 50)]
+        public static int empowerArmor;
+        [AutoConfig("Empowerment Movement Speed Multiplier Bonus", 1f)]
+        public static float empowerMoveSpeed;
+        [AutoConfig("Empowerment Attack Speed Multiplier Bonus", 0.5f)]
+        public static float empowerAttackSpeed;
+        [AutoConfig("Empowerment Base Regen Bonus", 1f)]
+        public static float empowerRegen;
+        [AutoConfig("Empowerment Cooldown Multiplier", 0.5f)]
+        public static float empowerCdr;
+
+        [AutoConfig("Tangle Armor Penalty", 20)]
+        public static int tangleArmor;
+        [AutoConfig("Tangle Movespeed Penalty", 0.2f)]
+        public static float tangleMoveSpeed;
+
+        [AutoConfig("Drowsy Attack Speed Penalty", "How much should Drowsy increase the victim's attack speed reduction stat.", 0.8f)]
+        public static float drowsySpeedPenalty;
+        [AutoConfig("Drowsy Armor Penalty", "How much should Drowsy reduce the victim's armor.", -60)]
+        public static int drowsyArmorPenalty;
         #endregion
         #region language
         public override string CharacterName => "Ralsei";
@@ -42,6 +64,13 @@ namespace RalseiMod.Survivors.Ralsei
         #endregion
         public static BuffDef empowerBuff;
         public static Material empowerEffectMaterial;
+
+        public static ModdedDamageType TangleOnHit;
+        public static BuffDef tangleDebuff;
+        public static GameObject tangleTemporaryEffectPrefab;
+        public static Material tangleEffectMaterial = null;
+
+        public static BuffDef sleepyDebuff;
         public override string bodyName => "RalseiBody"; 
         public override string masterName => "RalseiMonsterMaster";
 
@@ -117,6 +146,28 @@ namespace RalseiMod.Survivors.Ralsei
             ///
             base.InitializeCharacter();
 
+            TangleOnHit = DamageAPI.ReserveDamageType();
+            tangleDebuff = Content.CreateAndAddBuff("RalseiTangle", null, Color.magenta, false, true);
+
+            tangleTemporaryEffectPrefab = PrefabAPI.InstantiateClone(
+                Addressables.LoadAssetAsync<GameObject>("RoR2/Base/DeathMark/DeathMarkEffect.prefab").WaitForCompletion(), "TangleEffect");
+            TempVisualEffectAPI.AddTemporaryVisualEffect(tangleTemporaryEffectPrefab, condition => (condition.HasBuff(tangleDebuff) == true), true);
+
+            tangleEffectMaterial = UnityEngine.Object.Instantiate(Addressables.LoadAssetAsync<Material>("RoR2/Base/DeathMark/matDeathMarkFire.mat").WaitForCompletion());
+            tangleEffectMaterial.SetColor("_TintColor", new Color32(155, 0, 172, 255));
+            tangleEffectMaterial.SetTexture("_RemapTex", Addressables.LoadAssetAsync<Texture>("RoR2/Base/Treebot/texTreebotRoot3Mask.png").WaitForCompletion());
+
+            Renderer[] renderers = tangleTemporaryEffectPrefab.GetComponentsInChildren<Renderer>();
+            foreach (Renderer renderer in renderers)
+            {
+                Renderer smr = renderer;
+
+                if (string.Equals(renderer.name, "Mesh"))
+                {
+                    renderer.material = tangleEffectMaterial;
+                }
+            }
+
             empowerBuff = Content.CreateAndAddBuff("RalseiEmpower", null, Color.yellow, true, false);
 
             empowerEffectMaterial = UnityEngine.Object.Instantiate(Addressables.LoadAssetAsync<Material>("RoR2/Base/CritOnUse/matFullCrit.mat").WaitForCompletion());
@@ -125,6 +176,8 @@ namespace RalseiMod.Survivors.Ralsei
             empowerEffectMaterial.SetTexture("_RemapTex", Addressables.LoadAssetAsync<Texture>("RoR2/Base/Common/ColorRamps/texRampBanditSplatter.png").WaitForCompletion());
             LanguageAPI.Add(RALSEI_PREFIX + "EMPOWERED_MODIFIER", "Empowered {0}");
 
+
+            sleepyDebuff = Content.CreateAndAddBuff("RalseiFatigue", null, Color.gray, false, true); 
 
             HenryAssets.Init(assetBundle);
             HenryBuffs.Init(assetBundle);
@@ -203,6 +256,29 @@ namespace RalseiMod.Survivors.Ralsei
             On.RoR2.CharacterModel.UpdateOverlays += EmpowerOverlay;
             //On.RoR2.CharacterBody.UpdateAllTemporaryVisualEffects += EmpowerVisualEffect;
             On.RoR2.Util.GetBestBodyName += EmpowermentNameModifier;
+            On.RoR2.GlobalEventManager.OnHitEnemy += TangleOnHitHook;
+        }
+
+        private void TangleOnHitHook(On.RoR2.GlobalEventManager.orig_OnHitEnemy orig, GlobalEventManager self, DamageInfo damageInfo, GameObject victim)
+        {
+            orig(self, damageInfo, victim);
+
+            if (!damageInfo.rejected && damageInfo.procCoefficient > 0 && damageInfo.HasModdedDamageType(TangleOnHit))
+            {
+                if (victim != null && damageInfo.attacker != null)
+                {
+                    CharacterBody aBody = damageInfo.attacker.GetComponent<CharacterBody>();
+                    CharacterBody vBody = victim.GetComponent<CharacterBody>();
+                    if (aBody != null && vBody != null && vBody.healthComponent.alive)
+                    {
+                        vBody.AddBuff(tangleDebuff);
+                        if(aBody.bodyIndex == BodyCatalog.FindBodyIndex(RalseiSurvivor.instance.bodyName))
+                        {
+
+                        }
+                    }
+                }
+            }
         }
 
         private string EmpowermentNameModifier(On.RoR2.Util.orig_GetBestBodyName orig, GameObject bodyObject)
@@ -242,7 +318,7 @@ namespace RalseiMod.Survivors.Ralsei
             self.UpdateSingleTemporaryVisualEffect(
                 ref self.warbannerEffectInstance, 
                 CharacterBody.AssetReferences.teamWarCryEffectPrefab,
-                self.radius, self.HasBuff(empowerBuff), "");
+                self.radius, self.HasBuff(tangleDebuff), "");
         }
 
         public override void Lang()
@@ -352,12 +428,21 @@ namespace RalseiMod.Survivors.Ralsei
             int empowerCount = sender.GetBuffCount(empowerBuff);
             if (empowerCount > 0)
             {
-                args.attackSpeedMultAdd += 1 * empowerCount;
-                args.moveSpeedMultAdd += 0.5f * empowerCount;
-                //args.armorAdd += 100 * empowerCount;
-                args.cooldownMultAdd *= Mathf.Pow(0.5f, empowerCount);
-                args.baseRegenAdd += 1 * (1 + 0.3f * (sender.level - 1));
-                args.armorAdd += 50 * empowerCount;
+                args.attackSpeedMultAdd += empowerAttackSpeed * empowerCount;
+                args.moveSpeedMultAdd += empowerMoveSpeed * empowerCount;
+                args.cooldownMultAdd *= Mathf.Pow(empowerCdr, empowerCount);
+                args.baseRegenAdd += empowerRegen * (1 + 0.3f * (sender.level - 1));
+                args.armorAdd += empowerArmor * empowerCount;
+            }
+            if (sender.HasBuff(tangleDebuff))
+            {
+                args.moveSpeedReductionMultAdd += tangleMoveSpeed;
+                args.armorAdd -= tangleArmor;
+            }
+            if (sender.HasBuff(sleepyDebuff))
+            {
+                args.attackSpeedReductionMultAdd += drowsySpeedPenalty;
+                args.armorAdd += drowsyArmorPenalty;
             }
         }
 

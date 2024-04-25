@@ -34,11 +34,11 @@ namespace RalseiMod.Skills
 
         [AutoConfig("Duration : Base Attack Entry Duration", 0.1f)]
         public static float baseEntryDuration;
-        [AutoConfig("Duration : Base Attack Exit Duration", 0.32f)]
+        [AutoConfig("Duration : Base Attack Exit Duration", 0.22f)]
         public static float baseExitDuration;
         [AutoConfig("Duration : Combo Attack Entry Duration", 0.3f)]
         public static float comboEntryDuration;
-        [AutoConfig("Duration : Combo Attack Exit Duration", 0.5f)]
+        [AutoConfig("Duration : Combo Attack Exit Duration", 0.4f)]
         public static float comboExitDuration;
         #endregion
         internal static int lastCombo => comboCount - 1;

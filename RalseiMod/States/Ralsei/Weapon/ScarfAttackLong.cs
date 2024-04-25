@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using R2API;
+using RalseiMod.Survivors.Ralsei;
 
 namespace RalseiMod.States.Ralsei.Weapon
 {
@@ -49,7 +50,8 @@ namespace RalseiMod.States.Ralsei.Weapon
             if (base.isAuthority)
             {
                 BulletAttack ba = GetBulletAttack();
-                ba.damageType = DamageType.WeakOnHit;
+                //ba.damageType = DamageType.CrippleOnHit;
+                ba.AddModdedDamageType(RalseiSurvivor.TangleOnHit);
                 ba.AddModdedDamageType(Ror2AggroTools.AggroToolsPlugin.AggroOnHit);
                 ba.Fire();
             }
