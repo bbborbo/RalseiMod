@@ -12,6 +12,7 @@ using RalseiMod.Achievements;
 using static RalseiMod.Modules.Language.Styling;
 using RalseiMod.Characters;
 using UnityEngine.AddressableAssets;
+using R2API;
 
 namespace RalseiMod.Survivors.Ralsei
 {
@@ -120,8 +121,10 @@ namespace RalseiMod.Survivors.Ralsei
 
             empowerEffectMaterial = UnityEngine.Object.Instantiate(Addressables.LoadAssetAsync<Material>("RoR2/Base/CritOnUse/matFullCrit.mat").WaitForCompletion());
 
-            empowerEffectMaterial.SetColor("_TintColor", new Color32(87, 63, 0, 191));
+            empowerEffectMaterial.SetColor("_TintColor", new Color32(150, 110, 0, 191));
             empowerEffectMaterial.SetTexture("_RemapTex", Addressables.LoadAssetAsync<Texture>("RoR2/Base/Common/ColorRamps/texRampBanditSplatter.png").WaitForCompletion());
+            LanguageAPI.Add(RALSEI_PREFIX + "EMPOWERED_MODIFIER", "Empowered {0}");
+
 
             HenryAssets.Init(assetBundle);
             HenryBuffs.Init(assetBundle);
@@ -198,7 +201,19 @@ namespace RalseiMod.Survivors.Ralsei
         {
             R2API.RecalculateStatsAPI.GetStatCoefficients += RecalculateStatsAPI_GetStatCoefficients;
             On.RoR2.CharacterModel.UpdateOverlays += EmpowerOverlay;
-            On.RoR2.CharacterBody.UpdateAllTemporaryVisualEffects += EmpowerVisualEffect;
+            //On.RoR2.CharacterBody.UpdateAllTemporaryVisualEffects += EmpowerVisualEffect;
+            On.RoR2.Util.GetBestBodyName += EmpowermentNameModifier;
+        }
+
+        private string EmpowermentNameModifier(On.RoR2.Util.orig_GetBestBodyName orig, GameObject bodyObject)
+        {
+            string name = orig(bodyObject);
+            CharacterBody body = bodyObject.GetComponent<CharacterBody>();
+            if(body && body.HasBuff(empowerBuff))
+            {
+                name = RoR2.Language.GetStringFormatted(RALSEI_PREFIX + "EMPOWERED_MODIFIER", name);
+            }
+            return name;
         }
 
         private void EmpowerOverlay(On.RoR2.CharacterModel.orig_UpdateOverlays orig, CharacterModel self)
@@ -342,6 +357,7 @@ namespace RalseiMod.Survivors.Ralsei
                 //args.armorAdd += 100 * empowerCount;
                 args.cooldownMultAdd *= Mathf.Pow(0.5f, empowerCount);
                 args.baseRegenAdd += 1 * (1 + 0.3f * (sender.level - 1));
+                args.armorAdd += 50 * empowerCount;
             }
         }
 

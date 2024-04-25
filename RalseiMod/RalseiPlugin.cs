@@ -91,7 +91,7 @@ namespace RalseiMod
             {
                 // 7.5 is the magic number to have all turrets on the teleporter platform
                 // needs to be slightly larger for the primordial telepot
-                float Radius = 7.5f;
+                float Radius = 8.5f;
                 float radianInc = Mathf.Deg2Rad * 360f / count;
                 Vector3 point1 = new Vector3(Mathf.Cos(radianInc * i) * Radius, 0.25f, Mathf.Sin(radianInc * i) * Radius);
 
