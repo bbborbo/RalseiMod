@@ -56,7 +56,7 @@ namespace RalseiMod.States.Ralsei.Weapon
                 ba.Fire();
             }
         }
-        public override void FireAttack(Hand hand)
+        public override void FireAttack()
         {
             float recoil = 1.2f / this.attackSpeedStat;
             base.AddRecoil(-recoil, -2f * recoil, -recoil, recoil);

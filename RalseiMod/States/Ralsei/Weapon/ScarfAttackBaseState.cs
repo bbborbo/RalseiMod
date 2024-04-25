@@ -18,12 +18,6 @@ namespace RalseiMod.States.Ralsei.Weapon
             step = i;
         }
         public abstract bool isComboFinisher { get; }
-        private Hand hand => (Hand)(this.step % 2);
-        public enum Hand
-        {
-            Left,
-            Right
-        }
         public override void OnSerialize(NetworkWriter writer)
         {
             base.OnSerialize(writer);
@@ -112,7 +106,7 @@ namespace RalseiMod.States.Ralsei.Weapon
                 FireAttackCombo();
                 return;
             }
-            FireAttack(hand);
+            FireAttack();
 
             if (base.isAuthority)
             {
@@ -121,7 +115,7 @@ namespace RalseiMod.States.Ralsei.Weapon
             }
         }
         public abstract void FireAttackCombo();
-        public abstract void FireAttack(Hand hand);
+        public abstract void FireAttack();
 
         public override InterruptPriority GetMinimumInterruptPriority()
         {

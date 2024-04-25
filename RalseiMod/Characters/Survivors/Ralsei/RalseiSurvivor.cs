@@ -14,6 +14,7 @@ using RalseiMod.Characters;
 using UnityEngine.AddressableAssets;
 using R2API;
 using static R2API.DamageAPI;
+using UnityEngine.Networking;
 
 namespace RalseiMod.Survivors.Ralsei
 {
@@ -63,12 +64,13 @@ namespace RalseiMod.Survivors.Ralsei
              + "< ! > Bomb can be used to wipe crowds with ease.";
         #endregion
         public static BuffDef empowerBuff;
-        public static Material empowerEffectMaterial;
+        public static Material empowerOverlayMaterial;
 
         public static ModdedDamageType TangleOnHit;
         public static BuffDef tangleDebuff;
         public static GameObject tangleTemporaryEffectPrefab;
-        public static Material tangleEffectMaterial = null;
+        public static Material tangleTemporaryEffectMaterial = null;
+        public static Material tangleOverlayMaterial;
 
         public static BuffDef sleepyDebuff;
         public override string bodyName => "RalseiBody"; 
@@ -150,12 +152,13 @@ namespace RalseiMod.Survivors.Ralsei
             tangleDebuff = Content.CreateAndAddBuff("RalseiTangle", null, Color.magenta, false, true);
 
             tangleTemporaryEffectPrefab = PrefabAPI.InstantiateClone(
-                Addressables.LoadAssetAsync<GameObject>("RoR2/Base/DeathMark/DeathMarkEffect.prefab").WaitForCompletion(), "TangleEffect");
-            TempVisualEffectAPI.AddTemporaryVisualEffect(tangleTemporaryEffectPrefab, condition => (condition.HasBuff(tangleDebuff) == true), true);
+                Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Common/CrippleEffect.prefab").WaitForCompletion(), "TangleEffect");
+            TempVisualEffectAPI.AddTemporaryVisualEffect(tangleTemporaryEffectPrefab, condition => (condition.HasBuff(tangleDebuff) == true), false);
 
-            tangleEffectMaterial = UnityEngine.Object.Instantiate(Addressables.LoadAssetAsync<Material>("RoR2/Base/DeathMark/matDeathMarkFire.mat").WaitForCompletion());
-            tangleEffectMaterial.SetColor("_TintColor", new Color32(155, 0, 172, 255));
-            tangleEffectMaterial.SetTexture("_RemapTex", Addressables.LoadAssetAsync<Texture>("RoR2/Base/Treebot/texTreebotRoot3Mask.png").WaitForCompletion());
+            tangleTemporaryEffectMaterial = UnityEngine.Object.Instantiate(Addressables.LoadAssetAsync<Material>("RoR2/Base/DeathMark/matDeathMarkFire.mat").WaitForCompletion());
+            tangleTemporaryEffectMaterial.SetColor("_TintColor", new Color32(155, 0, 172, 255));
+            tangleTemporaryEffectMaterial.SetTexture("_BaseTex", Addressables.LoadAssetAsync<Texture>("RoR2/Base/Treebot/texTreebotRoot3Mask.png").WaitForCompletion());
+            tangleTemporaryEffectMaterial.SetTexture("_RemapTex", Addressables.LoadAssetAsync<Texture>("RoR2/Base/Common/ColorRamps/texRampTritoneSmoothed.png").WaitForCompletion());
 
             Renderer[] renderers = tangleTemporaryEffectPrefab.GetComponentsInChildren<Renderer>();
             foreach (Renderer renderer in renderers)
@@ -164,16 +167,34 @@ namespace RalseiMod.Survivors.Ralsei
 
                 if (string.Equals(renderer.name, "Mesh"))
                 {
-                    renderer.material = tangleEffectMaterial;
+                    renderer.material = tangleTemporaryEffectMaterial;
+                }
+            }
+            ParticleSystem[] particles = tangleTemporaryEffectPrefab.GetComponentsInChildren<ParticleSystem>();
+            foreach (ParticleSystem particleSystem in particles)
+            {
+                if(string.Equals(particleSystem.name, "Rings"))
+                {
+                    var main = particleSystem.main;
+                    main.startColor = new Color(.61f, 0, .68f, 255); 
+                }
+                else
+                {
+                    GameObject.Destroy(particleSystem.gameObject);
                 }
             }
 
+            tangleOverlayMaterial = UnityEngine.Object.Instantiate(Addressables.LoadAssetAsync<Material>("RoR2/Base/CritOnUse/matFullCrit.mat"/*"RoR2/Base/Treebot/matWeakEffect.mat"*/).WaitForCompletion());
+            tangleOverlayMaterial.SetColor("_TintColor", new Color32(20, 0, 30, 110));
+            tangleOverlayMaterial.SetTexture("_RemapTex", Addressables.LoadAssetAsync<Texture>("RoR2/DLC1/Common/ColorRamps/texRampConstructLaserTypeB.png").WaitForCompletion());
+
+
             empowerBuff = Content.CreateAndAddBuff("RalseiEmpower", null, Color.yellow, true, false);
 
-            empowerEffectMaterial = UnityEngine.Object.Instantiate(Addressables.LoadAssetAsync<Material>("RoR2/Base/CritOnUse/matFullCrit.mat").WaitForCompletion());
+            empowerOverlayMaterial = UnityEngine.Object.Instantiate(Addressables.LoadAssetAsync<Material>("RoR2/Base/CritOnUse/matFullCrit.mat").WaitForCompletion());
 
-            empowerEffectMaterial.SetColor("_TintColor", new Color32(150, 110, 0, 191));
-            empowerEffectMaterial.SetTexture("_RemapTex", Addressables.LoadAssetAsync<Texture>("RoR2/Base/Common/ColorRamps/texRampBanditSplatter.png").WaitForCompletion());
+            empowerOverlayMaterial.SetColor("_TintColor", new Color32(150, 110, 0, 191));
+            empowerOverlayMaterial.SetTexture("_RemapTex", Addressables.LoadAssetAsync<Texture>("RoR2/Base/Common/ColorRamps/texRampBanditSplatter.png").WaitForCompletion());
             LanguageAPI.Add(RALSEI_PREFIX + "EMPOWERED_MODIFIER", "Empowered {0}");
 
 
@@ -263,6 +284,9 @@ namespace RalseiMod.Survivors.Ralsei
         {
             orig(self, damageInfo, victim);
 
+            if (!NetworkServer.active)
+                return;
+
             if (!damageInfo.rejected && damageInfo.procCoefficient > 0 && damageInfo.HasModdedDamageType(TangleOnHit))
             {
                 if (victim != null && damageInfo.attacker != null)
@@ -271,7 +295,7 @@ namespace RalseiMod.Survivors.Ralsei
                     CharacterBody vBody = victim.GetComponent<CharacterBody>();
                     if (aBody != null && vBody != null && vBody.healthComponent.alive)
                     {
-                        vBody.AddBuff(tangleDebuff);
+                        vBody.AddTimedBuff(tangleDebuff.buffIndex, 5f);
                         if(aBody.bodyIndex == BodyCatalog.FindBodyIndex(RalseiSurvivor.instance.bodyName))
                         {
 
@@ -300,7 +324,8 @@ namespace RalseiMod.Survivors.Ralsei
                 return;
             }
 
-            AddOverlay(empowerEffectMaterial, self.body.HasBuff(empowerBuff));
+            AddOverlay(empowerOverlayMaterial, self.body.HasBuff(empowerBuff));
+            AddOverlay(tangleOverlayMaterial, self.body.HasBuff(tangleDebuff));
 
             void AddOverlay(Material overlayMaterial, bool condition)
             {

@@ -214,6 +214,7 @@ namespace RalseiMod.States.Ralsei.Weapon
 			CharacterBody body = minionMaster.GetBody();
 			if ((bool)body)
 			{
+				body.master.isBoss = false;
 				EntityStateMachine[] components = body.GetComponents<EntityStateMachine>();
 				foreach (EntityStateMachine obj2 in components)
 				{
@@ -238,6 +239,8 @@ namespace RalseiMod.States.Ralsei.Weapon
 
 			//debuffs, buffs, cooldowns, dots, stuns, projectiles
 			Util.CleanseBody(victimBody, true, false, true, true, false, false);
+			victimBody.master.isBoss = false;
+
 			if(victimBody.inventory.GetItemCount(RoR2Content.Items.InvadingDoppelganger) > 0)
 				victimBody.inventory.RemoveItem(RoR2Content.Items.InvadingDoppelganger);
 

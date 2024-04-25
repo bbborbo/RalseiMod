@@ -18,12 +18,14 @@ namespace RalseiMod.States.Ralsei
             base.OnEnter();
             Aggro.ShedAggroFromCharacter(characterBody);
             base.skillLocator.utility.SetSkillOverride(this, CancelHoverSkill.instance.SkillDef, RoR2.GenericSkill.SkillOverridePriority.Contextual);
-            characterBody.AddBuff(LiftPrayer.hoverBuff);
-
-            base.characterMotor.onHitGroundAuthority += this.CharacterMotor_onHitGround;
+            if (base.isAuthority)
+            {
+                characterBody.AddBuff(LiftPrayer.hoverBuff);
+                base.characterMotor.onHitGroundAuthority += this.CharacterMotor_onHitGroundAuthority;
+            }
         }
 
-        private void CharacterMotor_onHitGround(ref CharacterMotor.HitGroundInfo hitGroundInfo)
+        private void CharacterMotor_onHitGroundAuthority(ref CharacterMotor.HitGroundInfo hitGroundInfo)
         {
             this.outer.SetNextStateToMain();
         }
@@ -52,9 +54,11 @@ namespace RalseiMod.States.Ralsei
         {
             base.OnExit();
             base.skillLocator.utility.UnsetSkillOverride(this, CancelHoverSkill.instance.SkillDef, RoR2.GenericSkill.SkillOverridePriority.Contextual);
-            characterBody.RemoveBuff(LiftPrayer.hoverBuff);
-
-            base.characterMotor.onHitGroundAuthority -= this.CharacterMotor_onHitGround;
+            if (base.isAuthority)
+            {
+                characterBody.RemoveBuff(LiftPrayer.hoverBuff);
+                base.characterMotor.onHitGroundAuthority -= this.CharacterMotor_onHitGroundAuthority;
+            }
         }
         public override InterruptPriority GetMinimumInterruptPriority()
         {
