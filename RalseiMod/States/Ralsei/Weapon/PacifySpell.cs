@@ -16,11 +16,13 @@ namespace RalseiMod.States.Ralsei.Weapon
 {
     class PacifySpell : EmpowerSpellBaseState
     {
-        public override float maxHealthValue => 0.5f;
+        public override float maxHealthFraction => 0.5f;
 
         public override bool useFriendlyTeam => false;
 
-        public override bool CastToTargetAuthority(HurtBox hurtBox)
+        public override GameObject indicatorPrefab => LegacyResourcesAPI.Load<GameObject>("Prefabs/WoodSpriteIndicator");
+
+        public override bool CastToTargetServer(HurtBox hurtBox)
         {
 			if (!hurtBox)
 				return false;

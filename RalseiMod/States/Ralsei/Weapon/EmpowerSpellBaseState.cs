@@ -7,18 +7,19 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace RalseiMod.States.Ralsei.Weapon
 {
     public abstract class EmpowerSpellBaseState : BaseSkillState
 	{
 		Animator animator;
-		public abstract float maxHealthValue { get; }
+		public abstract float maxHealthFraction { get; }
 		public abstract bool useFriendlyTeam { get; }
+		public abstract GameObject indicatorPrefab { get; }
 
 		public static float stackInterval = 0.125f;
 		public static GameObject crosshairOverridePrefab = Paint.crosshairOverridePrefab;
-		public static GameObject stickyTargetIndicatorPrefab = Paint.stickyTargetIndicatorPrefab;
 		public static string enterSoundString = Paint.enterSoundString;
 		public static string exitSoundString = Paint.exitSoundString;
 		public static string loopSoundString = Paint.loopSoundString;
@@ -28,75 +29,121 @@ namespace RalseiMod.States.Ralsei.Weapon
 		public static float maxDistance = Paint.maxDistance;
 
 		private HurtBox currentTarget;
-		private EmpowerSpellBaseState.IndicatorInfo currentTargetIndicator;
-		private Indicator stickyTargetIndicator;
+		private Indicator targetIndicator;
 
 		private SkillDef confirmTargetDummySkillDef;
 		private SkillDef cancelTargetingDummySkillDef;
 
-		private bool releasedKeyOnce;
 		private float stackStopwatch;
 		private CrosshairUtils.OverrideRequest crosshairOverrideRequest;
-		private BullseyeSearch search;
+		private BullseyeSearch targetFinder;
 		private bool queuedFiringState;
 		private uint loopSoundID;
-		private HealthComponent previousHighlightTargetHealthComponent;
-		private HurtBox previousHighlightTargetHurtBox;
+
+		bool releasedKeyOnce = false;
 
 		public override void OnEnter()
-		{
-			base.OnEnter();
+        {
+            base.OnEnter();
 
-			if (base.isAuthority)
-			{
-				//initialize targeting on authority
-				this.stickyTargetIndicator = new Indicator(base.gameObject, EmpowerSpellBaseState.stickyTargetIndicatorPrefab);
-				this.search = new BullseyeSearch();
+            this.targetFinder = new BullseyeSearch();
+            ConfigureTargetFinder();
+
+            //play animations/sounds
+            animator = GetModelAnimator();
+            PlayAnimation("Gesture, Override", "PrepareSpellEntry", "SpellSecondary.playbackRate", 0.5f / attackSpeedStat);
+            animator.SetBool("spellReady", true);
+
+            Util.PlaySound(EmpowerSpellBaseState.enterSoundString, base.gameObject);
+            this.loopSoundID = Util.PlaySound(EmpowerSpellBaseState.loopSoundString, base.gameObject);
+
+            //set crosshair
+            if (EmpowerSpellBaseState.crosshairOverridePrefab)
+            {
+                this.crosshairOverrideRequest = CrosshairUtils.RequestOverrideForBody(base.characterBody, 
+					EmpowerSpellBaseState.crosshairOverridePrefab, CrosshairUtils.OverridePriority.Skill);
 			}
-
-			//play animations/sounds
-			animator = GetModelAnimator();
-			PlayAnimation("Gesture, Override", "PrepareSpellEntry", "SpellSecondary.playbackRate", 0.5f / attackSpeedStat);
-			animator.SetBool("spellReady", true);
-			Util.PlaySound(EmpowerSpellBaseState.enterSoundString, base.gameObject);
-			this.loopSoundID = Util.PlaySound(EmpowerSpellBaseState.loopSoundString, base.gameObject);
-
-			//set crosshair
-			if (EmpowerSpellBaseState.crosshairOverridePrefab)
-			{
-				this.crosshairOverrideRequest = CrosshairUtils.RequestOverrideForBody(base.characterBody, EmpowerSpellBaseState.crosshairOverridePrefab, CrosshairUtils.OverridePriority.Skill);
-			}
+			this.targetIndicator = new Indicator(base.gameObject, indicatorPrefab);
 
 			//set skill overrides (these skills dont have an activation state, they just stop the original skills from being used temporarily)
 			this.confirmTargetDummySkillDef = SkillCatalog.GetSkillDef(SkillCatalog.FindSkillIndexByName("EngiConfirmTargetDummy"));
-			this.cancelTargetingDummySkillDef = SkillCatalog.GetSkillDef(SkillCatalog.FindSkillIndexByName("EngiCancelTargetingDummy"));
-			base.skillLocator.primary.SetSkillOverride(this, this.confirmTargetDummySkillDef, GenericSkill.SkillOverridePriority.Contextual);
-			base.skillLocator.secondary.SetSkillOverride(this, this.cancelTargetingDummySkillDef, GenericSkill.SkillOverridePriority.Contextual);
+            this.cancelTargetingDummySkillDef = SkillCatalog.GetSkillDef(SkillCatalog.FindSkillIndexByName("EngiCancelTargetingDummy"));
+            base.skillLocator.primary.SetSkillOverride(this, this.confirmTargetDummySkillDef, GenericSkill.SkillOverridePriority.Contextual);
+            base.skillLocator.secondary.SetSkillOverride(this, this.cancelTargetingDummySkillDef, GenericSkill.SkillOverridePriority.Contextual);
+        }
+
+        private void ConfigureTargetFinder()
+        {
+            this.targetFinder.filterByDistinctEntity = true;
+            this.targetFinder.filterByLoS = true;
+            this.targetFinder.minDistanceFilter = 0f;
+            this.targetFinder.maxDistanceFilter = EmpowerSpellBaseState.maxDistance;
+            this.targetFinder.minAngleFilter = 0f;
+            this.targetFinder.maxAngleFilter = EmpowerSpellBaseState.maxAngle;
+            this.targetFinder.viewer = base.characterBody;
+            this.targetFinder.sortMode = BullseyeSearch.SortMode.DistanceAndAngle;
+
+			if (useFriendlyTeam)
+			{
+				this.targetFinder.teamMaskFilter = TeamMask.none;
+				this.targetFinder.teamMaskFilter.AddTeam(base.GetTeam());
+			}
+			else
+			{
+				this.targetFinder.teamMaskFilter = TeamMask.GetUnprotectedTeams(base.GetTeam());
+			}
+        }
+
+        private HurtBox GetCurrentTargetInfo()
+		{
+			Ray aimRay = base.GetAimRay();
+			this.targetFinder.searchOrigin = aimRay.origin;
+			this.targetFinder.searchDirection = aimRay.direction;
+			this.targetFinder.RefreshCandidates();
+			this.targetFinder.FilterOutGameObject(base.gameObject);
+
+			using (IEnumerator<HurtBox> enumerator = this.targetFinder.GetResults().GetEnumerator())
+			{
+				while (enumerator.MoveNext())
+				{
+					HurtBox hurtBox = enumerator.Current;
+					HealthComponent hc = hurtBox.healthComponent;
+					if (hc && hc.alive && hc.combinedHealthFraction <= maxHealthFraction && hc.body.master)
+					{
+						return hurtBox;
+					}
+				}
+			}
+			return null;
 		}
 
 		public override void OnExit()
 		{
+			//play sounds/animations
 			animator.SetBool("spellReady", false);
-			if (base.isAuthority && !this.outer.destroying)
+			Util.PlaySound(EmpowerSpellBaseState.exitSoundString, base.gameObject);
+			Util.PlaySound(EmpowerSpellBaseState.stopLoopSoundString, base.gameObject);
+
+			if (this.queuedFiringState)
 			{
-				if(!this.queuedFiringState)
+				PlayAnimation("Gesture, Override", "CastSpellSpecial", "SpellSpecial.playbackRate", 1f / attackSpeedStat);
+				if (NetworkServer.active)
 				{
+					CastToTargetServer(currentTarget);
+				}
+            }
+            else
+			{
+				PlayCrossfade("Gesture, Override", "PrepareSpellCancel", "SpellSpecial.playbackRate", 0.73f / attackSpeedStat, 0.1f / attackSpeedStat);
+				if (base.isAuthority && !this.outer.destroying)
+				{
+					//this needs to be in OnExit in case the skill is canceled by sprinting
 					base.activatorSkillSlot.ApplyAmmoPack();
 				}
 			}
 			//unset skill overrides
 			base.skillLocator.secondary.UnsetSkillOverride(this, this.cancelTargetingDummySkillDef, GenericSkill.SkillOverridePriority.Contextual);
 			base.skillLocator.primary.UnsetSkillOverride(this, this.confirmTargetDummySkillDef, GenericSkill.SkillOverridePriority.Contextual);
-
-			//disable target indicators
-			if (currentTargetIndicator.indicator != null)
-			{
-				currentTargetIndicator.indicator.active = false;
-			}
-			if (this.stickyTargetIndicator != null)
-			{
-				this.stickyTargetIndicator.active = false;
-			}
 
 			//disable crosshair override
 			CrosshairUtils.OverrideRequest overrideRequest = this.crosshairOverrideRequest;
@@ -105,144 +152,92 @@ namespace RalseiMod.States.Ralsei.Weapon
 				overrideRequest.Dispose();
 			}
 
-			//play sounds/aniamtions
-			//base.PlayCrossfade("Gesture, Additive", "ExitHarpoons", 0.1f);
-			Util.PlaySound(EmpowerSpellBaseState.exitSoundString, base.gameObject);
-			Util.PlaySound(EmpowerSpellBaseState.stopLoopSoundString, base.gameObject);
+			//unset the target, clearing the indicator
+			SetTarget(null);
+
 			base.OnExit();
 		}
 
-		private void AddTargetAuthority(HurtBox hurtBox)
-		{
-			//if an enemy is already targeted, dont re-add them (this is unique from thermal harpoons targeting)
-			if (currentTarget == hurtBox)
-			{
-				return;
-			}
-
-			//create new indicator info
-			EmpowerSpellBaseState.IndicatorInfo indicatorInfo = new EmpowerSpellBaseState.IndicatorInfo
-			{
-				indicator = new EmpowerSpellBaseState.RalseiEmpowerIndicator(base.gameObject, LegacyResourcesAPI.Load<GameObject>("Prefabs/EngiMissileTrackingIndicator"))
-			};
-			indicatorInfo.indicator.targetTransform = hurtBox.transform;
-			indicatorInfo.indicator.active = true;
-
-			currentTargetIndicator = indicatorInfo;
-			currentTarget = hurtBox;
-			Util.PlaySound(EmpowerSpellBaseState.lockOnSoundString, base.gameObject);
-		}
-
-		public abstract bool CastToTargetAuthority(HurtBox hurtBox);
+		public abstract bool CastToTargetServer(HurtBox hurtBox);
 
 		public override void FixedUpdate()
 		{
 			base.FixedUpdate();
-			base.characterBody.SetAimTimer(3f);
 			if (base.isAuthority)
 			{
 				this.AuthorityFixedUpdate();
 			}
 		}
+        public override void Update()
+        {
+            base.Update();
 
-		private void AuthorityFixedUpdate()
-		{
-			HurtBox hurtBox;
-			HealthComponent y;
-			this.GetCurrentTargetInfo(out hurtBox, out y);
+            SetTarget(GetCurrentTargetInfo());
 
-			//while a hurtbox is targeted
-			if (hurtBox)
+			return;
+            if (base.isAuthority && currentTarget != null && base.inputBank.skill1.justReleased)
 			{
-				this.stackStopwatch += Time.fixedDeltaTime;
+				//CastToTargetServer(currentTarget);
+				this.queuedFiringState = true;
+                this.outer.SetNextStateToMain();
+            }
+        }
 
-				//if primary is being held down, and the stack timer is big enough, or primary was just pressed, add the target
-				if (base.inputBank.skill1.down && this.stackStopwatch >= EmpowerSpellBaseState.stackInterval)
-				{
-					this.stackStopwatch = 0f;
-					this.AddTargetAuthority(hurtBox);
-				}
+        private void SetTarget(HurtBox hb)
+        {
+            if (currentTarget != hb)
+            {
+                currentTarget = hb;
+
+                bool targetAvailable = (currentTarget != null);
+                this.targetIndicator.active = targetAvailable;
+                this.targetIndicator.targetTransform = targetAvailable ? currentTarget.transform : null;
+                if (hb != null)
+                    Util.PlaySound(EmpowerSpellBaseState.lockOnSoundString, base.gameObject);
+            }
+        }
+
+        private void AuthorityFixedUpdate()
+		{
+			bool skill1Released = base.inputBank.skill1.justReleased;
+			bool skill2Released = base.inputBank.skill2.justReleased;
+			bool skill4Released = base.inputBank.skill4.justReleased;
+
+			bool tryFiring = false;
+			//release primary to start firing
+			if (skill1Released)
+			{
+				tryFiring = true;
+			}
+			//release special to start firing. the first release must be ignored, otherwise the state will end instantly after pressing the special button to enter
+			if (skill4Released)
+            {
+				if(releasedKeyOnce)
+					tryFiring = true;
+
+				releasedKeyOnce = true;
+            }
+
+			//if a valid primary or special input was made, and the caster has a target, then cast the spell and exit
+			if (tryFiring && currentTarget != null)
+			{
+				//CastToTargetServer(currentTarget);
+				this.queuedFiringState = true;
+				this.outer.SetNextStateToMain();
+				return;
 			}
 
-			//release primary to start firing
-			bool m1Released = base.inputBank.skill1.justReleased;
-            if (m1Released && currentTarget)
+			//if a fire attempt failed, or if m2 was pressed, then cancel the spell and exit
+			if (tryFiring || skill2Released)
 			{
 				this.queuedFiringState = true;
-				CastToTargetAuthority(currentTarget);
-				PlayAnimation("Gesture, Override", "CastSpellSpecial", "SpellSpecial.playbackRate", 1f / attackSpeedStat);
 				this.outer.SetNextStateToMain();
-				return;
 			}
-			//cancel target mode immediately - not setting targetModeEnding means it will clear all targets and refund stock
-			if (base.inputBank.skill2.justReleased /*|| base.inputBank.skill4.justReleased*/)
-			{
-				PlayAnimation("Gesture, Override", "PrepareSpellCancel", "SpellSpecial.playbackRate", 0.73f / attackSpeedStat);
-				this.outer.SetNextStateToMain();
-				return;
-			}
-
-			if (hurtBox != this.previousHighlightTargetHurtBox)
-			{
-				this.previousHighlightTargetHurtBox = hurtBox;
-				this.previousHighlightTargetHealthComponent = y;
-				this.stickyTargetIndicator.targetTransform = hurtBox.transform;
-			}
-			this.stickyTargetIndicator.active = this.stickyTargetIndicator.targetTransform;
-		}
-
-		private void GetCurrentTargetInfo(out HurtBox currentTargetHurtBox, out HealthComponent currentTargetHealthComponent)
-		{
-			Ray aimRay = base.GetAimRay();
-			this.search.filterByDistinctEntity = true;
-			this.search.filterByLoS = true;
-			this.search.minDistanceFilter = 0f;
-			this.search.maxDistanceFilter = EmpowerSpellBaseState.maxDistance;
-			this.search.minAngleFilter = 0f;
-			this.search.maxAngleFilter = EmpowerSpellBaseState.maxAngle;
-			this.search.viewer = base.characterBody;
-			this.search.searchOrigin = aimRay.origin;
-			this.search.searchDirection = aimRay.direction;
-			this.search.sortMode = BullseyeSearch.SortMode.DistanceAndAngle;
-			TeamMask friendly = new TeamMask();
-			friendly.AddTeam(base.GetTeam());
-			this.search.teamMaskFilter = useFriendlyTeam ? friendly : TeamMask.GetUnprotectedTeams(base.GetTeam());
-			this.search.RefreshCandidates();
-			this.search.FilterOutGameObject(base.gameObject);
-			foreach (HurtBox hurtBox in this.search.GetResults())
-			{
-				HealthComponent hc = hurtBox.healthComponent;
-				if (hc && hc.alive && hc.combinedHealthFraction <= 0.5f && hc.body.master)
-				{
-					currentTargetHurtBox = hurtBox;
-					currentTargetHealthComponent = hurtBox.healthComponent;
-					return;
-				}
-			}
-			currentTargetHurtBox = null;
-			currentTargetHealthComponent = null;
 		}
 
         public override InterruptPriority GetMinimumInterruptPriority()
         {
             return InterruptPriority.Pain;
         }
-
-        private struct IndicatorInfo
-		{
-			public EmpowerSpellBaseState.RalseiEmpowerIndicator indicator;
-		}
-
-		private class RalseiEmpowerIndicator : Indicator
-		{
-			public override void UpdateVisualizer()
-			{
-				base.UpdateVisualizer();
-			}
-
-			public RalseiEmpowerIndicator(GameObject owner, GameObject visualizerPrefab) : base(owner, visualizerPrefab)
-			{
-			}
-		}
 	}
 }

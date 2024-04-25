@@ -37,6 +37,7 @@ namespace RalseiMod.States.Ralsei.Weapon
         public override void FixedUpdate()
         {
             base.FixedUpdate();
+            base.characterBody.SetAimTimer(3f);
         }
         public override void OnExit()
         {

@@ -208,7 +208,7 @@ namespace RalseiMod.Survivors.Ralsei
         private string EmpowermentNameModifier(On.RoR2.Util.orig_GetBestBodyName orig, GameObject bodyObject)
         {
             string name = orig(bodyObject);
-            CharacterBody body = bodyObject.GetComponent<CharacterBody>();
+            CharacterBody body = bodyObject?.GetComponent<CharacterBody>();
             if(body && body.HasBuff(empowerBuff))
             {
                 name = RoR2.Language.GetStringFormatted(RALSEI_PREFIX + "EMPOWERED_MODIFIER", name);
