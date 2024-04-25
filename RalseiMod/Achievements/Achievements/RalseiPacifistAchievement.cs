@@ -1,4 +1,5 @@
-﻿using RalseiMod.Survivors.Ralsei;
+﻿using RalseiMod.States.Ralsei.Weapon;
+using RalseiMod.Survivors.Ralsei;
 using RoR2;
 using RoR2.Achievements;
 using System;
@@ -33,7 +34,8 @@ namespace RalseiMod.Achievements
 
         private void KillCheck(On.RoR2.GlobalEventManager.orig_OnCharacterDeath orig, GlobalEventManager self, DamageReport damageReport)
         {
-            if (damageReport.attackerBodyIndex == LookUpRequiredBodyIndex() && damageReport.attackerTeamIndex == TeamIndex.Player && !damageReport.victimBody.isBoss)
+            if (damageReport.attackerBodyIndex == LookUpRequiredBodyIndex() && damageReport.attackerTeamIndex == TeamIndex.Player 
+                && CastPacifySpell.CanCharacterBePacified(damageReport.victimBody))
             {
                 if (killCount == 0)
                 {
@@ -44,20 +46,6 @@ namespace RalseiMod.Achievements
                 ++killCount;
             }
             orig(self, damageReport);
-        }
-
-        private void SkillCheck(On.RoR2.CharacterBody.orig_OnSkillActivated orig, CharacterBody self, GenericSkill skill)
-        {
-            if (self.bodyIndex == LookUpRequiredBodyIndex() && self.teamComponent.teamIndex == TeamIndex.Player && skill != self.skillLocator.special)
-            {
-                if (killCount == 0)
-                {
-                    Log.Debug("DEBUG: Lazy Bastard challenge failed.");
-                    /*if (Base.AnnounceWhenFail.Value)*/ Chat.AddMessage("Pacifist challenge failed!");
-                }
-                ++killCount;
-            }
-            orig(self, skill);
         }
 
         private void ResetKillCount(Run obj) => killCount = 0;

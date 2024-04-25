@@ -58,7 +58,7 @@ namespace RalseiMod.Skills
 
         public override Sprite Icon => LoadSpriteFromRorSkill("RoR2/Base/Heretic/HereticDefaultAbility.asset");
 
-        public override Type ActivationState => typeof(PacifySpell);
+        public override Type ActivationState => typeof(PreparePacifySpell);
 
         public override Type BaseSkillDef => typeof(SkillDef);
 
@@ -81,6 +81,7 @@ namespace RalseiMod.Skills
         public override void Init()
         {
             base.Init();
+            Content.AddEntityState(typeof(CastPacifySpell));
 
             spareBuff = ScriptableObject.CreateInstance<BuffDef>();
             spareBuff.name = "SpareBuff";

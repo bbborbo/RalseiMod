@@ -28,7 +28,7 @@ namespace RalseiMod.States.Ralsei.Weapon
 		public static float maxAngle = Paint.maxAngle * 0.75f;
 		public static float maxDistance = Paint.maxDistance;
 
-		private HurtBox currentTarget;
+		internal HurtBox currentTarget;
 		private Indicator targetIndicator;
 
 		private SkillDef confirmTargetDummySkillDef;
@@ -119,28 +119,19 @@ namespace RalseiMod.States.Ralsei.Weapon
 
 		public override void OnExit()
 		{
+			if (base.isAuthority && !this.outer.destroying && !queuedFiringState)
+			{
+				//this needs to be in OnExit in case the skill is canceled by sprinting
+				base.activatorSkillSlot.ApplyAmmoPack();
+			}
+
 			//play sounds/animations
-			animator.SetBool("spellReady", false);
 			Util.PlaySound(EmpowerSpellBaseState.exitSoundString, base.gameObject);
 			Util.PlaySound(EmpowerSpellBaseState.stopLoopSoundString, base.gameObject);
 
-			if (this.queuedFiringState)
-			{
-				PlayAnimation("Gesture, Override", "CastSpellSpecial", "SpellSpecial.playbackRate", 1f / attackSpeedStat);
-				if (NetworkServer.active)
-				{
-					CastToTargetServer(currentTarget);
-				}
-            }
-            else
-			{
-				PlayCrossfade("Gesture, Override", "PrepareSpellCancel", "SpellSpecial.playbackRate", 0.73f / attackSpeedStat, 0.1f / attackSpeedStat);
-				if (base.isAuthority && !this.outer.destroying)
-				{
-					//this needs to be in OnExit in case the skill is canceled by sprinting
-					base.activatorSkillSlot.ApplyAmmoPack();
-				}
-			}
+			animator.SetBool("spellReady", false);
+			PlayCrossfade("Gesture, Override", "PrepareSpellCancel", "SpellSpecial.playbackRate", 0.73f / attackSpeedStat, 0.1f / attackSpeedStat);
+
 			//unset skill overrides
 			base.skillLocator.secondary.UnsetSkillOverride(this, this.cancelTargetingDummySkillDef, GenericSkill.SkillOverridePriority.Contextual);
 			base.skillLocator.primary.UnsetSkillOverride(this, this.confirmTargetDummySkillDef, GenericSkill.SkillOverridePriority.Contextual);
@@ -158,14 +149,43 @@ namespace RalseiMod.States.Ralsei.Weapon
 			base.OnExit();
 		}
 
-		public abstract bool CastToTargetServer(HurtBox hurtBox);
-
 		public override void FixedUpdate()
 		{
 			base.FixedUpdate();
 			if (base.isAuthority)
 			{
-				this.AuthorityFixedUpdate();
+				bool skill1Released = base.inputBank.skill1.justReleased;
+				bool skill2Released = base.inputBank.skill2.justReleased;
+				bool skill4Released = base.inputBank.skill4.justReleased;
+
+				bool tryFiring = false;
+				//release primary to start firing
+				if (skill1Released)
+				{
+					tryFiring = true;
+				}
+				//release special to start firing. the first release must be ignored, otherwise the state will end instantly after pressing the special button to enter
+				if (skill4Released)
+				{
+					if (releasedKeyOnce)
+						tryFiring = true;
+					releasedKeyOnce = true;
+				}
+
+				//if a valid primary or special input was made, and the caster has a target, then cast the spell and exit
+				if (tryFiring && currentTarget != null)
+				{
+					this.queuedFiringState = true;
+					this.outer.SetNextState(GetNextState());
+					return;
+				}
+
+				//if a fire attempt failed, or if m2 was pressed, then cancel the spell and exit
+				if (tryFiring || skill2Released)
+				{
+					this.queuedFiringState = false;
+					this.outer.SetNextStateToMain();
+				}
 			}
 		}
         public override void Update()
@@ -173,14 +193,6 @@ namespace RalseiMod.States.Ralsei.Weapon
             base.Update();
 
             SetTarget(GetCurrentTargetInfo());
-
-			return;
-            if (base.isAuthority && currentTarget != null && base.inputBank.skill1.justReleased)
-			{
-				//CastToTargetServer(currentTarget);
-				this.queuedFiringState = true;
-                this.outer.SetNextStateToMain();
-            }
         }
 
         private void SetTarget(HurtBox hb)
@@ -197,43 +209,7 @@ namespace RalseiMod.States.Ralsei.Weapon
             }
         }
 
-        private void AuthorityFixedUpdate()
-		{
-			bool skill1Released = base.inputBank.skill1.justReleased;
-			bool skill2Released = base.inputBank.skill2.justReleased;
-			bool skill4Released = base.inputBank.skill4.justReleased;
-
-			bool tryFiring = false;
-			//release primary to start firing
-			if (skill1Released)
-			{
-				tryFiring = true;
-			}
-			//release special to start firing. the first release must be ignored, otherwise the state will end instantly after pressing the special button to enter
-			if (skill4Released)
-            {
-				if(releasedKeyOnce)
-					tryFiring = true;
-
-				releasedKeyOnce = true;
-            }
-
-			//if a valid primary or special input was made, and the caster has a target, then cast the spell and exit
-			if (tryFiring && currentTarget != null)
-			{
-				//CastToTargetServer(currentTarget);
-				this.queuedFiringState = true;
-				this.outer.SetNextStateToMain();
-				return;
-			}
-
-			//if a fire attempt failed, or if m2 was pressed, then cancel the spell and exit
-			if (tryFiring || skill2Released)
-			{
-				this.queuedFiringState = true;
-				this.outer.SetNextStateToMain();
-			}
-		}
+		public abstract EntityState GetNextState();
 
         public override InterruptPriority GetMinimumInterruptPriority()
         {

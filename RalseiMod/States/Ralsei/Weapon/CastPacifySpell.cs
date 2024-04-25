@@ -1,4 +1,5 @@
-﻿using EntityStates.Bandit2;
+﻿using EntityStates;
+using EntityStates.Bandit2;
 using RalseiMod.Skills;
 using RalseiMod.Survivors.Ralsei;
 using RalseiMod.Survivors.Ralsei.Components;
@@ -11,19 +12,70 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Networking;
 
 namespace RalseiMod.States.Ralsei.Weapon
 {
-    class PacifySpell : EmpowerSpellBaseState
+    class CastPacifySpell : BaseSkillState
     {
-        public override float maxHealthFraction => 0.5f;
-
-        public override bool useFriendlyTeam => false;
-
-        public override GameObject indicatorPrefab => LegacyResourcesAPI.Load<GameObject>("Prefabs/WoodSpriteIndicator");
-
-        public override bool CastToTargetServer(HurtBox hurtBox)
+		public static List<string> pacifyBodyNameWhitelist = new List<string>() { "UNIDENTIFIED", "AFFIXEARTH_HEALER_BODY_NAME" };
+		public static bool CanTargetBePacified(HurtBox hurtBox)
         {
+			return CanCharacterBePacified(hurtBox.healthComponent?.body);
+        }
+        public static bool CanCharacterBePacified(CharacterBody body)
+		{
+			//null check for arbitration purposes (specifically for the unlock)
+			if (body == null || body.bodyFlags.HasFlag(CharacterBody.BodyFlags.Masterless))
+				return false;
+
+			//whitelisted bodies
+			if (pacifyBodyNameWhitelist.Contains(body.baseNameToken))
+				return false;
+
+			//players should not be pacifiable under any circumstance
+			if (body.isPlayerControlled)
+				return false;
+
+			//umbras get an exception to the no-boss rule because its cool
+			if (body.inventory?.GetItemCount(RoR2Content.Items.InvadingDoppelganger) > 0)
+				return true;
+
+			//bosses are not pacifiable
+			if (body.isBoss)
+				return false;
+
+			//if this body is somehow not a boss or a player but is still immune to executes, they shouldnt be pacifiable either
+			if (body.bodyFlags.HasFlag(CharacterBody.BodyFlags.ImmuneToExecutes))
+				return false;
+
+			//if it passes all other checks, its pacifiable
+			return true;
+		}
+
+		public HurtBox target;
+		public float baseDuration = 1;
+		float duration;
+		public override void OnEnter()
+        {
+			duration = baseDuration / attackSpeedStat;
+			PlayAnimation("Gesture, Override", "CastSpellSpecial", "SpellSpecial.playbackRate", duration);
+			CastToTargetServer(target);
+
+			base.OnEnter();
+		}
+        public override void FixedUpdate()
+        {
+            base.FixedUpdate();
+			if(base.fixedAge > duration && base.isAuthority)
+            {
+				outer.SetNextStateToMain();
+            }
+        }
+        public bool CastToTargetServer(HurtBox hurtBox)
+        {
+			if (!NetworkServer.active)
+				return false;
 			if (!hurtBox)
 				return false;
 			HealthComponent victimHealthComponent = hurtBox.healthComponent;
@@ -40,8 +92,7 @@ namespace RalseiMod.States.Ralsei.Weapon
 
 				//if the victim is not a boss OR, if they are a boss and they have the umbra item
 				//and also require that the victim be not player controlled or immune to executes
-				if ((!victimBody.isBoss && !victimBody.isPlayerControlled && !victimBody.bodyFlags.HasFlag(CharacterBody.BodyFlags.ImmuneToExecutes))
-					|| victimBody.inventory?.GetItemCount(RoR2Content.Items.InvadingDoppelganger) > 0)
+				if (CanCharacterBePacified(victimBody))
 				{
 					CharacterBody b = PacifyAndRecruitEnemyMinion(hurtBox.healthComponent, victimBody, characterBody); 
 					if (b)
@@ -214,20 +265,9 @@ namespace RalseiMod.States.Ralsei.Weapon
 
 			return victimBody;
 		}
-	}
-	public class ThisSucks : MonoBehaviour
-    {
-		public BaseAI ai;
-		void FixedUpdate()
+        public override InterruptPriority GetMinimumInterruptPriority()
         {
-			if (ai == null)
-				return;
-			if (ai.currentEnemy.gameObject == null)
-				return;
-			if(ai.currentEnemy.characterBody.teamComponent.teamIndex == ai.body.teamComponent.teamIndex)
-            {
-				ai.currentEnemy.Reset();
-			}
+			return InterruptPriority.Any;
         }
     }
 }
