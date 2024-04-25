@@ -56,16 +56,22 @@ namespace RalseiMod.States.Ralsei.Weapon
 		public HurtBox target;
 		public float baseDuration = 1;
 		float duration;
-		public override void OnEnter()
+        public override void OnSerialize(NetworkWriter writer)
+        {
+            base.OnSerialize(writer);
+			writer.Write(HurtBoxReference.FromHurtBox(target));
+        }
+        public override void OnDeserialize(NetworkReader reader)
+        {
+            base.OnDeserialize(reader);
+			target = reader.ReadHurtBoxReference().ResolveHurtBox();
+        }
+        public override void OnEnter()
         {
 			duration = baseDuration / attackSpeedStat;
 			PlayAnimation("Gesture, Override", "CastSpellSpecial", "SpellSpecial.playbackRate", duration);
-			if (base.isAuthority)
-				Log.Warning("CastPacify authority, target real " + target != null);
-			if (NetworkServer.active)
-				Log.Warning("CastPacify server, target real " + target != null);
-			if (!CastToTargetServer(target))
-				Log.Error("AAAAAAAAAAAAAAAHHHHHHHHHHHHHHHHHHHHHH!!!!!!!!!!!!!!!!!");
+
+			CastToTargetServer(target);
 
 			base.OnEnter();
 		}
@@ -130,7 +136,7 @@ namespace RalseiMod.States.Ralsei.Weapon
 					}
 
 					//if the previous check was false, apply the sleepy buff instead
-					hurtBox.healthComponent.body.AddTimedBuffAuthority(RalseiSurvivor.sleepyDebuff.buffIndex, 15f);
+					hurtBox.healthComponent.body.AddTimedBuff(RalseiSurvivor.sleepyDebuff.buffIndex, 15f);
 					return true;
 				}
 			}

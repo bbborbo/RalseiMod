@@ -20,7 +20,7 @@ namespace RalseiMod.States.Ralsei
             base.skillLocator.utility.SetSkillOverride(this, CancelHoverSkill.instance.SkillDef, RoR2.GenericSkill.SkillOverridePriority.Contextual);
             characterBody.AddBuff(LiftPrayer.hoverBuff);
 
-            base.characterMotor.onHitGroundServer += this.CharacterMotor_onHitGround;
+            base.characterMotor.onHitGroundAuthority += this.CharacterMotor_onHitGround;
         }
 
         private void CharacterMotor_onHitGround(ref CharacterMotor.HitGroundInfo hitGroundInfo)
@@ -54,7 +54,7 @@ namespace RalseiMod.States.Ralsei
             base.skillLocator.utility.UnsetSkillOverride(this, CancelHoverSkill.instance.SkillDef, RoR2.GenericSkill.SkillOverridePriority.Contextual);
             characterBody.RemoveBuff(LiftPrayer.hoverBuff);
 
-            base.characterMotor.onHitGroundServer -= this.CharacterMotor_onHitGround;
+            base.characterMotor.onHitGroundAuthority -= this.CharacterMotor_onHitGround;
         }
         public override InterruptPriority GetMinimumInterruptPriority()
         {

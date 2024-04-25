@@ -23,13 +23,5 @@ namespace RalseiMod.States.Ralsei.Weapon
                 target = base.currentTarget
             };
         }
-        public override void OnExit()
-        {
-            if (base.isAuthority)
-                Log.Warning("PreparePacify authority, target real " + base.currentTarget != null);
-            if (NetworkServer.active)
-                Log.Warning("PreparePacify server, target real " + base.currentTarget != null);
-            base.OnExit();
-        }
     }
 }
