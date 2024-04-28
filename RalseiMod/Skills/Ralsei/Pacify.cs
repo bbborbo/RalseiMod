@@ -20,9 +20,11 @@ namespace RalseiMod.Skills
         #region config
         public override string ConfigName => "Skill : " + SkillName;
 
-        [AutoConfig("Ability Cooldown", 30)]
+        [AutoConfig("Ability Cooldown", 45)]
         public static float cooldown;
 
+        [AutoConfig("Should Champions Be Sparable", "If set to true, champions (aka world-spawn boss enemies) can be spared and turned into an ally.", true)]
+        public static bool championsPacifiable;
         [AutoConfig("Should Pacified Enemies Use Ambient Level", "If set to false, pacified enemies will be revived using player level. This can be used to balance enemy strength, if desired.", true)]
         public static bool useAmbientLevel;
         [AutoConfig("Sleep Conversion Delay", "The amount of seconds an enemy should sleep before converting to an ally.", 5)]
@@ -34,6 +36,9 @@ namespace RalseiMod.Skills
         public static int maxMinionUpgrade;
         [AutoConfig("Duplicate Pacified Minions With Swarms", true)]
         public static bool swarmsDuplicate;
+
+        [AutoConfig("Non-Boss Fatigue Duration", 30f)]
+        public static float fatigueDuration;
         #endregion
         public static BuffDef spareBuff;
         public static DeployableSlot pacifyDeployableSlot;
@@ -75,6 +80,7 @@ namespace RalseiMod.Skills
 
         public override void Init()
         {
+            KeywordTokens = new string[] { RalseiSurvivor.sleepKeywordToken, RalseiSurvivor.fatigueKeywordToken, RalseiSurvivor.empowerKeywordToken };
             base.Init();
             Content.AddEntityState(typeof(CastPacifySpell));
 

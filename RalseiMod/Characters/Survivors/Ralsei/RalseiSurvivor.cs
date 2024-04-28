@@ -29,12 +29,14 @@ namespace RalseiMod.Survivors.Ralsei
         public static float ralseiMoveSpeed;
         [AutoConfig("Base Health", "Ralsei's base health. 110 is standard for most survivors.", 55f)]
         public static float ralseiBaseHealth;
+        [AutoConfig("Base Damage", "Ralsei's base damage. 12 is standard for most survivors.", 14f)]
+        public static float ralseiBaseDamage;
 
-        [AutoConfig("Empowerment Armor Bonus", 50)]
+        [AutoConfig("Empowerment Armor Bonus", 30)]
         public static int empowerArmor;
-        [AutoConfig("Empowerment Movement Speed Multiplier Bonus", 1f)]
+        [AutoConfig("Empowerment Movement Speed Multiplier Bonus", 0.3f)]
         public static float empowerMoveSpeed;
-        [AutoConfig("Empowerment Attack Speed Multiplier Bonus", 0.5f)]
+        [AutoConfig("Empowerment Attack Speed Multiplier Bonus", 1)]
         public static float empowerAttackSpeed;
         [AutoConfig("Empowerment Base Regen Bonus", 1f)]
         public static float empowerRegen;
@@ -46,10 +48,10 @@ namespace RalseiMod.Survivors.Ralsei
         [AutoConfig("Tangle Movespeed Penalty", 0.2f)]
         public static float tangleMoveSpeed;
 
-        [AutoConfig("Drowsy Attack Speed Penalty", "How much should Drowsy increase the victim's attack speed reduction stat.", 0.8f)]
-        public static float drowsySpeedPenalty;
-        [AutoConfig("Drowsy Armor Penalty", "How much should Drowsy reduce the victim's armor.", -60)]
-        public static int drowsyArmorPenalty;
+        [AutoConfig("Fatigued Attack Speed Penalty", "How much should Fatigue increase the victim's attack speed reduction stat.", 0.8f)]
+        public static float fatigueSpeedPenalty;
+        [AutoConfig("Fatigued Armor Penalty", "How much should Fatigue reduce the victim's armor.", 60)]
+        public static int fatigueArmorPenalty;
         #endregion
         #region language
         public override string CharacterName => "Ralsei";
@@ -63,6 +65,11 @@ namespace RalseiMod.Survivors.Ralsei
              + "< ! > Roll has a lingering armor buff that helps to use it aggressively." + Environment.NewLine + Environment.NewLine
              + "< ! > Bomb can be used to wipe crowds with ease.";
         #endregion
+        public static string tangleKeywordToken = RalseiPlugin.DEVELOPER_PREFIX + "_KEYWORD_TANGLE";
+        public static string empowerKeywordToken = RalseiPlugin.DEVELOPER_PREFIX + "_KEYWORD_EMPOWER";
+        public static string sleepKeywordToken = RalseiPlugin.DEVELOPER_PREFIX + "_KEYWORD_SLEEP";
+        public static string fatigueKeywordToken = RalseiPlugin.DEVELOPER_PREFIX + "_KEYWORD_FATIGUE";
+
         public static BuffDef empowerBuff;
         public static Material empowerOverlayMaterial;
 
@@ -101,6 +108,7 @@ namespace RalseiMod.Survivors.Ralsei
             healthRegen = 1f,
             armor = 0f,
             moveSpeed = ralseiMoveSpeed,
+            damage = ralseiBaseDamage,
 
             jumpCount = 1,
             jumpPower = ralseiJumpPower,
@@ -156,7 +164,7 @@ namespace RalseiMod.Survivors.Ralsei
             TempVisualEffectAPI.AddTemporaryVisualEffect(tangleTemporaryEffectPrefab, condition => (condition.HasBuff(tangleDebuff) == true), false);
 
             tangleTemporaryEffectMaterial = UnityEngine.Object.Instantiate(Addressables.LoadAssetAsync<Material>("RoR2/Base/DeathMark/matDeathMarkFire.mat").WaitForCompletion());
-            tangleTemporaryEffectMaterial.SetColor("_TintColor", new Color32(155, 0, 172, 255));
+            tangleTemporaryEffectMaterial.SetColor("_TintColor", new Color32(172, 80, 155, 255));
             tangleTemporaryEffectMaterial.SetTexture("_BaseTex", Addressables.LoadAssetAsync<Texture>("RoR2/Base/Treebot/texTreebotRoot3Mask.png").WaitForCompletion());
             tangleTemporaryEffectMaterial.SetTexture("_RemapTex", Addressables.LoadAssetAsync<Texture>("RoR2/Base/Common/ColorRamps/texRampTritoneSmoothed.png").WaitForCompletion());
 
@@ -176,7 +184,7 @@ namespace RalseiMod.Survivors.Ralsei
                 if(string.Equals(particleSystem.name, "Rings"))
                 {
                     var main = particleSystem.main;
-                    main.startColor = new Color(.61f, 0, .68f, 255); 
+                    main.startColor = new Color(.82f, 0, .68f, 255); 
                 }
                 else
                 {
@@ -185,7 +193,7 @@ namespace RalseiMod.Survivors.Ralsei
             }
 
             tangleOverlayMaterial = UnityEngine.Object.Instantiate(Addressables.LoadAssetAsync<Material>("RoR2/Base/CritOnUse/matFullCrit.mat"/*"RoR2/Base/Treebot/matWeakEffect.mat"*/).WaitForCompletion());
-            tangleOverlayMaterial.SetColor("_TintColor", new Color32(20, 0, 30, 110));
+            tangleOverlayMaterial.SetColor("_TintColor", new Color32(20, 0, 50, 120));
             tangleOverlayMaterial.SetTexture("_RemapTex", Addressables.LoadAssetAsync<Texture>("RoR2/DLC1/Common/ColorRamps/texRampConstructLaserTypeB.png").WaitForCompletion());
 
 
@@ -193,7 +201,7 @@ namespace RalseiMod.Survivors.Ralsei
 
             empowerOverlayMaterial = UnityEngine.Object.Instantiate(Addressables.LoadAssetAsync<Material>("RoR2/Base/CritOnUse/matFullCrit.mat").WaitForCompletion());
 
-            empowerOverlayMaterial.SetColor("_TintColor", new Color32(150, 110, 0, 191));
+            empowerOverlayMaterial.SetColor("_TintColor", new Color32(110, 150, 0, 191)/*(150, 110, 0, 191)*/);
             empowerOverlayMaterial.SetTexture("_RemapTex", Addressables.LoadAssetAsync<Texture>("RoR2/Base/Common/ColorRamps/texRampBanditSplatter.png").WaitForCompletion());
             LanguageAPI.Add(RALSEI_PREFIX + "EMPOWERED_MODIFIER", "Empowered {0}");
 
@@ -252,13 +260,13 @@ namespace RalseiMod.Survivors.Ralsei
                 #region Achievements
                 Modules.Language.Add(RALSEI_PREFIX + "PASSIVE_NAME", $"Tension Points: Arcana");
                 Modules.Language.Add(RALSEI_PREFIX + "PASSIVE_DESCRIPTION", 
-                    $"{UtilityColor("Blocking")} attacks or {UtilityColor("Threading")} enemies will {DamageColor("reduce your skill cooldowns")}.");
+                    $"{UtilityColor("Blocking")} attacks or {UtilityColor("Tangling")} enemies will {DamageColor("reduce your skill cooldowns")}.");
                 #endregion
 
                 //add passive skill
                 skillLocator.passiveSkill = new SkillLocator.PassiveSkill
                 {
-                    enabled = false,
+                    enabled = true,
                     skillNameToken = RALSEI_PREFIX + "PASSIVE_NAME",
                     skillDescriptionToken = RALSEI_PREFIX + "PASSIVE_DESCRIPTION",
                     icon = assetBundle.LoadAsset<Sprite>("texPassiveIcon"),
@@ -287,21 +295,34 @@ namespace RalseiMod.Survivors.Ralsei
             if (!NetworkServer.active)
                 return;
 
-            if (!damageInfo.rejected && damageInfo.procCoefficient > 0 && damageInfo.HasModdedDamageType(TangleOnHit))
+            if(damageInfo.procCoefficient > 0 && victim != null)
             {
-                if (victim != null && damageInfo.attacker != null)
+                if (!damageInfo.rejected)
                 {
-                    CharacterBody aBody = damageInfo.attacker.GetComponent<CharacterBody>();
-                    CharacterBody vBody = victim.GetComponent<CharacterBody>();
-                    if (aBody != null && vBody != null && vBody.healthComponent.alive)
+                    if (damageInfo.HasModdedDamageType(TangleOnHit) && damageInfo.attacker != null)
                     {
-                        vBody.AddTimedBuff(tangleDebuff.buffIndex, 5f);
-                        if(aBody.bodyIndex == BodyCatalog.FindBodyIndex(RalseiSurvivor.instance.bodyName))
+                        CharacterBody aBody = damageInfo.attacker.GetComponent<CharacterBody>();
+                        CharacterBody vBody = victim.GetComponent<CharacterBody>();
+                        if (aBody != null && vBody != null && vBody.healthComponent.alive)
                         {
-
+                            vBody.AddTimedBuff(tangleDebuff.buffIndex, 5f);
+                            ApplyRalseiCdr(aBody, 0.5f);
                         }
                     }
                 }
+                else
+                {
+                    ApplyRalseiCdr(victim.GetComponent<CharacterBody>(), 0.5f);
+                }
+            }
+        }
+
+        private static void ApplyRalseiCdr(CharacterBody body, float cdr)
+        {
+            if (body != null && body.bodyIndex == BodyCatalog.FindBodyIndex(RalseiSurvivor.instance.bodyName))
+            {
+                SkillLocator skillLocator = body.skillLocator;
+                skillLocator.DeductCooldownFromAllSkillsServer(cdr);
             }
         }
 
@@ -311,7 +332,11 @@ namespace RalseiMod.Survivors.Ralsei
             CharacterBody body = bodyObject?.GetComponent<CharacterBody>();
             if(body && body.HasBuff(empowerBuff))
             {
-                name = RoR2.Language.GetStringFormatted(RALSEI_PREFIX + "EMPOWERED_MODIFIER", name);
+                int buffCount = body.GetBuffCount(empowerBuff);
+                for(int i = 0; i < buffCount; i++)
+                {
+                    name = RoR2.Language.GetStringFormatted(RALSEI_PREFIX + "EMPOWERED_MODIFIER", name);
+                }
             }
             return name;
         }
@@ -349,20 +374,37 @@ namespace RalseiMod.Survivors.Ralsei
         public override void Lang()
         {
             base.Lang();
-        }
-        
-        #region skins
-        public override void InitializeSkins()
-        {
-            #region Tokens
+
             Modules.Language.Add(GetAchievementNameToken(RalseiMasteryAchievement.identifier), $"{CharacterName}: Mastery");
             Modules.Language.Add(GetAchievementDescriptionToken(RalseiMasteryAchievement.identifier), $"As {CharacterName}, beat the game or obliterate on Monsoon.");
 
             Modules.Language.Add(RALSEI_PREFIX + "DEFAULT_SKIN_NAME", $"Default");
             Modules.Language.Add(RALSEI_PREFIX + "MASTERY_SKIN_NAME", $"Peeled");
             Modules.Language.Add(RALSEI_PREFIX + "NIKO_SKIN_NAME", $"Solstice");
-            #endregion
 
+            Modules.Language.Add(tangleKeywordToken, KeywordText("Tangled", 
+                $"Reduces armor by {UtilityColor("-" + tangleArmor)} and " +
+                $"movement speed by {UtilityColor("-" + ConvertDecimal(tangleMoveSpeed))} for {5} seconds. " +
+                $"{DamageColor("Tangled targets are prioritized by your allies")}."));
+            Modules.Language.Add(empowerKeywordToken, KeywordText("Empowered", 
+                $"Gain +{ConvertDecimal(empowerAttackSpeed)} {DamageColor("attack speed")}, " +
+                $"+{ConvertDecimal(empowerMoveSpeed)} {DamageColor("movement speed")}, " +
+                $"-{ConvertDecimal(1 - empowerCdr)} {UtilityColor("cooldown reduction")}, " +
+                $"+{empowerArmor} {UtilityColor("armor")}, " +
+                $"and +{empowerRegen} {HealingColor("base health regeneration per second")}. " +
+                $"Can stack."));
+            Modules.Language.Add(sleepKeywordToken, KeywordText("Sleeping", 
+                $"{DamageColor("Spare")} a non-boss enemy, removing them from the fight " +
+                $"{HealthColor("WITHOUT triggering on-kill effects")}. " +
+                $"Boss enemies become {UtilityColor("Fatigued")} for {Pacify.fatigueDuration}s instead."));
+            Modules.Language.Add(fatigueKeywordToken, KeywordText("Fatigued",
+                $"Reduces armor by {UtilityColor("-" + fatigueArmorPenalty)} and " +
+                $"attack speed by {UtilityColor("-" + ConvertDecimal(fatigueSpeedPenalty))}."));
+        }
+        
+        #region skins
+        public override void InitializeSkins()
+        {
             ModelSkinController skinController = prefabCharacterModel.gameObject.AddComponent<ModelSkinController>();
             ChildLocator childLocator = prefabCharacterModel.GetComponent<ChildLocator>();
 
@@ -393,7 +435,7 @@ namespace RalseiMod.Survivors.Ralsei
 
             //creating a new skindef as we did before
             SkinDef masterySkin = Modules.Skins.CreateSkinDef(RALSEI_PREFIX + "MASTERY_SKIN_NAME",
-                R2API.Skins.CreateSkinIcon(Color.white, Color.green, Color.green, Color.magenta, Color.grey),//assetBundle.LoadAsset<Sprite>("texMasteryAchievement"),
+                R2API.Skins.CreateSkinIcon(Color.white, Color.green, Color.magenta, Color.green, new Color(0,1,0,0.5f)),//assetBundle.LoadAsset<Sprite>("texMasteryAchievement"),
                 defaultRendererinfos,
                 prefabCharacterModel.gameObject,
                 RalseiUnlockables.masterySkinUnlockableDef);
@@ -426,10 +468,10 @@ namespace RalseiMod.Survivors.Ralsei
 
             //creating a new skindef as we did before
             SkinDef nikoSkin = Modules.Skins.CreateSkinDef(RALSEI_PREFIX + "NIKO_SKIN_NAME",
-                R2API.Skins.CreateSkinIcon(Color.white, Color.green, Color.green, Color.magenta, Color.grey),//assetBundle.LoadAsset<Sprite>("texMasteryAchievement"),
+                R2API.Skins.CreateSkinIcon(Color.white, Color.green, Color.magenta, Color.magenta, Color.grey),//assetBundle.LoadAsset<Sprite>("texMasteryAchievement"),
                 defaultRendererinfos,
                 prefabCharacterModel.gameObject,
-                RalseiUnlockables.masterySkinUnlockableDef);
+                RalseiUnlockables.pacifistUnlockableDef);
 
             //adding the mesh replacements as above. 
             //if you don't want to replace the mesh (for example, you only want to replace the material), pass in null so the order is preserved
@@ -466,8 +508,8 @@ namespace RalseiMod.Survivors.Ralsei
             }
             if (sender.HasBuff(sleepyDebuff))
             {
-                args.attackSpeedReductionMultAdd += drowsySpeedPenalty;
-                args.armorAdd += drowsyArmorPenalty;
+                args.attackSpeedReductionMultAdd += fatigueSpeedPenalty;
+                args.armorAdd -= fatigueArmorPenalty;
             }
         }
 

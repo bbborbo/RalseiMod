@@ -22,16 +22,16 @@ namespace RalseiMod.Skills
         #region config
         public override string ConfigName => "Skill : " + SkillName;
 
-        [AutoConfig("Ability Cooldown", 9)]
+        [AutoConfig("Ability Cooldown", 16)]
         public static float cooldown;
 
-        [AutoConfig("Heal Range", 50f)]
+        [AutoConfig("Heal Range", 25f)]
         public static float healRange;
 
         [AutoConfig("Minimum Cast Time", 0.5f)]
         public static float minCastTime;
 
-        [AutoConfig("Immediate Heal Fraction", 0.1f)]
+        [AutoConfig("Immediate Heal Fraction", 0.2f)]
         public static float instantHealPercent;
 
         [AutoConfig("Passive Heal Duration", 2f)]
@@ -41,7 +41,7 @@ namespace RalseiMod.Skills
         public static GameObject loveBombImpact;
         public override AssetBundle assetBundle => RalseiPlugin.mainAssetBundle;
 
-        public override string SkillName => "Dual Heal";
+        public override string SkillName => "Heal Prayer";
 
         public override string SkillDescription => 
             $"Cast a {HealingColor("healing spell")} on yourself and all allies within {UtilityColor(healRange + "m")}, " +
@@ -77,6 +77,7 @@ namespace RalseiMod.Skills
 
         public override void Init()
         {
+            KeywordTokens = new string[] { "KEYWORD_RAPID_REGEN" };
             base.Init();
             CreateBombProjectile();
             GameObject healexp = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/EliteEarth/AffixEarthHealExplosion.prefab").WaitForCompletion();

@@ -35,7 +35,7 @@ namespace RalseiMod.Achievements
         private void KillCheck(On.RoR2.GlobalEventManager.orig_OnCharacterDeath orig, GlobalEventManager self, DamageReport damageReport)
         {
             if (damageReport.attackerBodyIndex == LookUpRequiredBodyIndex() && damageReport.attackerTeamIndex == TeamIndex.Player 
-                && CastPacifySpell.CanCharacterBePacified(damageReport.victimBody))
+                && CastPacifySpell.IsCharacterPacifiableAndSparable(damageReport.victimBody) && !damageReport.damageInfo.damageType.HasFlag(DamageType.OutOfBounds))
             {
                 if (killCount == 0)
                 {

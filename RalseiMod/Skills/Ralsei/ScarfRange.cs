@@ -19,9 +19,9 @@ namespace RalseiMod.Skills
         #region config
         public override string ConfigName => "Skill : " + SkillName;
 
-        [AutoConfig("Damage : Base Attack Damage", 1.2f)]
+        [AutoConfig("Damage : Base Attack Damage", 0.9f)]
         public static float baseDamage;
-        [AutoConfig("Damage : Combo Attack Base Damage", 1.7f)]
+        [AutoConfig("Damage : Combo Attack Base Damage", 1.4f)]
         public static float baseDamageCombo;
         [AutoConfig("Damage : Base Attack Proc Coefficient", 1f)]
         public static float baseProcCoeff;
@@ -43,6 +43,7 @@ namespace RalseiMod.Skills
         #endregion
         internal static int lastCombo => comboCount - 1;
         public static GameObject tracerThread;
+        public static GameObject tracerThreadCombo;
         public static GameObject tracerImpact;
 
         public const string ThreadKeywordToken = RalseiPlugin.DEVELOPER_PREFIX + "_KEYWORD_THREAD";
@@ -53,7 +54,7 @@ namespace RalseiMod.Skills
 
         public override string SkillDescription => 
             $"Use your scarf to sling {UtilityColor("piercing threads")} for {DamageValueText(baseDamage)}. " +
-            $"Every {DamageColor(NumToAdj(comboCount))} attack {UtilityColor("Unravels")} enemies for {DamageValueText(baseDamageCombo)}.";
+            $"Every {DamageColor(NumToAdj(comboCount))} attack {UtilityColor("Tangles")} enemies for {DamageValueText(baseDamageCombo)}.";
 
         public override string SkillLangTokenName => "SCARFRANGE";
 
@@ -77,6 +78,7 @@ namespace RalseiMod.Skills
 
         public override void Init()
         {
+            KeywordTokens = new string[] { RalseiSurvivor.tangleKeywordToken };
             base.Init();
             (SkillDef as SteppedSkillDef).stepCount = 4;// Mathf.Max(comboCount, 1);
             (SkillDef as SteppedSkillDef).stepGraceDuration = Mathf.Max(comboGraceDuration, 0.02f);
@@ -96,11 +98,27 @@ namespace RalseiMod.Skills
             buckshotAttributes.vfxPriority = VFXAttributes.VFXPriority.Always;
             buckshotAttributes.vfxIntensity = VFXAttributes.VFXIntensity.High;*/
 
-            Particles.GetParticle(tracerThread, "SmokeBeam", new Color(0.81f, 0.4f, 1f), 0.66f);
+            Particles.GetParticle(tracerThread, "SmokeBeam", new Color(0.9f, 0.4f, 0.9f), 1);
             ParticleSystem.MainModule main = tracerThread.GetComponentInChildren<ParticleSystem>().main;
-            main.startSizeXMultiplier *= 0.4f;
-            main.startSizeYMultiplier *= 0.4f;
-            main.startSizeZMultiplier *= 2f;
+            main.startSizeXMultiplier *= 0.3f;
+            main.startSizeYMultiplier *= 0.3f;
+            main.startSizeZMultiplier *= 1.5f;
+
+            tracerThreadCombo = Assets.CloneTracer("TracerGolem", "TracerRalseiThreadCombo");
+            /*tracerThread = RoR2.LegacyResourcesAPI.Load<GameObject>("prefabs/effects/tracers/TracerGolem").InstantiateClone("tracerRalseiThread", false);
+            Tracer buckshotTracer = tracerThread.GetComponent<Tracer>();
+            buckshotTracer.speed = 300f;
+            buckshotTracer.length = 15f;
+            buckshotTracer.beamDensity = 10f;
+            VFXAttributes buckshotAttributes = tracerThread.AddComponent<VFXAttributes>();
+            buckshotAttributes.vfxPriority = VFXAttributes.VFXPriority.Always;
+            buckshotAttributes.vfxIntensity = VFXAttributes.VFXIntensity.High;*/
+
+            Particles.GetParticle(tracerThreadCombo, "SmokeBeam", new Color(0.4f, 0.4f, 1f), 1);
+            ParticleSystem.MainModule main2 = tracerThreadCombo.GetComponentInChildren<ParticleSystem>().main;
+            main2.startSizeXMultiplier *= 0.6f;
+            main2.startSizeYMultiplier *= 0.6f;
+            main2.startSizeZMultiplier *= 1.5f;
         }
         public override void Hooks()
         {

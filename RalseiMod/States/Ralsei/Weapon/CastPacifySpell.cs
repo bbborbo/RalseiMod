@@ -18,32 +18,48 @@ namespace RalseiMod.States.Ralsei.Weapon
 {
     class CastPacifySpell : BaseSkillState
     {
-		public static List<string> pacifyBodyNameWhitelist = new List<string>() { "UNIDENTIFIED", "AFFIXEARTH_HEALER_BODY_NAME" };
-		public static bool CanTargetBePacified(HurtBox hurtBox)
+		public static List<string> pacifyBodyNameWhitelist = new List<string>() { "UNIDENTIFIED", "AFFIXEARTH_HEALER_BODY_NAME", "URCHINTURRET_BODY_NAME" };
+		public static bool IsTargetSparable(HurtBox hurtBox)
         {
-			return CanCharacterBePacified(hurtBox.healthComponent?.body);
-        }
-        public static bool CanCharacterBePacified(CharacterBody body)
+			return IsCharacterSparable(hurtBox.healthComponent?.body);
+		}
+		public static bool IsCharacterSparable(CharacterBody body)
 		{
 			//null check for arbitration purposes (specifically for the unlock)
-			if (body == null || body.bodyFlags.HasFlag(CharacterBody.BodyFlags.Masterless))
+			if (body == null)
 				return false;
 
 			//whitelisted bodies
-			if (pacifyBodyNameWhitelist.Contains(body.baseNameToken))
+			if (pacifyBodyNameWhitelist.Contains(body.baseNameToken) || body.bodyFlags.HasFlag(CharacterBody.BodyFlags.Masterless))
+				return false;
+
+			//if it passes all other checks, its sparable
+			return true;
+		}
+		public static bool IsCharacterPacifiable(CharacterBody body)
+		{
+			//null check for arbitration purposes (specifically for the unlock)
+			if (body == null)
 				return false;
 
 			//players should not be pacifiable under any circumstance
 			if (body.isPlayerControlled)
 				return false;
 
-			//umbras get an exception to the no-boss rule because its cool
-			if (body.inventory?.GetItemCount(RoR2Content.Items.InvadingDoppelganger) > 0)
-				return true;
-
 			//bosses are not pacifiable
 			if (body.isBoss)
+			{
+				//except umbras
+				if (body.inventory?.GetItemCount(RoR2Content.Items.InvadingDoppelganger) > 0)
+					return true;
 				return false;
+			}
+
+			//champions shouldnt be pacifiable if the config is false
+			if(body.isChampion && !Pacify.championsPacifiable)
+            {
+				return false;
+            }
 
 			//if this body is somehow not a boss or a player but is still immune to executes, they shouldnt be pacifiable either
 			if (body.bodyFlags.HasFlag(CharacterBody.BodyFlags.ImmuneToExecutes))
@@ -51,6 +67,10 @@ namespace RalseiMod.States.Ralsei.Weapon
 
 			//if it passes all other checks, its pacifiable
 			return true;
+		}
+		public static bool IsCharacterPacifiableAndSparable(CharacterBody body)
+		{
+			return body && IsCharacterPacifiable(body) && IsCharacterSparable(body);
 		}
 
 		public HurtBox target;
@@ -94,7 +114,7 @@ namespace RalseiMod.States.Ralsei.Weapon
 			if (NetworkServer.active)
 			{
 				CharacterBody victimBody = victimHealthComponent.body;
-				if (victimBody)
+				if (victimBody != null)
 				{
 					EffectManager.SpawnEffect(StealthMode.smokeBombEffectPrefab, new EffectData
 					{
@@ -103,9 +123,9 @@ namespace RalseiMod.States.Ralsei.Weapon
 
 					//if the victim is not a boss OR, if they are a boss and they have the umbra item
 					//and also require that the victim be not player controlled or immune to executes
-					if (CanCharacterBePacified(victimBody))
+					if (IsCharacterSparable(victimBody))
 					{
-						CharacterBody b = PacifyAndRecruitEnemyMinion(hurtBox.healthComponent, victimBody, characterBody);
+						CharacterBody b = SpareAndRecruitEnemyMinion(hurtBox.healthComponent, victimBody, characterBody);
 						if (b)
 						{
 							ReplaceMinionAI(b);
@@ -124,12 +144,6 @@ namespace RalseiMod.States.Ralsei.Weapon
 						else
 						{
 							Log.Error("Ralsei Pacify failed to empower its target!");
-						}
-
-						SkillLocator skillLocator = characterBody.skillLocator;
-						if (skillLocator)
-						{
-							skillLocator.DeductCooldownFromAllSkillsServer(3f);
 						}
 
 						return true;
@@ -164,8 +178,11 @@ namespace RalseiMod.States.Ralsei.Weapon
         private static void ReplaceMinionAI(CharacterBody b)
         {
 			b.masterObject.AddComponent<WarpOnTeleporterBegin>();
-			if(b.inventory)
-				b.inventory.GiveItem(RoR2Content.Items.TeleportWhenOob);
+			b.bodyFlags |= CharacterBody.BodyFlags.ResistantToAOE;
+            if (b.inventory)
+			{
+				//b.inventory.GiveItem(RoR2Content.Items.TeleportWhenOob);
+			}
         }
 
         public static CharacterBody RespawnEnemyMinion(HealthComponent victimHealthComponent, CharacterBody victimBody, CharacterBody ownerBody)
@@ -230,7 +247,7 @@ namespace RalseiMod.States.Ralsei.Weapon
 				//newMaster.inventory.GiveItem(RoR2Content.Items.BoostDamage, 150);
 			}
 		}
-		public static CharacterBody PacifyAndRecruitEnemyMinion(HealthComponent victimHealthComponent, CharacterBody victimBody, CharacterBody ownerBody)
+		public static CharacterBody SpareAndRecruitEnemyMinion(HealthComponent victimHealthComponent, CharacterBody victimBody, CharacterBody ownerBody)
 		{
 			if (!victimBody || !victimHealthComponent)
 			{

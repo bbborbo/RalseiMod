@@ -6,6 +6,7 @@ using System.Text;
 using UnityEngine;
 using R2API;
 using RalseiMod.Survivors.Ralsei;
+using EntityStates.Loader;
 
 namespace RalseiMod.States.Ralsei.Weapon
 {
@@ -18,25 +19,35 @@ namespace RalseiMod.States.Ralsei.Weapon
         public override float baseExitDuration => isComboFinisher ? ScarfRange.comboExitDuration : ScarfRange.baseExitDuration;
         public override float damageCoefficient => isComboFinisher ? ScarfRange.baseDamageCombo : ScarfRange.baseDamage;
 
+        public override float altAnimationAttackSpeedThreshold => 2.65f;
+
         public override string GetAnimationLayer()
         {
             if (isComboFinisher)
                 return "FullBody, Override";
             return base.GetAnimationLayer();
         }
-        public override string GetAnimationName()
+        public override string GetAnimationName(int index)
         {
+            if (characterBody.attackSpeed >= altAnimationAttackSpeedThreshold)
+                return base.GetAnimationName(index % 2);
+
             if (isComboFinisher)
                 return "PrimaryComboLong";
-            return base.GetAnimationName();
+
+            return base.GetAnimationName(index);
         }
         public override string GetMuzzleName()
         {
+            if (characterBody.attackSpeed >= altAnimationAttackSpeedThreshold)
+                return base.GetMuzzleName();
+
             if (step == ScarfRange.lastCombo)
                 return "SwingSpin";
             if (step == ScarfRange.lastCombo - 1)
                 return "SwingJab";
-            return base.GetAnimationName();
+
+            return base.GetMuzzleName();
         }
 
         //fire attack combo and regular are split because some applications of the base state would want to do two different kinds of attacks
@@ -46,6 +57,7 @@ namespace RalseiMod.States.Ralsei.Weapon
             float recoil = 2.8f / this.attackSpeedStat;
             base.AddRecoil(-recoil, -2f * recoil, -recoil, recoil);
             base.characterBody.SetAimTimer(2f);
+            Util.PlaySound(new LoaderMeleeAttack().beginSwingSoundString, base.gameObject);
 
             if (base.isAuthority)
             {
@@ -61,6 +73,7 @@ namespace RalseiMod.States.Ralsei.Weapon
             float recoil = 1.2f / this.attackSpeedStat;
             base.AddRecoil(-recoil, -2f * recoil, -recoil, recoil);
             base.characterBody.SetAimTimer(2f);
+            Util.PlaySound(new LoaderMeleeAttack().beginSwingSoundString, base.gameObject);
 
             if (base.isAuthority)
             {
@@ -80,7 +93,7 @@ namespace RalseiMod.States.Ralsei.Weapon
             bulletAttack.maxSpread = 0f;
             bulletAttack.damage = damageCoefficient * this.damageStat;
             bulletAttack.force = force;
-            bulletAttack.tracerEffectPrefab = ScarfRange.tracerThread;
+            bulletAttack.tracerEffectPrefab = isComboFinisher ? ScarfRange.tracerThreadCombo : ScarfRange.tracerThread;
             bulletAttack.muzzleName = this.muzzleString;
             bulletAttack.hitEffectPrefab = ScarfRange.tracerImpact;
             bulletAttack.isCrit = Util.CheckRoll(this.critStat, base.characterBody.master);

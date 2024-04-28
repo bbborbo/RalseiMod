@@ -30,6 +30,7 @@ namespace RalseiMod.States.Ralsei.Weapon
             step = reader.ReadInt32();
         }
 
+        public abstract float altAnimationAttackSpeedThreshold { get; }
         public abstract float baseEnterDuration { get; }
         public abstract float baseExitDuration { get; }
         float enterDuration;
@@ -61,16 +62,16 @@ namespace RalseiMod.States.Ralsei.Weapon
                 TryAttack();
             }
 
-            PlayCrossfade(GetAnimationLayer(), GetAnimationName(), "ScarfPrimary.playbackRate",
+            PlayCrossfade(GetAnimationLayer(), GetAnimationName(this.step), "ScarfPrimary.playbackRate",
                 totalDuration * 1.5f, 0.1f * totalDuration);
         }
         public virtual string GetAnimationLayer()
         {
             return "Gesture, Override";
         }
-        public virtual string GetAnimationName()
+        public virtual string GetAnimationName(int index)
         {
-            return "Primary" + (this.step + 1);
+            return "Primary" + (index + 1);
         }
         public virtual string GetMuzzleName()
         {
@@ -79,6 +80,10 @@ namespace RalseiMod.States.Ralsei.Weapon
         public override void OnExit()
         {
             base.OnExit();
+            {
+                if (!fired)
+                    TryAttack();
+            }
         }
         public override void FixedUpdate()
         {
@@ -89,8 +94,6 @@ namespace RalseiMod.States.Ralsei.Weapon
             }
             if(base.fixedAge >= totalDuration)
             {
-                if (!fired)
-                    TryAttack();
                 this.outer.SetNextStateToMain();
             }
         }
@@ -108,11 +111,8 @@ namespace RalseiMod.States.Ralsei.Weapon
             }
             FireAttack();
 
-            if (base.isAuthority)
-            {
-                if (!characterMotor.isGrounded && characterBody.HasBuff(LiftPrayer.hoverBuff))
-                    base.SmallHop(characterMotor, 7/* / this.attackSpeedStat*/);
-            }
+            if (!characterMotor.isGrounded && characterBody.HasBuff(LiftPrayer.hoverBuff))
+                base.SmallHop(characterMotor, 7/* / this.attackSpeedStat*/);
         }
         public abstract void FireAttackCombo();
         public abstract void FireAttack();

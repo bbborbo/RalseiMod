@@ -108,7 +108,7 @@ namespace RalseiMod.States.Ralsei.Weapon
 				{
 					HurtBox hurtBox = enumerator.Current;
 					HealthComponent hc = hurtBox.healthComponent;
-					if (hc && hc.alive && hc.combinedHealthFraction <= maxHealthFraction && hc.body.master)
+					if (hc && hc.alive && hc.combinedHealthFraction <= maxHealthFraction && CastPacifySpell.IsCharacterPacifiable(hc.body))
 					{
 						return hurtBox;
 					}

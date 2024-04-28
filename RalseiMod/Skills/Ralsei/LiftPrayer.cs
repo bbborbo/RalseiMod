@@ -19,29 +19,29 @@ namespace RalseiMod.Skills
         #region config
         public override string ConfigName => "Skill : " + SkillName;
 
-        [AutoConfig("Ability Cooldown", 6)]
+        [AutoConfig("Ability Cooldown", 9)]
         public static float cooldown;
 
         [AutoConfig("Ascent Duration", 1.5f)]
         public static float liftDuration;
         [AutoConfig("Ascent Rate Minimum", 0.2f)]
         public static float liftSpeedMin;
-        [AutoConfig("Ascent Rate Maximum", 4f)]
+        [AutoConfig("Ascent Rate Maximum", 3.5f)]
         public static float liftSpeedMax;
         [AutoConfig("Ascent Rate Affected By Movement Speed", "Should Ralsei's Ascent State be affected by movement speed?", false)]
         public static bool useMoveSpeed;
-        [AutoConfig("Hover Vertical Speed", -6f)]
+        [AutoConfig("Hover Vertical Speed", -7f)]
         public static float hoverVelocity;
         [AutoConfig("Hover Acceleration", "How fast should Ralsei accelerate towards the hover vertical speed while hovering", 30)]
         public static float hoverAcceleration;
-        [AutoConfig("Hover Horizontal Speed Increase", 1.3f)]
+        [AutoConfig("Hover Horizontal Speed Increase", 1.4f)]
         public static float hoverSpeedBoost;
         #endregion
         public static BuffDef hoverBuff;
         public static SkillDef cancelSkillDef => CancelHoverSkill.instance.SkillDef;
         public override AssetBundle assetBundle => RalseiPlugin.mainAssetBundle;
 
-        public override string SkillName => "Hover Prayer";
+        public override string SkillName => "Ascend";
 
         public override string SkillDescription => 
             $"Ascend {UtilityColor("high into the air")}, " +
