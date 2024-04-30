@@ -19,11 +19,11 @@ namespace RalseiMod.States.Ralsei.Weapon
     class CastPacifySpell : BaseSkillState
     {
 		public static List<string> pacifyBodyNameWhitelist = new List<string>() { "UNIDENTIFIED", "AFFIXEARTH_HEALER_BODY_NAME", "URCHINTURRET_BODY_NAME" };
-		public static bool IsTargetSparable(HurtBox hurtBox)
+		public static bool IsTargetPacifiable(HurtBox hurtBox)
         {
-			return IsCharacterSparable(hurtBox.healthComponent?.body);
+			return IsCharacterPacifiable(hurtBox.healthComponent?.body);
 		}
-		public static bool IsCharacterSparable(CharacterBody body)
+		public static bool IsCharacterPacifiable(CharacterBody body)
 		{
 			//null check for arbitration purposes (specifically for the unlock)
 			if (body == null)
@@ -36,7 +36,7 @@ namespace RalseiMod.States.Ralsei.Weapon
 			//if it passes all other checks, its sparable
 			return true;
 		}
-		public static bool IsCharacterPacifiable(CharacterBody body)
+		public static bool IsCharacterSparable(CharacterBody body)
 		{
 			//null check for arbitration purposes (specifically for the unlock)
 			if (body == null)
@@ -183,6 +183,34 @@ namespace RalseiMod.States.Ralsei.Weapon
 			{
 				//b.inventory.GiveItem(RoR2Content.Items.TeleportWhenOob);
 			}
+
+			CharacterMaster minionMaster = b.master;
+
+			AISkillDriver followSkillDriver = minionMaster.gameObject.AddComponent<AISkillDriver>();
+			followSkillDriver.customName = "ReturnToLeader";
+			followSkillDriver.skillSlot = SkillSlot.None;
+			followSkillDriver.minDistance = 110;
+			followSkillDriver.moveTargetType = AISkillDriver.TargetType.CurrentLeader;
+			followSkillDriver.movementType = AISkillDriver.MovementType.ChaseMoveTarget;
+			followSkillDriver.aimType = AISkillDriver.AimType.AtCurrentEnemy;
+			followSkillDriver.shouldSprint = true;
+			followSkillDriver.buttonPressType = AISkillDriver.ButtonPressType.Hold;
+			followSkillDriver.driverUpdateTimerOverride = 5;
+			followSkillDriver.resetCurrentEnemyOnNextDriverSelection = true;
+
+			InsertFollowDriver(minionMaster, followSkillDriver);
+
+			void InsertFollowDriver(CharacterMaster master, AISkillDriver followDriver)
+            {
+				BaseAI baseAI = master.aiComponents[0];
+
+				List<AISkillDriver> allSkillDrivers = new List<AISkillDriver>();
+				allSkillDrivers.Add(followDriver);
+				foreach (AISkillDriver skillDriver in baseAI.skillDrivers)
+					allSkillDrivers.Add(skillDriver);
+
+				baseAI.skillDrivers = allSkillDrivers.ToArray();
+            }
         }
 
         public static CharacterBody RespawnEnemyMinion(HealthComponent victimHealthComponent, CharacterBody victimBody, CharacterBody ownerBody)
