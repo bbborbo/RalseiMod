@@ -86,14 +86,14 @@ namespace RalseiMod
         private void WarpMinionsMithrix(On.EntityStates.Missions.BrotherEncounter.Phase1.orig_OnEnter orig, EntityStates.Missions.BrotherEncounter.Phase1 self)
         {
             orig(self);
-            WarpOnTeleporterBegin[] warpTargets = WarpOnTeleporterBegin.GetWarpTargets(self.transform.position, 0);
+            WarpOnTeleporterBegin[] warpTargets = WarpOnTeleporterBegin.GetWarpTargets(self.childLocator.FindChild("CenterOrbEffect").transform.position, 0);
             int count = warpTargets.Length;
             int i = 0;
             foreach (WarpOnTeleporterBegin warpTarget in warpTargets)
             {
                 // 7.5 is the magic number to have all turrets on the teleporter platform
                 // needs to be slightly larger for the primordial telepot
-                float Radius = 8.5f;
+                float Radius = 12f;
                 float radianInc = Mathf.Deg2Rad * 360f / count;
                 Vector3 point1 = new Vector3(Mathf.Cos(radianInc * i) * Radius, 0.25f, Mathf.Sin(radianInc * i) * Radius);
 

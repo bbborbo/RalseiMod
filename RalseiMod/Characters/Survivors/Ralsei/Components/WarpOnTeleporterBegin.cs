@@ -24,7 +24,7 @@ namespace RalseiMod.Survivors.Ralsei.Components
                 {
                     CharacterBody b = warpTarget.master.GetBody();
 
-                    if (b != null && (radius == 0 || (startPosition - b.corePosition).sqrMagnitude <= radius * radius))
+                    if (b != null && (radius == 0 || (startPosition - b.corePosition).sqrMagnitude >= radius * radius))
                     {
                         filteredWarpTargets.Add(warpTarget);
                     }
