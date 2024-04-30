@@ -13,13 +13,18 @@ namespace RalseiMod.Survivors.Ralsei.Components
 
         public static WarpOnTeleporterBegin[] GetWarpTargets(TeleporterInteraction tp)
         {
+            return GetWarpTargets(tp.transform.position, tp.holdoutZoneController.baseRadius);
+        }
+        public static WarpOnTeleporterBegin[] GetWarpTargets(Vector3 startPosition, float radius)
+        {
             List<WarpOnTeleporterBegin> filteredWarpTargets = new List<WarpOnTeleporterBegin>();
             foreach (WarpOnTeleporterBegin warpTarget in allWarpTargets)
             {
                 if (warpTarget.master && warpTarget.master.teamIndex == TeamIndex.Player)
                 {
                     CharacterBody b = warpTarget.master.GetBody();
-                    if (b != null && !tp.holdoutZoneController.IsBodyInChargingRadius(b))
+
+                    if (b != null && (radius == 0 || (startPosition - b.corePosition).sqrMagnitude <= radius * radius))
                     {
                         filteredWarpTargets.Add(warpTarget);
                     }
