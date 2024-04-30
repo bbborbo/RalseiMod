@@ -84,7 +84,7 @@ namespace RalseiMod
 
         private void WarpMinions(TeleporterInteraction tp)
         {
-            WarpOnTeleporterBegin[] warpTargets = FindObjectsOfType<WarpOnTeleporterBegin>();
+            WarpOnTeleporterBegin[] warpTargets = WarpOnTeleporterBegin.GetWarpTargets(tp);
             int count = warpTargets.Length;
             int i = 0;
             foreach (WarpOnTeleporterBegin warpTarget in warpTargets)
