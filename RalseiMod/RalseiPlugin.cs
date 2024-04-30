@@ -66,7 +66,7 @@ namespace RalseiMod
             ConfigManager.HandleConfigAttributes(GetType(), "Ralsei", Modules.Config.MyConfig);
 
             RoR2.TeleporterInteraction.onTeleporterBeginChargingGlobal += WarpMinionsTp;
-            On.EntityStates.Missions.BrotherEncounter.Phase1.OnEnter += WarpMinionsMithrix;
+            On.EntityStates.Missions.BrotherEncounter.Phase1.FixedUpdate += WarpMinionsMithrix;
 
             Type[] allTypes = Assembly.GetExecutingAssembly().GetTypes();
 
@@ -83,27 +83,32 @@ namespace RalseiMod
             ////refer to guide on how to build and distribute your mod with the proper folders
         }
 
-        private void WarpMinionsMithrix(On.EntityStates.Missions.BrotherEncounter.Phase1.orig_OnEnter orig, EntityStates.Missions.BrotherEncounter.Phase1 self)
+        private void WarpMinionsMithrix(On.EntityStates.Missions.BrotherEncounter.Phase1.orig_FixedUpdate orig, EntityStates.Missions.BrotherEncounter.Phase1 self)
         {
-            orig(self);
-            WarpOnTeleporterBegin[] warpTargets = WarpOnTeleporterBegin.GetWarpTargets(self.childLocator.FindChild("CenterOrbEffect").transform.position, 0);
-            int count = warpTargets.Length;
-            int i = 0;
-            foreach (WarpOnTeleporterBegin warpTarget in warpTargets)
+            if(self.fixedAge + Time.fixedDeltaTime > EntityStates.Missions.BrotherEncounter.Phase1.prespawnSoundDelay && !self.hasPlayedPrespawnSound)
             {
-                // 7.5 is the magic number to have all turrets on the teleporter platform
-                // needs to be slightly larger for the primordial telepot
-                float Radius = 12f;
-                float radianInc = Mathf.Deg2Rad * 360f / count;
-                Vector3 point1 = new Vector3(Mathf.Cos(radianInc * i) * Radius, 0.25f, Mathf.Sin(radianInc * i) * Radius);
+                Vector3 pos = self.childLocator.FindChild("CenterOrbEffect").transform.position;
+                WarpOnTeleporterBegin[] warpTargets = WarpOnTeleporterBegin.GetWarpTargets(pos, 0);
+                int count = warpTargets.Length;
+                Log.Warning(count);
+                int i = 0;
+                foreach (WarpOnTeleporterBegin warpTarget in warpTargets)
+                {
+                    // 7.5 is the magic number to have all turrets on the teleporter platform
+                    // needs to be slightly larger for the primordial telepot
+                    float Radius = 25f;
+                    float radianInc = Mathf.Deg2Rad * 360f / count;
+                    Vector3 point1 = new Vector3(Mathf.Cos(radianInc * i) * Radius, 0.25f, Mathf.Sin(radianInc * i) * Radius);
 
-                i++;
+                    i++;
 
-                var targetFootPos = self.transform.position + point1;
-                var turretBody = warpTarget.master.GetBody();
+                    var targetFootPos = pos + point1;
+                    var turretBody = warpTarget.master.GetBody();
 
-                TeleportHelper.TeleportBody(turretBody, targetFootPos);
+                    TeleportHelper.TeleportBody(turretBody, targetFootPos);
+                }
             }
+            orig(self);
         }
 
         private void WarpMinionsTp(TeleporterInteraction tp)
