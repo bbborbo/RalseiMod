@@ -32,12 +32,14 @@ namespace RalseiMod.Survivors.Ralsei
         [AutoConfig("Base Damage", "Ralsei's base damage. 12 is standard for most survivors.", 14f)]
         public static float ralseiBaseDamage;
 
-        [AutoConfig("Empowerment Armor Bonus", 30)]
+        [AutoConfig("Empowerment Armor Bonus", 15)]
         public static int empowerArmor;
+        [AutoConfig("Empowerment Attack Speed Multiplier Bonus", 1.5f)]
+        public static float empowerAttackSpeed;
+        [AutoConfig("Empowerment Sprint Speed Multiplier Bonus", 1f)]
+        public static float empowerSprintSpeed;
         [AutoConfig("Empowerment Movement Speed Multiplier Bonus", 0.3f)]
         public static float empowerMoveSpeed;
-        [AutoConfig("Empowerment Attack Speed Multiplier Bonus", 1)]
-        public static float empowerAttackSpeed;
         [AutoConfig("Empowerment Base Regen Bonus", 1f)]
         public static float empowerRegen;
         [AutoConfig("Empowerment Cooldown Multiplier", 0.5f)]
@@ -500,6 +502,7 @@ namespace RalseiMod.Survivors.Ralsei
                 args.cooldownMultAdd *= Mathf.Pow(empowerCdr, empowerCount);
                 args.baseRegenAdd += empowerRegen * (1 + 0.3f * (sender.level - 1));
                 args.armorAdd += empowerArmor * empowerCount;
+                args.sprintSpeedAdd += empowerSprintSpeed;
             }
             if (sender.HasBuff(tangleDebuff))
             {
