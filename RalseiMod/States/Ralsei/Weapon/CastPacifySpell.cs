@@ -186,19 +186,22 @@ namespace RalseiMod.States.Ralsei.Weapon
 
 			CharacterMaster minionMaster = b.master;
 
-			AISkillDriver followSkillDriver = minionMaster.gameObject.AddComponent<AISkillDriver>();
-			followSkillDriver.customName = "ReturnToLeader";
-			followSkillDriver.skillSlot = SkillSlot.None;
-			followSkillDriver.minDistance = 110;
-			followSkillDriver.moveTargetType = AISkillDriver.TargetType.CurrentLeader;
-			followSkillDriver.movementType = AISkillDriver.MovementType.ChaseMoveTarget;
-			followSkillDriver.aimType = AISkillDriver.AimType.AtCurrentEnemy;
-			followSkillDriver.shouldSprint = true;
-			followSkillDriver.buttonPressType = AISkillDriver.ButtonPressType.Hold;
-			followSkillDriver.driverUpdateTimerOverride = 5;
-			followSkillDriver.resetCurrentEnemyOnNextDriverSelection = true;
+			if(b.characterMotor != null)
+			{
+				AISkillDriver followSkillDriver = minionMaster.gameObject.AddComponent<AISkillDriver>();
+				followSkillDriver.customName = "ReturnToLeader";
+				followSkillDriver.skillSlot = SkillSlot.None;
+				followSkillDriver.minDistance = 110;
+				followSkillDriver.moveTargetType = AISkillDriver.TargetType.CurrentLeader;
+				followSkillDriver.movementType = AISkillDriver.MovementType.ChaseMoveTarget;
+				followSkillDriver.aimType = AISkillDriver.AimType.AtCurrentEnemy;
+				followSkillDriver.shouldSprint = true;
+				followSkillDriver.buttonPressType = AISkillDriver.ButtonPressType.Hold;
+				followSkillDriver.driverUpdateTimerOverride = 5;
+				followSkillDriver.resetCurrentEnemyOnNextDriverSelection = true;
 
-			InsertFollowDriver(minionMaster, followSkillDriver);
+				InsertFollowDriver(minionMaster, followSkillDriver);
+			}
 
 			void InsertFollowDriver(CharacterMaster master, AISkillDriver followDriver)
             {
