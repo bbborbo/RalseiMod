@@ -112,6 +112,14 @@ namespace RalseiMod.Skills
         {
             GetStatCoefficients += StatsHook;
             On.RoR2.GlobalEventManager.OnCharacterDeath += SpareHook;
+            On.RoR2.DroneWeaponsBehavior.UpdateMinionInventory += SDPFix;
+        }
+
+        private void SDPFix(On.RoR2.DroneWeaponsBehavior.orig_UpdateMinionInventory orig, DroneWeaponsBehavior self, Inventory inventory, CharacterBody.BodyFlags bodyFlags, int newStack)
+        {
+            if (bodyFlags.HasFlag(CharacterBody.BodyFlags.ResistantToAOE))
+                bodyFlags |= CharacterBody.BodyFlags.Mechanical;
+            orig(self, inventory, bodyFlags, newStack);
         }
 
         private void StatsHook(CharacterBody sender, StatHookEventArgs args)
