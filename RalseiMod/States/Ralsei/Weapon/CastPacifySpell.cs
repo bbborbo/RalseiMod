@@ -169,6 +169,8 @@ namespace RalseiMod.States.Ralsei.Weapon
 		}
 		private static bool CopyItemFilter(ItemIndex itemIndex)
 		{
+			if (itemIndex == RoR2Content.Items.AutoCastEquipment.itemIndex)
+				return false;
 			ItemDef itemDef = ItemCatalog.GetItemDef(itemIndex);
 			return itemDef 
 				&& !itemDef.ContainsTag(ItemTag.AIBlacklist) && !itemDef.ContainsTag(ItemTag.BrotherBlacklist) 
@@ -284,7 +286,26 @@ namespace RalseiMod.States.Ralsei.Weapon
 			CharacterBody body = minionMaster.GetBody();
 			if ((bool)body)
 			{
-				body.master.isBoss = false;
+                if (body.isBoss)
+                {
+					//find the squad that this enemy belonged to
+					List<CombatSquad> squads = InstanceTracker.GetInstancesList<CombatSquad>();
+					foreach (CombatSquad squad in squads)
+					{
+						int memberIndex = squad.membersList.IndexOf(victimMaster);
+						if (memberIndex >= 0)
+						{
+							//clear boss status and remove them from the healthbar
+							squad.RemoveMemberAt(memberIndex);
+							//if there are no other enemies remaining in the squad, trigger the defeat of the squad
+							if (!squad.defeatedServer && squad.membersList.Count == 0)
+							{
+								squad.TriggerDefeat();
+							}
+							break;
+						}
+					}
+                }
 				EntityStateMachine[] components = body.GetComponents<EntityStateMachine>();
 				foreach (EntityStateMachine obj2 in components)
 				{
@@ -300,6 +321,7 @@ namespace RalseiMod.States.Ralsei.Weapon
 				//newMaster.inventory.GiveItem(RoR2Content.Items.BoostDamage, 150);
 			}
 		}
+
 		public static CharacterBody SpareAndRecruitEnemyMinion(HealthComponent victimHealthComponent, CharacterBody victimBody, CharacterBody ownerBody)
 		{
 			if (!victimBody || !victimHealthComponent)
