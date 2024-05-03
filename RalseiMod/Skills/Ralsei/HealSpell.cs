@@ -22,19 +22,19 @@ namespace RalseiMod.Skills
         #region config
         public override string ConfigName => "Skill : " + SkillName;
 
-        [AutoConfig("Ability Cooldown", 12)]
+        [AutoConfig("Ability Cooldown", 14)]
         public static float cooldown;
 
         [AutoConfig("Heal Range", 35f)]
         public static float healRange;
 
-        [AutoConfig("Minimum Cast Time", 0.5f)]
+        [AutoConfig("Minimum Cast Time", 0.4f)]
         public static float minCastTime;
 
         [AutoConfig("Immediate Heal Fraction", 0.1f)]
         public static float instantHealPercent;
 
-        [AutoConfig("Passive Heal Duration", 1.5f)]
+        [AutoConfig("Delayed Heal Duration", 1f)]
         public static float healDuration;
         #endregion
         public static GameObject loveBomb;
@@ -72,7 +72,8 @@ namespace RalseiMod.Skills
             canceledFromSprinting = true,
             cancelSprintingOnActivation = true,
             mustKeyPress = true,
-            interruptPriority = InterruptPriority.Skill
+            interruptPriority = InterruptPriority.Skill,
+            baseMaxStock = 2
         };
 
         public override void Init()

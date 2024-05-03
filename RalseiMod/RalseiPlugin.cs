@@ -32,7 +32,7 @@ namespace RalseiMod
         public const string guid = "com." + teamName + "." + modName;
         public const string teamName = "GodRayProd";
         public const string modName = "RalseiMod";
-        public const string version = "0.3.0";
+        public const string version = "0.4.0";
 
         public const string DEVELOPER_PREFIX = "GRP";
 
@@ -76,6 +76,8 @@ namespace RalseiMod
 
             BeginInitializing<SkillBase>(allTypes);
             Modules.Language.TryPrintOutput("RalseiSkills.txt");
+
+            RalseiSurvivor.instance.InitializeCharacterMaster();
 
             // this has to be last
             new Modules.ContentPacks().Initialize();

@@ -20,11 +20,9 @@ namespace RalseiMod.Skills
         #region config
         public override string ConfigName => "Skill : " + SkillName;
 
-        [AutoConfig("Ability Cooldown", 45)]
+        [AutoConfig("Ability Cooldown", 40)]
         public static float cooldown;
 
-        [AutoConfig("Should Champions Be Sparable", "If set to true, champions (aka world-spawn boss enemies) can be spared and turned into an ally.", true)]
-        public static bool championsPacifiable;
         [AutoConfig("Should Pacified Enemies Use Ambient Level", "If set to false, pacified enemies will be revived using player level. This can be used to balance enemy strength, if desired.", true)]
         public static bool useAmbientLevel;
         [AutoConfig("Sleep Conversion Delay", "The amount of seconds an enemy should sleep before converting to an ally.", 5)]
@@ -37,8 +35,12 @@ namespace RalseiMod.Skills
         [AutoConfig("Duplicate Pacified Minions With Swarms", true)]
         public static bool swarmsDuplicate;
 
-        [AutoConfig("Non-Boss Fatigue Duration", 30f)]
+        [AutoConfig("Non-Boss Fatigue Duration", 25f)]
         public static float fatigueDuration;
+        [AutoConfig("Champion Decay Time", "How long should Champions (world-spawn boss-type enemies) live before dying to health decay. Set to 0 to disable.", 40f)]
+        public static int championDecayTime;
+        [AutoConfig("Champions Sparability", "If set to true, champions (world-spawn bosstype enemies) can be spared and turned into an ally.", true)]
+        public static bool championsPacifiable;
         #endregion
         public static BuffDef spareBuff;
         public static DeployableSlot pacifyDeployableSlot;
@@ -108,6 +110,7 @@ namespace RalseiMod.Skills
         }
 
         public DeployableAPI.GetDeployableSameSlotLimit GetPacifySlotLimit;
+
         public override void Hooks()
         {
             GetStatCoefficients += StatsHook;

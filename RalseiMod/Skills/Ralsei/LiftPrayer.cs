@@ -19,18 +19,18 @@ namespace RalseiMod.Skills
         #region config
         public override string ConfigName => "Skill : " + SkillName;
 
-        [AutoConfig("Ability Cooldown", 9)]
+        [AutoConfig("Ability Cooldown", 7)]
         public static float cooldown;
 
-        [AutoConfig("Ascent Duration", 1.5f)]
+        [AutoConfig("Ascent Duration", 1.2f)]
         public static float liftDuration;
         [AutoConfig("Ascent Rate Minimum", 0.2f)]
         public static float liftSpeedMin;
-        [AutoConfig("Ascent Rate Maximum", 3.5f)]
+        [AutoConfig("Ascent Rate Maximum", 3f)]
         public static float liftSpeedMax;
         [AutoConfig("Ascent Rate Affected By Movement Speed", "Should Ralsei's Ascent State be affected by movement speed?", false)]
         public static bool useMoveSpeed;
-        [AutoConfig("Hover Vertical Speed", -7f)]
+        [AutoConfig("Hover Vertical Speed", -5f)]
         public static float hoverVelocity;
         [AutoConfig("Hover Acceleration", "How fast should Ralsei accelerate towards the hover vertical speed while hovering", 30)]
         public static float hoverAcceleration;

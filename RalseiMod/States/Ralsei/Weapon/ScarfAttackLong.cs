@@ -102,6 +102,7 @@ namespace RalseiMod.States.Ralsei.Weapon
             bulletAttack.stopperMask = LayerIndex.world.mask;
             //maxDistance = maxRange;
             bulletAttack.smartCollision = true;
+            bulletAttack.maxDistance = 999;
 
             return bulletAttack;
         }

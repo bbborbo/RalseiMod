@@ -128,16 +128,26 @@ namespace RalseiMod.States.Ralsei.Weapon
 						CharacterBody b = SpareAndRecruitEnemyMinion(hurtBox.healthComponent, victimBody, characterBody);
 						if (b)
 						{
+							if (b.bodyIndex != BodyCatalog.FindBodyIndex("ScavBody") && b.inventory.GetItemCount(RoR2Content.Items.InvadingDoppelganger) <= 0)
+							{
+								b.inventory.CopyItemsFrom(characterBody.inventory, new Func<ItemIndex, bool>(CopyItemFilter));
+
+								if (RunArtifactManager.instance.IsArtifactEnabled(RoR2Content.Artifacts.MonsterTeamGainsItems))
+									b.inventory.AddItemsFrom(RoR2.Artifacts.MonsterTeamGainsItemsArtifactManager.monsterTeamInventory, new Func<ItemIndex, bool>(CopyItemFilter));
+							}
+
 							ReplaceMinionAI(b);
 							EmpowerAndStunMinion(b);
+							//b.inventory.GiveItem(RoR2Content.Items.MinionLeash);
 
 							if (Pacify.swarmsDuplicate && RunArtifactManager.instance.IsArtifactEnabled(RoR2Content.Artifacts.Swarms))
 							{
-								CharacterBody a = RespawnEnemyMinion(hurtBox.healthComponent, victimBody, characterBody);
+								CharacterBody a = RespawnEnemyMinion(b.healthComponent, b, characterBody);
 								if (a)
 								{
-									ReplaceMinionAI(a);
+									//ReplaceMinionAI(a);
 									EmpowerAndStunMinion(a);
+									a.inventory.CopyItemsFrom(b.inventory, new Func<ItemIndex, bool>(CopyItemFilter));
 								}
 							}
 						}
@@ -157,8 +167,17 @@ namespace RalseiMod.States.Ralsei.Weapon
 
 			return false;
 		}
+		private static bool CopyItemFilter(ItemIndex itemIndex)
+		{
+			ItemDef itemDef = ItemCatalog.GetItemDef(itemIndex);
+			return itemDef 
+				&& !itemDef.ContainsTag(ItemTag.AIBlacklist) && !itemDef.ContainsTag(ItemTag.BrotherBlacklist) 
+				&& !itemDef.ContainsTag(ItemTag.CannotCopy) && !itemDef.ContainsTag(ItemTag.HoldoutZoneRelated) 
+				&& (itemDef.tier == ItemTier.Boss || itemDef.tier == ItemTier.Lunar 
+				|| itemDef.tier == ItemTier.Tier1 || itemDef.tier == ItemTier.VoidTier1);
+		}
 
-        private void EmpowerAndStunMinion(CharacterBody body)
+		private void EmpowerAndStunMinion(CharacterBody body)
         {
 			RalseiSurvivor.EmpowerCharacter(body);
 
@@ -177,6 +196,9 @@ namespace RalseiMod.States.Ralsei.Weapon
 
         private static void ReplaceMinionAI(CharacterBody b)
         {
+			if (b.isChampion && b.inventory)
+				b.inventory.GiveItem(RoR2Content.Items.HealthDecay, Pacify.championDecayTime);
+
 			b.masterObject.AddComponent<WarpOnTeleporterBegin>();
 			b.bodyFlags |= CharacterBody.BodyFlags.ResistantToAOE;
             if (b.inventory)
@@ -191,13 +213,13 @@ namespace RalseiMod.States.Ralsei.Weapon
 				AISkillDriver followSkillDriver = minionMaster.gameObject.AddComponent<AISkillDriver>();
 				followSkillDriver.customName = "ReturnToLeader";
 				followSkillDriver.skillSlot = SkillSlot.None;
-				followSkillDriver.minDistance = 110;
+				followSkillDriver.minDistance = 80;
 				followSkillDriver.moveTargetType = AISkillDriver.TargetType.CurrentLeader;
 				followSkillDriver.movementType = AISkillDriver.MovementType.ChaseMoveTarget;
 				followSkillDriver.aimType = AISkillDriver.AimType.AtCurrentEnemy;
 				followSkillDriver.shouldSprint = true;
 				followSkillDriver.buttonPressType = AISkillDriver.ButtonPressType.Hold;
-				followSkillDriver.driverUpdateTimerOverride = 5;
+				followSkillDriver.driverUpdateTimerOverride = 3;
 				followSkillDriver.resetCurrentEnemyOnNextDriverSelection = true;
 
 				InsertFollowDriver(minionMaster, followSkillDriver);
@@ -272,7 +294,7 @@ namespace RalseiMod.States.Ralsei.Weapon
 			return body;
 			void PreSpawnSetup(CharacterMaster newMaster)
 			{
-				newMaster.inventory.GiveItem(RoR2Content.Items.TeleportWhenOob);
+				//newMaster.inventory.GiveItem(RoR2Content.Items.TeleportWhenOob);
 				//newMaster.inventory.GiveItem(RoR2Content.Items.Ghost);
 				//newMaster.inventory.GiveItem(RoR2Content.Items.HealthDecay, duration);
 				//newMaster.inventory.GiveItem(RoR2Content.Items.BoostDamage, 150);
@@ -289,7 +311,7 @@ namespace RalseiMod.States.Ralsei.Weapon
 			Util.CleanseBody(victimBody, true, false, true, true, false, false);
 			victimBody.master.isBoss = false;
 
-			if(victimBody.inventory.GetItemCount(RoR2Content.Items.InvadingDoppelganger) > 0)
+			if(false)//victimBody.inventory.GetItemCount(RoR2Content.Items.InvadingDoppelganger) > 0)
 				victimBody.inventory.RemoveItem(RoR2Content.Items.InvadingDoppelganger);
 
 			CharacterMaster victimMaster = victimBody.master;

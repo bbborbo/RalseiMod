@@ -32,7 +32,7 @@ namespace RalseiMod.Survivors.Ralsei
         [AutoConfig("Base Damage", "Ralsei's base damage. 12 is standard for most survivors.", 14f)]
         public static float ralseiBaseDamage;
 
-        [AutoConfig("Empowerment Armor Bonus", 15)]
+        [AutoConfig("Empowerment Armor Bonus", 20)]
         public static int empowerArmor;
         [AutoConfig("Empowerment Attack Speed Multiplier Bonus", 1.5f)]
         public static float empowerAttackSpeed;
@@ -40,14 +40,14 @@ namespace RalseiMod.Survivors.Ralsei
         public static float empowerSprintSpeed;
         [AutoConfig("Empowerment Movement Speed Multiplier Bonus", 0.3f)]
         public static float empowerMoveSpeed;
-        [AutoConfig("Empowerment Base Regen Bonus", 1f)]
+        [AutoConfig("Empowerment Base Regen Bonus", 2f)]
         public static float empowerRegen;
-        [AutoConfig("Empowerment Cooldown Multiplier", 0.5f)]
+        [AutoConfig("Empowerment Cooldown Reduction", 0.5f)]
         public static float empowerCdr;
 
         [AutoConfig("Tangle Armor Penalty", 20)]
         public static int tangleArmor;
-        [AutoConfig("Tangle Movespeed Penalty", 0.2f)]
+        [AutoConfig("Tangle Movespeed Penalty", 0.4f)]
         public static float tangleMoveSpeed;
 
         [AutoConfig("Fatigued Attack Speed Penalty", "How much should Fatigue increase the victim's attack speed reduction stat.", 0.8f)]
@@ -216,7 +216,7 @@ namespace RalseiMod.Survivors.Ralsei
             InitializeEntityStateMachines();
             InitializeSkills();
             InitializeSkins();
-            InitializeCharacterMaster();
+            //InitializeCharacterMaster();
 
             AdditionalBodySetup();
         }
@@ -248,7 +248,7 @@ namespace RalseiMod.Survivors.Ralsei
 
             Modules.Prefabs.AddEntityStateMachine(bodyPrefab, "Weapon");
         }
-        public override void InitializeCharacterMaster() => HenryAI.Init(bodyPrefab, masterName);
+        public override void InitializeCharacterMaster() => RalseiAI.Init(bodyPrefab, masterName);
         public override void InitializeSkills()
         {
             //remove the genericskills from the commando body we cloned
@@ -307,7 +307,7 @@ namespace RalseiMod.Survivors.Ralsei
                         CharacterBody vBody = victim.GetComponent<CharacterBody>();
                         if (aBody != null && vBody != null && vBody.healthComponent.alive)
                         {
-                            vBody.AddTimedBuff(tangleDebuff.buffIndex, 5f);
+                            vBody.AddTimedBuff(tangleDebuff.buffIndex, 10f);
                             ApplyRalseiCdr(aBody, 0.5f);
                         }
                     }
@@ -386,12 +386,12 @@ namespace RalseiMod.Survivors.Ralsei
 
             Modules.Language.Add(tangleKeywordToken, KeywordText("Tangled", 
                 $"Reduces armor by {UtilityColor("-" + tangleArmor)} and " +
-                $"movement speed by {UtilityColor("-" + ConvertDecimal(tangleMoveSpeed))} for {5} seconds. " +
+                $"movement speed by {UtilityColor("-" + ConvertDecimal(tangleMoveSpeed))} for {10} seconds. " +
                 $"{DamageColor("Tangled targets are prioritized by your allies")}."));
             Modules.Language.Add(empowerKeywordToken, KeywordText("Empowered", 
                 $"Gain +{ConvertDecimal(empowerAttackSpeed)} {DamageColor("attack speed")}, " +
                 $"+{ConvertDecimal(empowerMoveSpeed)} {DamageColor("movement speed")}, " +
-                $"-{ConvertDecimal(1 - empowerCdr)} {UtilityColor("cooldown reduction")}, " +
+                $"-{ConvertDecimal(empowerCdr)} {UtilityColor("cooldown reduction")}, " +
                 $"+{empowerArmor} {UtilityColor("armor")}, " +
                 $"and +{empowerRegen} {HealingColor("base health regeneration per second")}. " +
                 $"Can stack."));
@@ -499,7 +499,7 @@ namespace RalseiMod.Survivors.Ralsei
             {
                 args.attackSpeedMultAdd += empowerAttackSpeed * empowerCount;
                 args.moveSpeedMultAdd += empowerMoveSpeed * empowerCount;
-                args.cooldownMultAdd *= Mathf.Pow(empowerCdr, empowerCount);
+                args.cooldownMultAdd *= Mathf.Pow(1 - empowerCdr, empowerCount);
                 args.baseRegenAdd += empowerRegen * (1 + 0.3f * (sender.level - 1));
                 args.armorAdd += empowerArmor * empowerCount;
                 args.sprintSpeedAdd += empowerSprintSpeed;

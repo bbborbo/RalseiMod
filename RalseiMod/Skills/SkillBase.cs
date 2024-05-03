@@ -43,7 +43,19 @@ namespace RalseiMod.Skills
         public abstract SimpleSkillData SkillData { get; }
         public string[] KeywordTokens;
         public virtual string ActivationStateMachineName { get; set; } = "Weapon";
-        public SkillDef SkillDef;
+        public SkillDef SkillDef { 
+            get 
+            {
+                if (_SkillDef == null)
+                    _SkillDef = (SkillDef)ScriptableObject.CreateInstance(BaseSkillDef);
+                return _SkillDef;
+            }
+            set
+            {
+                _SkillDef = value;
+            }
+        }
+        private SkillDef _SkillDef;
 
         public override void Init()
         {
@@ -63,7 +75,8 @@ namespace RalseiMod.Skills
         public Sprite LoadSpriteFromRorSkill(string path) { return Addressables.LoadAssetAsync<SkillDef>(path).WaitForCompletion().icon; }
         private void CreateSkill()
         {
-            SkillDef = (SkillDef)ScriptableObject.CreateInstance(BaseSkillDef);
+            if(SkillDef == null)
+                SkillDef = (SkillDef)ScriptableObject.CreateInstance(BaseSkillDef);
 
             Content.AddEntityState(ActivationState);
             SkillDef.activationState = new SerializableEntityStateType(ActivationState);
