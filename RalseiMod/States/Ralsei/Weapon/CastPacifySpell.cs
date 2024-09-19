@@ -160,7 +160,8 @@ namespace RalseiMod.States.Ralsei.Weapon
 					}
 
 					//if the previous check was false, apply the sleepy buff instead
-					hurtBox.healthComponent.body.AddTimedBuff(RalseiSurvivor.sleepyDebuff.buffIndex, 15f);
+					victimBody.AddTimedBuff(RalseiSurvivor.sleepyDebuff.buffIndex, Pacify.fatigueDuration);
+					Aggro.AggroMinionsToEnemy(characterBody, victimBody, true);
 					return true;
 				}
 			}

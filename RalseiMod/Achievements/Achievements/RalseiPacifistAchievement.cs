@@ -8,7 +8,7 @@ using System.Text;
 
 namespace RalseiMod.Achievements
 {
-    [RegisterAchievement("RalseiPacifist", unlockableIdentifier, null, null)]
+    [RegisterAchievement("RalseiPacifist", unlockableIdentifier, null, uint.MaxValue, null)]
     public class RalseiPacifistAchievement : BaseAchievement
     {
         public const string identifier = RalseiSurvivor.RALSEI_PREFIX + "pacifistAchievement";
@@ -35,7 +35,7 @@ namespace RalseiMod.Achievements
         private void KillCheck(On.RoR2.GlobalEventManager.orig_OnCharacterDeath orig, GlobalEventManager self, DamageReport damageReport)
         {
             if (damageReport.attackerBodyIndex == LookUpRequiredBodyIndex() && damageReport.attackerTeamIndex == TeamIndex.Player 
-                && CastPacifySpell.IsCharacterPacifiableAndSparable(damageReport.victimBody) && !damageReport.damageInfo.damageType.HasFlag(DamageType.OutOfBounds))
+                && CastPacifySpell.IsCharacterPacifiableAndSparable(damageReport.victimBody) && !damageReport.damageInfo.damageType.damageType.HasFlag(DamageType.OutOfBounds))
             {
                 if (killCount == 0)
                 {

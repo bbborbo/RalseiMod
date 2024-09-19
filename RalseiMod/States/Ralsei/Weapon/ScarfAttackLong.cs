@@ -54,7 +54,7 @@ namespace RalseiMod.States.Ralsei.Weapon
         //however in this state, both attacks are essentially identical aside from their AVFX, so they are using a common BulletAttack 
         public override void FireAttackCombo()
         {
-            float recoil = 2.8f / this.attackSpeedStat;
+            float recoil = 2.2f / this.attackSpeedStat;
             base.AddRecoil(-recoil, -2f * recoil, -recoil, recoil);
             base.characterBody.SetAimTimer(2f);
             Util.PlaySound(new LoaderMeleeAttack().beginSwingSoundString, base.gameObject);
@@ -70,7 +70,7 @@ namespace RalseiMod.States.Ralsei.Weapon
         }
         public override void FireAttack()
         {
-            float recoil = 1.2f / this.attackSpeedStat;
+            float recoil = 0.8f / this.attackSpeedStat;
             base.AddRecoil(-recoil, -2f * recoil, -recoil, recoil);
             base.characterBody.SetAimTimer(2f);
             Util.PlaySound(new LoaderMeleeAttack().beginSwingSoundString, base.gameObject);

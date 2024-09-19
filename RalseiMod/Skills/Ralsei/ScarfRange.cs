@@ -86,7 +86,7 @@ namespace RalseiMod.Skills
 
         private void CreateTracer()
         {
-            tracerThread = Assets.CloneTracer("TracerGolem", "TracerRalseiThread");
+            tracerThread = Modules.Assets.CloneTracer("TracerGolem", "TracerRalseiThread");
             /*tracerThread = RoR2.LegacyResourcesAPI.Load<GameObject>("prefabs/effects/tracers/TracerGolem").InstantiateClone("tracerRalseiThread", false);
             Tracer buckshotTracer = tracerThread.GetComponent<Tracer>();
             buckshotTracer.speed = 300f;
@@ -102,7 +102,7 @@ namespace RalseiMod.Skills
             main.startSizeYMultiplier *= 0.3f;
             main.startSizeZMultiplier *= 1.5f;
 
-            tracerThreadCombo = Assets.CloneTracer("TracerGolem", "TracerRalseiThreadCombo");
+            tracerThreadCombo = Modules.Assets.CloneTracer("TracerGolem", "TracerRalseiThreadCombo");
             /*tracerThread = RoR2.LegacyResourcesAPI.Load<GameObject>("prefabs/effects/tracers/TracerGolem").InstantiateClone("tracerRalseiThread", false);
             Tracer buckshotTracer = tracerThread.GetComponent<Tracer>();
             buckshotTracer.speed = 300f;

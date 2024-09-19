@@ -93,7 +93,7 @@ namespace RalseiMod.Skills
         private static void CreateBombProjectile()
         {
             //highly recommend setting up projectiles in editor, but this is a quick and dirty way to prototype if you want
-            loveBomb = Assets.CloneProjectilePrefab("CryoCanisterProjectile", "RalseiLoveBomb");
+            loveBomb = Modules.Assets.CloneProjectilePrefab("CryoCanisterProjectile", "RalseiLoveBomb");
 
             //remove their ProjectileImpactExplosion component and start from default values
             UnityEngine.Object.Destroy(loveBomb.GetComponent<ProjectileImpactExplosion>());

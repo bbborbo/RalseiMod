@@ -25,7 +25,7 @@ namespace RalseiMod
     [BepInDependency("com.johnedwa.RTAutoSprintEx", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("com.RiskOfBrainrot.Ror2AggroTools", BepInDependency.DependencyFlags.HardDependency)]
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
-    [R2APISubmoduleDependency(nameof(DeployableAPI), nameof(LanguageAPI), nameof(LoadoutAPI), nameof(PrefabAPI), nameof(DamageAPI))]
+    [R2APISubmoduleDependency(nameof(DeployableAPI), nameof(LanguageAPI), nameof(LoadoutAPI), nameof(PrefabAPI), nameof(DamageAPI), nameof(TempVisualEffectAPI))]
     [BepInPlugin(guid, modName, version)]
     public class RalseiPlugin : BaseUnityPlugin
     {

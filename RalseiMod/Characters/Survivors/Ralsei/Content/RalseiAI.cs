@@ -17,105 +17,141 @@ namespace RalseiMod.Survivors.Ralsei
 
             //some fields omitted that aren't commonly changed. will be set to default values
 
-            AISkillDriver equipmentDriver = master.AddComponent<AISkillDriver>();
+
+            AISkillDriver utilityFlee = master.AddComponent<AISkillDriver>();
             //Selection Conditions
-            equipmentDriver.customName = "FireEquipmentAndPursue";
-            equipmentDriver.skillSlot = SkillSlot.None;
-            equipmentDriver.requireSkillReady = false;
-            equipmentDriver.requireEquipmentReady = true;
-            equipmentDriver.minDistance = 40;
-            equipmentDriver.maxDistance = 120;
-            equipmentDriver.selectionRequiresTargetLoS = true;
-            equipmentDriver.selectionRequiresOnGround = false;
-            equipmentDriver.selectionRequiresAimTarget = false;
-            equipmentDriver.maxTimesSelected = -1;
-            equipmentDriver.noRepeat = true;
-
+            utilityFlee.customName = "UtilityFlee";
+            utilityFlee.skillSlot = SkillSlot.Utility;
+            utilityFlee.requiredSkill = LiftPrayer.instance.SkillDef;
+            utilityFlee.requireSkillReady = true;
+            utilityFlee.minDistance = 0;
+            utilityFlee.maxDistance = 30;
+            utilityFlee.selectionRequiresTargetLoS = true;
+            utilityFlee.selectionRequiresOnGround = false;
+            utilityFlee.selectionRequiresAimTarget = false;
+            utilityFlee.maxTimesSelected = -1;
             //Behavior
-            equipmentDriver.maxUserHealthFraction = 1f;
-            equipmentDriver.minUserHealthFraction = 0f;
-            equipmentDriver.moveTargetType = AISkillDriver.TargetType.CurrentEnemy;
-            equipmentDriver.activationRequiresTargetLoS = true;
-            equipmentDriver.activationRequiresAimTargetLoS = false;
-            equipmentDriver.activationRequiresAimConfirmation = true;
-            equipmentDriver.movementType = AISkillDriver.MovementType.ChaseMoveTarget;
-            equipmentDriver.moveInputScale = 1;
-            equipmentDriver.aimType = AISkillDriver.AimType.AtMoveTarget;
-            equipmentDriver.buttonPressType = AISkillDriver.ButtonPressType.TapContinuous;
-            equipmentDriver.driverUpdateTimerOverride = -1f;
+            utilityFlee.moveTargetType = AISkillDriver.TargetType.CurrentEnemy;
+            utilityFlee.activationRequiresTargetLoS = false;
+            utilityFlee.activationRequiresAimTargetLoS = false;
+            utilityFlee.activationRequiresAimConfirmation = false;
+            utilityFlee.movementType = AISkillDriver.MovementType.FleeMoveTarget;
+            utilityFlee.moveInputScale = 1;
+            utilityFlee.aimType = AISkillDriver.AimType.AtMoveTarget;
+            utilityFlee.buttonPressType = AISkillDriver.ButtonPressType.TapContinuous;
+            utilityFlee.driverUpdateTimerOverride = -1f;
 
-            AISkillDriver healDriver = master.AddComponent<AISkillDriver>();
+            AISkillDriver fleeEnemy = master.AddComponent<AISkillDriver>();
             //Selection Conditions
-            healDriver.customName = "SecondaryHeal";
-            healDriver.skillSlot = SkillSlot.Secondary;
-            healDriver.requiredSkill = HealSpell.instance.SkillDef;
-            healDriver.requireSkillReady = true;
-            healDriver.minDistance = 0;
-            healDriver.maxDistance = 60;
-            healDriver.selectionRequiresTargetLoS = true;
-            healDriver.selectionRequiresOnGround = false;
-            healDriver.selectionRequiresAimTarget = true;
-            healDriver.maxTimesSelected = 5;
-
+            fleeEnemy.customName = "FleeEnemy";
+            fleeEnemy.skillSlot = SkillSlot.None;
+            fleeEnemy.requireSkillReady = false;
+            fleeEnemy.minDistance = 0;
+            fleeEnemy.maxDistance = 10;
             //Behavior
-            healDriver.maxUserHealthFraction = 0.5f;
-            healDriver.minTargetHealthFraction = 0.1f;
-            healDriver.maxTargetHealthFraction = 0.7f;
-            healDriver.moveTargetType = AISkillDriver.TargetType.NearestFriendlyInSkillRange;
-            healDriver.activationRequiresTargetLoS = false;
-            healDriver.activationRequiresAimTargetLoS = false;
-            healDriver.activationRequiresAimConfirmation = true;
-            healDriver.movementType = AISkillDriver.MovementType.Stop;
-            healDriver.moveInputScale = 1;
-            healDriver.aimType = AISkillDriver.AimType.AtMoveTarget;
-            healDriver.buttonPressType = AISkillDriver.ButtonPressType.Hold;
-            healDriver.driverUpdateTimerOverride = 1f;
-            healDriver.noRepeat = true;
+            fleeEnemy.moveTargetType = AISkillDriver.TargetType.CurrentEnemy;
+            fleeEnemy.activationRequiresTargetLoS = false;
+            fleeEnemy.activationRequiresAimTargetLoS = false;
+            fleeEnemy.activationRequiresAimConfirmation = false;
+            fleeEnemy.movementType = AISkillDriver.MovementType.FleeMoveTarget;
+            fleeEnemy.moveInputScale = 1;
+            fleeEnemy.aimType = AISkillDriver.AimType.MoveDirection;
+            fleeEnemy.buttonPressType = AISkillDriver.ButtonPressType.Hold;
+            fleeEnemy.shouldSprint = true;
+            fleeEnemy.driverUpdateTimerOverride = 3;
 
-            AISkillDriver ascendDriver = master.AddComponent<AISkillDriver>();
+            AISkillDriver chaseAlly = master.AddComponent<AISkillDriver>();
             //Selection Conditions
-            ascendDriver.customName = "UtilityRise";
-            ascendDriver.skillSlot = SkillSlot.Utility;
-            ascendDriver.requiredSkill = LiftPrayer.instance.SkillDef;
-            ascendDriver.requireSkillReady = true;
-            ascendDriver.minDistance = 0;
-            ascendDriver.maxDistance = 20;
-            ascendDriver.selectionRequiresTargetLoS = true;
-            ascendDriver.selectionRequiresOnGround = false;
-            ascendDriver.selectionRequiresAimTarget = false;
-            ascendDriver.maxTimesSelected = -1;
-
+            chaseAlly.customName = "ChaseAlly";
+            chaseAlly.skillSlot = SkillSlot.None;
+            chaseAlly.requireSkillReady = false;
+            chaseAlly.minDistance = 50;
+            chaseAlly.maxDistance = float.PositiveInfinity;
+            chaseAlly.resetCurrentEnemyOnNextDriverSelection = true;
             //Behavior
-            ascendDriver.moveTargetType = AISkillDriver.TargetType.CurrentEnemy;
-            ascendDriver.activationRequiresTargetLoS = false;
-            ascendDriver.activationRequiresAimTargetLoS = false;
-            ascendDriver.activationRequiresAimConfirmation = false;
-            ascendDriver.movementType = AISkillDriver.MovementType.FleeMoveTarget;
-            ascendDriver.moveInputScale = 1;
-            ascendDriver.aimType = AISkillDriver.AimType.AtMoveTarget;
-            ascendDriver.buttonPressType = AISkillDriver.ButtonPressType.TapContinuous;
-            ascendDriver.driverUpdateTimerOverride = -1f;
+            chaseAlly.moveTargetType = AISkillDriver.TargetType.NearestFriendlyInSkillRange;
+            chaseAlly.activationRequiresTargetLoS = false;
+            chaseAlly.activationRequiresAimTargetLoS = false;
+            chaseAlly.activationRequiresAimConfirmation = false;
+            chaseAlly.movementType = AISkillDriver.MovementType.FleeMoveTarget;
+            chaseAlly.moveInputScale = 1;
+            chaseAlly.aimType = AISkillDriver.AimType.MoveDirection;
+            chaseAlly.buttonPressType = AISkillDriver.ButtonPressType.Hold;
+            chaseAlly.shouldSprint = true;
+            chaseAlly.driverUpdateTimerOverride = 3;
 
-            AISkillDriver fleeDriver = master.AddComponent<AISkillDriver>();
+            AISkillDriver buffAlly = master.AddComponent<AISkillDriver>();
             //Selection Conditions
-            fleeDriver.customName = "Flee";
-            fleeDriver.skillSlot = SkillSlot.None;
-            fleeDriver.requireSkillReady = false;
-            fleeDriver.minDistance = 0;
-            fleeDriver.maxDistance = 10;
-            fleeDriver.resetCurrentEnemyOnNextDriverSelection = true;
-
+            buffAlly.customName = "BuffAlly";
+            buffAlly.skillSlot = SkillSlot.Secondary;
+            buffAlly.requireSkillReady = true;
+            buffAlly.minDistance = 0;
+            buffAlly.maxDistance = 50;
+            buffAlly.selectionRequiresTargetLoS = false;
+            buffAlly.selectionRequiresOnGround = false;
+            buffAlly.selectionRequiresAimTarget = false;
+            buffAlly.maxTimesSelected = 5;
             //Behavior
-            fleeDriver.moveTargetType = AISkillDriver.TargetType.CurrentEnemy;
-            fleeDriver.activationRequiresTargetLoS = false;
-            fleeDriver.activationRequiresAimTargetLoS = false;
-            fleeDriver.activationRequiresAimConfirmation = false;
-            fleeDriver.movementType = AISkillDriver.MovementType.FleeMoveTarget;
-            fleeDriver.moveInputScale = 1;
-            fleeDriver.aimType = AISkillDriver.AimType.MoveDirection;
-            fleeDriver.buttonPressType = AISkillDriver.ButtonPressType.Hold;
-            fleeDriver.shouldSprint = true;
-            fleeDriver.driverUpdateTimerOverride = 3;
+            //buffAlly.maxUserHealthFraction = 0.5f;
+            buffAlly.moveTargetType = AISkillDriver.TargetType.NearestFriendlyInSkillRange;
+            buffAlly.activationRequiresTargetLoS = false;
+            buffAlly.activationRequiresAimTargetLoS = false;
+            buffAlly.activationRequiresAimConfirmation = false;
+            buffAlly.movementType = AISkillDriver.MovementType.ChaseMoveTarget;
+            buffAlly.moveInputScale = 0.1f;
+            buffAlly.aimType = AISkillDriver.AimType.AtMoveTarget;
+            buffAlly.buttonPressType = AISkillDriver.ButtonPressType.Hold;
+            buffAlly.driverUpdateTimerOverride = 2f;
+
+            AISkillDriver empowerAlly = master.AddComponent<AISkillDriver>();
+            //Selection Conditions
+            empowerAlly.customName = "EmpowerAlly";
+            empowerAlly.skillSlot = SkillSlot.Special;
+            empowerAlly.requireSkillReady = true;
+            empowerAlly.minDistance = 0;
+            empowerAlly.maxDistance = 50;
+            empowerAlly.selectionRequiresTargetLoS = false;
+            empowerAlly.selectionRequiresOnGround = false;
+            empowerAlly.selectionRequiresAimTarget = false;
+            //empowerAlly.maxTimesSelected = 5;
+            //Behavior
+            empowerAlly.moveTargetType = AISkillDriver.TargetType.NearestFriendlyInSkillRange;
+            //empowerAlly.maxUserHealthFraction = 0.5f;
+            empowerAlly.activationRequiresTargetLoS = false;
+            empowerAlly.activationRequiresAimTargetLoS = false;
+            empowerAlly.activationRequiresAimConfirmation = false;
+            empowerAlly.movementType = AISkillDriver.MovementType.ChaseMoveTarget;
+            empowerAlly.moveInputScale = 0.1f;
+            empowerAlly.aimType = AISkillDriver.AimType.AtMoveTarget;
+            empowerAlly.buttonPressType = AISkillDriver.ButtonPressType.Hold;
+            empowerAlly.driverUpdateTimerOverride = 2;
+
+            AISkillDriver equipmentPursue = master.AddComponent<AISkillDriver>();
+            //Selection Conditions
+            equipmentPursue.customName = "FireEquipmentAndPursue";
+            equipmentPursue.skillSlot = SkillSlot.None;
+            equipmentPursue.requireSkillReady = false;
+            equipmentPursue.requireEquipmentReady = true;
+            equipmentPursue.minDistance = 40;
+            equipmentPursue.maxDistance = 120;
+            equipmentPursue.selectionRequiresTargetLoS = true;
+            equipmentPursue.selectionRequiresOnGround = false;
+            equipmentPursue.selectionRequiresAimTarget = false;
+            equipmentPursue.maxTimesSelected = -1;
+            equipmentPursue.noRepeat = true;
+            //Behavior
+            equipmentPursue.shouldFireEquipment = true;
+            equipmentPursue.maxUserHealthFraction = 1f;
+            equipmentPursue.minUserHealthFraction = 0f;
+            equipmentPursue.moveTargetType = AISkillDriver.TargetType.CurrentEnemy;
+            equipmentPursue.activationRequiresTargetLoS = true;
+            equipmentPursue.activationRequiresAimTargetLoS = false;
+            equipmentPursue.activationRequiresAimConfirmation = true;
+            equipmentPursue.movementType = AISkillDriver.MovementType.ChaseMoveTarget;
+            equipmentPursue.moveInputScale = 1;
+            equipmentPursue.aimType = AISkillDriver.AimType.AtMoveTarget;
+            equipmentPursue.buttonPressType = AISkillDriver.ButtonPressType.TapContinuous;
+            equipmentPursue.driverUpdateTimerOverride = -1f;
 
             //mouse over these fields for tooltips
             AISkillDriver scarfRangeDriver = master.AddComponent<AISkillDriver>();
@@ -155,31 +191,9 @@ namespace RalseiMod.Survivors.Ralsei
             scarfRangeDriver.noRepeat = true;
             scarfRangeDriver.nextHighPriorityOverride = null;
 
-            /*AISkillDriver empowerDriver = master.AddComponent<AISkillDriver>();
-            //Selection Conditions
-            empowerDriver.customName = "SpecialEmpower";
-            empowerDriver.skillSlot = SkillSlot.Special;
-            empowerDriver.requireSkillReady = true;
-            empowerDriver.minDistance = 0;
-            empowerDriver.maxDistance = 20;
-            empowerDriver.selectionRequiresTargetLoS = false;
-            empowerDriver.selectionRequiresOnGround = false;
-            empowerDriver.selectionRequiresAimTarget = false;
-            empowerDriver.maxTimesSelected = -1;
-
-            //Behavior
-            empowerDriver.moveTargetType = AISkillDriver.TargetType.CurrentEnemy;
-            empowerDriver.activationRequiresTargetLoS = false;
-            empowerDriver.activationRequiresAimTargetLoS = false;
-            empowerDriver.activationRequiresAimConfirmation = false;
-            empowerDriver.movementType = AISkillDriver.MovementType.ChaseMoveTarget;
-            empowerDriver.moveInputScale = 1;
-            empowerDriver.aimType = AISkillDriver.AimType.AtMoveTarget;
-            empowerDriver.buttonPressType = AISkillDriver.ButtonPressType.Abstain;*/
-
             AISkillDriver chaseDriver = master.AddComponent<AISkillDriver>();
             //Selection Conditions
-            chaseDriver.customName = "Chase";
+            chaseDriver.customName = "ChaseEnemy";
             chaseDriver.skillSlot = SkillSlot.None;
             chaseDriver.requireSkillReady = false;
             chaseDriver.minDistance = 0;

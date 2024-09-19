@@ -23,37 +23,39 @@ namespace RalseiMod.Survivors.Ralsei
         #region config
         public override string ConfigName => "Survivor : " + CharacterName;
 
+        [AutoConfig("Jump Count", "Ralsei's base jump count. 1 is standard for most survivors.", 2)]
+        public static int ralseiJumpCount = 2;
         [AutoConfig("Jump Power", "Ralsei's jump power. 15 is standard for most survivors.", 19f)]
-        public static float ralseiJumpPower;
+        public static float ralseiJumpPower = 19f;
         [AutoConfig("Movement Speed", "Ralsei's movement speed. 7 is standard for most survivors.", 8f)]
-        public static float ralseiMoveSpeed;
+        public static float ralseiMoveSpeed = 8f;
         [AutoConfig("Base Health", "Ralsei's base health. 110 is standard for most survivors.", 55f)]
-        public static float ralseiBaseHealth;
+        public static float ralseiBaseHealth = 55f;
         [AutoConfig("Base Damage", "Ralsei's base damage. 12 is standard for most survivors.", 14f)]
-        public static float ralseiBaseDamage;
+        public static float ralseiBaseDamage = 14f;
 
         [AutoConfig("Empowerment Armor Bonus", 20)]
-        public static int empowerArmor;
+        public static int empowerArmor = 20;
         [AutoConfig("Empowerment Attack Speed Multiplier Bonus", 1.5f)]
-        public static float empowerAttackSpeed;
+        public static float empowerAttackSpeed = 1.5f;
         [AutoConfig("Empowerment Sprint Speed Multiplier Bonus", 1f)]
-        public static float empowerSprintSpeed;
+        public static float empowerSprintSpeed = 1f;
         [AutoConfig("Empowerment Movement Speed Multiplier Bonus", 0.3f)]
-        public static float empowerMoveSpeed;
+        public static float empowerMoveSpeed = 0.3f;
         [AutoConfig("Empowerment Base Regen Bonus", 2f)]
-        public static float empowerRegen;
+        public static float empowerRegen = 2f;
         [AutoConfig("Empowerment Cooldown Reduction", 0.5f)]
-        public static float empowerCdr;
+        public static float empowerCdr = 0.5f;
 
         [AutoConfig("Tangle Armor Penalty", 20)]
-        public static int tangleArmor;
+        public static int tangleArmor = 20;
         [AutoConfig("Tangle Movespeed Penalty", 0.4f)]
-        public static float tangleMoveSpeed;
+        public static float tangleMoveSpeed = 0.4f;
 
         [AutoConfig("Fatigued Attack Speed Penalty", "How much should Fatigue increase the victim's attack speed reduction stat.", 0.8f)]
-        public static float fatigueSpeedPenalty;
+        public static float fatigueSpeedPenalty = 0.8f;
         [AutoConfig("Fatigued Armor Penalty", "How much should Fatigue reduce the victim's armor.", 60)]
-        public static int fatigueArmorPenalty;
+        public static int fatigueArmorPenalty = 60;
         #endregion
         #region language
         public override string CharacterName => "Ralsei";
@@ -73,7 +75,8 @@ namespace RalseiMod.Survivors.Ralsei
         public static string fatigueKeywordToken = RalseiPlugin.DEVELOPER_PREFIX + "_KEYWORD_FATIGUE";
 
         public static BuffDef empowerBuff;
-        public static Material empowerOverlayMaterial;
+        public static Material empowerOverlayMaterialFriendly;
+        public static Material empowerOverlayMaterialEnemy;
 
         public static ModdedDamageType TangleOnHit;
         public static BuffDef tangleDebuff;
@@ -103,7 +106,7 @@ namespace RalseiMod.Survivors.Ralsei
             bodyColor = new Color32(0,255,127,100),
             sortPosition = 100,
 
-            crosshair = Assets.LoadCrosshair("Standard"),
+            crosshair = RalseiMod.Modules.Assets.LoadCrosshair("Standard"),
             podPrefab = LegacyResourcesAPI.Load<GameObject>("Prefabs/NetworkedObjects/SurvivorPod"),
 
             maxHealth = ralseiBaseHealth,
@@ -112,7 +115,7 @@ namespace RalseiMod.Survivors.Ralsei
             moveSpeed = ralseiMoveSpeed,
             damage = ralseiBaseDamage,
 
-            jumpCount = 1,
+            jumpCount = ralseiJumpCount,
             jumpPower = ralseiJumpPower,
         };
 
@@ -201,10 +204,13 @@ namespace RalseiMod.Survivors.Ralsei
 
             empowerBuff = Content.CreateAndAddBuff("RalseiEmpower", null, Color.yellow, true, false);
 
-            empowerOverlayMaterial = UnityEngine.Object.Instantiate(Addressables.LoadAssetAsync<Material>("RoR2/Base/CritOnUse/matFullCrit.mat").WaitForCompletion());
+            empowerOverlayMaterialFriendly = UnityEngine.Object.Instantiate(Addressables.LoadAssetAsync<Material>("RoR2/Base/CritOnUse/matFullCrit.mat").WaitForCompletion());
+            empowerOverlayMaterialFriendly.SetColor("_TintColor", new Color32(90, 180, 0, 191)/*(150, 110, 0, 191)*/);
+            empowerOverlayMaterialFriendly.SetTexture("_RemapTex", Addressables.LoadAssetAsync<Texture>("RoR2/Base/Common/ColorRamps/texRampBanditSplatter.png").WaitForCompletion());
 
-            empowerOverlayMaterial.SetColor("_TintColor", new Color32(110, 150, 0, 191)/*(150, 110, 0, 191)*/);
-            empowerOverlayMaterial.SetTexture("_RemapTex", Addressables.LoadAssetAsync<Texture>("RoR2/Base/Common/ColorRamps/texRampBanditSplatter.png").WaitForCompletion());
+            empowerOverlayMaterialEnemy = UnityEngine.Object.Instantiate(Addressables.LoadAssetAsync<Material>("RoR2/Base/CritOnUse/matFullCrit.mat").WaitForCompletion());
+            empowerOverlayMaterialEnemy.SetColor("_TintColor", new Color32(180, 0, 90, 191)/*(150, 110, 0, 191)*/);
+            empowerOverlayMaterialEnemy.SetTexture("_RemapTex", Addressables.LoadAssetAsync<Texture>("RoR2/Base/Common/ColorRamps/texRampBanditSplatter.png").WaitForCompletion());
             LanguageAPI.Add(RALSEI_PREFIX + "EMPOWERED_MODIFIER", "Empowered {0}");
 
 
@@ -287,10 +293,10 @@ namespace RalseiMod.Survivors.Ralsei
             On.RoR2.CharacterModel.UpdateOverlays += EmpowerOverlay;
             //On.RoR2.CharacterBody.UpdateAllTemporaryVisualEffects += EmpowerVisualEffect;
             On.RoR2.Util.GetBestBodyName += EmpowermentNameModifier;
-            On.RoR2.GlobalEventManager.OnHitEnemy += TangleOnHitHook;
+            On.RoR2.GlobalEventManager.ProcessHitEnemy += TangleOnHitHook;
         }
 
-        private void TangleOnHitHook(On.RoR2.GlobalEventManager.orig_OnHitEnemy orig, GlobalEventManager self, DamageInfo damageInfo, GameObject victim)
+        private void TangleOnHitHook(On.RoR2.GlobalEventManager.orig_ProcessHitEnemy orig, GlobalEventManager self, DamageInfo damageInfo, GameObject victim)
         {
             orig(self, damageInfo, victim);
 
@@ -351,7 +357,8 @@ namespace RalseiMod.Survivors.Ralsei
                 return;
             }
 
-            AddOverlay(empowerOverlayMaterial, self.body.HasBuff(empowerBuff));
+            AddOverlay(empowerOverlayMaterialFriendly, self.body.HasBuff(empowerBuff) && self.body.teamComponent.teamIndex == TeamIndex.Player);
+            AddOverlay(empowerOverlayMaterialEnemy, self.body.HasBuff(empowerBuff) && self.body.teamComponent.teamIndex != TeamIndex.Player);
             AddOverlay(tangleOverlayMaterial, self.body.HasBuff(tangleDebuff));
 
             void AddOverlay(Material overlayMaterial, bool condition)
