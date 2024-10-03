@@ -88,7 +88,7 @@ namespace RalseiMod.Survivors.Ralsei
         public static Material tangleTemporaryEffectMaterial = null;
         public static Material tangleOverlayMaterial;
 
-        public static BuffDef sleepyDebuff;
+        public static BuffDef fatigueDebuff;
         public override string bodyName => "RalseiBody"; 
         public override string masterName => "RalseiMonsterMaster";
 
@@ -106,7 +106,7 @@ namespace RalseiMod.Survivors.Ralsei
             bodyNameToken = RALSEI_PREFIX + "NAME",
             subtitleNameToken = RALSEI_PREFIX + "SUBTITLE",
 
-            characterPortrait = assetBundle.LoadAsset<Texture>("texHenryIcon"),
+            characterPortrait = assetBundle.LoadAsset<Texture>("texRalseiIcon"),
             bodyColor = new Color32(0,255,127,100),
             sortPosition = 100,
 
@@ -139,6 +139,8 @@ namespace RalseiMod.Survivors.Ralsei
         //set in base classes
         public override AssetBundle assetBundle => RalseiPlugin.mainAssetBundle;
 
+
+        public override BodyIndex bodyIndex { get; protected set; }
         public override GameObject bodyPrefab { get; protected set; }
         public override CharacterBody prefabCharacterBody { get; protected set; }
         public override GameObject characterModelObject { get; protected set; }
@@ -169,7 +171,13 @@ namespace RalseiMod.Survivors.Ralsei
             base.InitializeCharacter();
 
             TangleOnHit = DamageAPI.ReserveDamageType();
-            tangleDebuff = Content.CreateAndAddBuff("RalseiTangle", null, Color.magenta, false, true);
+            tangleDebuff = Content.CreateAndAddBuff(
+                "RalseiTangle",
+                Addressables.LoadAssetAsync<Sprite>("RoR2/Base/ElementalRings/texBuffElementalRingsReadyIcon.tif").WaitForCompletion(),
+                Color.magenta, 
+                false, 
+                true
+                );
 
             tangleTemporaryEffectPrefab = PrefabAPI.InstantiateClone(
                 Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Common/CrippleEffect.prefab").WaitForCompletion(), "TangleEffect");
@@ -209,7 +217,13 @@ namespace RalseiMod.Survivors.Ralsei
             tangleOverlayMaterial.SetTexture("_RemapTex", Addressables.LoadAssetAsync<Texture>("RoR2/DLC1/Common/ColorRamps/texRampConstructLaserTypeB.png").WaitForCompletion());
 
 
-            empowerBuff = Content.CreateAndAddBuff("RalseiEmpower", null, Color.yellow, true, false);
+            empowerBuff = Content.CreateAndAddBuff(
+                "RalseiEmpower",
+                Addressables.LoadAssetAsync<Sprite>("RoR2/Base/WardOnLevel/texBuffWarbannerIcon.tif").WaitForCompletion(),
+                Color.yellow, 
+                true, 
+                false
+                );
 
             empowerOverlayMaterialFriendly = UnityEngine.Object.Instantiate(Addressables.LoadAssetAsync<Material>("RoR2/Base/CritOnUse/matFullCrit.mat").WaitForCompletion());
             empowerOverlayMaterialFriendly.SetColor("_TintColor", new Color32(90, 180, 0, 191)/*(150, 110, 0, 191)*/);
@@ -221,7 +235,13 @@ namespace RalseiMod.Survivors.Ralsei
             LanguageAPI.Add(RALSEI_PREFIX + "EMPOWERED_MODIFIER", "Empowered {0}");
 
 
-            sleepyDebuff = Content.CreateAndAddBuff("RalseiFatigue", null, Color.gray, false, true); 
+            fatigueDebuff = Content.CreateAndAddBuff(
+                "RalseiFatigue", 
+                Addressables.LoadAssetAsync<Sprite>("RoR2/Base/Bandit2/texBuffSuperBleedingIcon.tif").WaitForCompletion(), 
+                Color.gray, 
+                false, 
+                true
+                );
 
             HenryAssets.Init(assetBundle);
             HenryBuffs.Init(assetBundle);
@@ -281,6 +301,12 @@ namespace RalseiMod.Survivors.Ralsei
                     icon = assetBundle.LoadAsset<Sprite>("texPassiveIcon"),
                 };
             }
+            //add our own
+            //GenericSkill passiveGenericSkill = Modules.Skills.CreateGenericSkillWithSkillFamily(bodyPrefab, "PassiveSkill");
+            Modules.Skills.CreateGenericSkillWithSkillFamily(bodyPrefab, SkillSlot.Primary);
+            Modules.Skills.CreateGenericSkillWithSkillFamily(bodyPrefab, SkillSlot.Secondary);
+            Modules.Skills.CreateGenericSkillWithSkillFamily(bodyPrefab, SkillSlot.Utility);
+            Modules.Skills.CreateGenericSkillWithSkillFamily(bodyPrefab, SkillSlot.Special);
         }
 
         public override void Hooks()
@@ -512,7 +538,7 @@ namespace RalseiMod.Survivors.Ralsei
                 args.moveSpeedReductionMultAdd += tangleMoveSpeed;
                 args.armorAdd -= tangleArmor;
             }
-            if (sender.HasBuff(sleepyDebuff))
+            if (sender.HasBuff(fatigueDebuff))
             {
                 args.attackSpeedReductionMultAdd += fatigueSpeedPenalty;
                 args.armorAdd -= fatigueArmorPenalty;

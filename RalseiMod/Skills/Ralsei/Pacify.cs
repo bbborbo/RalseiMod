@@ -49,6 +49,7 @@ namespace RalseiMod.Skills
         public static float empowerWardRadius;
         #endregion
         public static BuffDef spareBuff;
+        public DeployableAPI.GetDeployableSameSlotLimit GetPacifySlotLimit;
         public static DeployableSlot pacifyDeployableSlot;
         public static GameObject encourageProjectilePrefab;
         public static GameObject encourageWardPrefab;
@@ -179,7 +180,6 @@ namespace RalseiMod.Skills
             return i;
         }
 
-        public DeployableAPI.GetDeployableSameSlotLimit GetPacifySlotLimit;
 
         public override void Hooks()
         {

@@ -6,6 +6,17 @@ using UnityEngine;
 
 namespace RalseiMod.Characters
 {
+    public abstract class CharacterBase<T> : CharacterBase where T : CharacterBase<T>
+    {
+        public static T instance { get; private set; }
+
+        public CharacterBase()
+        {
+            if (instance != null) throw new InvalidOperationException(
+                $"Singleton class \"{typeof(T).Name}\" inheriting {RalseiPlugin.modName} {typeof(CharacterBase).Name} was instantiated twice");
+            instance = this as T;
+        }
+    }
     public abstract class CharacterBase : SharedBase
     {
         public abstract string CharacterName { get; }
@@ -22,6 +33,7 @@ namespace RalseiMod.Characters
 
 
         public abstract GameObject bodyPrefab                 {get; protected set;}
+        public abstract BodyIndex bodyIndex                   {get; protected set;}
         public abstract CharacterBody prefabCharacterBody     {get; protected set;}
         public abstract GameObject characterModelObject       {get; protected set;}
         public abstract CharacterModel prefabCharacterModel   {get; protected set;}
@@ -74,12 +86,6 @@ namespace RalseiMod.Characters
         {
             //remove the genericskills from the commando body we cloned
             Modules.Skills.ClearGenericSkills(bodyPrefab);
-            //add our own
-            //GenericSkill passiveGenericSkill = Modules.Skills.CreateGenericSkillWithSkillFamily(bodyPrefab, "PassiveSkill");
-            Modules.Skills.CreateGenericSkillWithSkillFamily(bodyPrefab, SkillSlot.Primary);
-            Modules.Skills.CreateGenericSkillWithSkillFamily(bodyPrefab, SkillSlot.Secondary);
-            Modules.Skills.CreateGenericSkillWithSkillFamily(bodyPrefab, SkillSlot.Utility);
-            Modules.Skills.CreateGenericSkillWithSkillFamily(bodyPrefab, SkillSlot.Special);
         }
 
         public abstract void InitializeCharacterMaster();

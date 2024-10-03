@@ -1,37 +1,41 @@
-﻿using EntityStates.AffixEarthHealer;
-using RalseiMod.Skills;
+﻿using EntityStates;
+using RalseiMod.Skills.Dummy;
+using RalseiMod.Skills.Ralsei;
+using RalseiMod.Survivors.Ralsei;
 using RoR2;
-using RoR2.Orbs;
-using RoR2.Projectile;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
 
-namespace RalseiMod.Survivors.Ralsei.Components
+namespace RalseiMod.States.Dummy
 {
-    [RequireComponent(typeof(ProjectileController))]
-    class ProjectileBuffOnImpact : MonoBehaviour, IProjectileImpactBehavior
+    class DummyFatigueDeath : GenericCharacterDeath
     {
-		public BuffDef buffDef => ProtectSpell.blockBuff;
-		public float buffDuration => ProtectSpell.blockDuration;
-		public float buffRange => ProtectSpell.effectRange;
-        public void OnProjectileImpact(ProjectileImpactInfo impactInfo)
+
+        public override void OnEnter()
         {
+            Debug.Log("Dummy fatigue burst");
+            base.OnEnter();
+            DoFatigueBurst();
+        }
+
+        private void DoFatigueBurst()
+		{
 			if (NetworkServer.active)
 			{
 				List<HealthComponent> list = new List<HealthComponent>();
 				SphereSearch sphereSearch = new SphereSearch();
-				sphereSearch.radius = buffRange;
+				sphereSearch.radius = DummyEmpowerBurst.empowerRange;
 				sphereSearch.origin = base.transform.position;
 				sphereSearch.queryTriggerInteraction = QueryTriggerInteraction.Ignore;
 				sphereSearch.mask = LayerIndex.entityPrecise.mask;
 				sphereSearch.RefreshCandidates();
 				sphereSearch.FilterCandidatesByDistinctHurtBoxEntities();
 
-				TeamMask friendly = new TeamMask();
-				friendly.AddTeam(GetComponent<ProjectileController>().teamFilter.teamIndex);
+				TeamMask friendly = TeamMask.all;
+				friendly.RemoveTeam(characterBody.teamComponent.teamIndex);
 				sphereSearch.FilterCandidatesByHurtBoxTeam(friendly);
 
 				HurtBox[] hurtBoxes = sphereSearch.GetHurtBoxes();
@@ -45,24 +49,23 @@ namespace RalseiMod.Survivors.Ralsei.Components
 				}
 				foreach (HealthComponent recipient in list)
 				{
-					HealOrb healOrb = new HealOrb();
+					recipient.body.AddTimedBuff(RalseiSurvivor.fatigueDebuff, DummyEmpowerBurst.empowerDuration);
+					/*HealOrb healOrb = new HealOrb();
 					healOrb.origin = base.transform.position;
 					healOrb.target = recipient.body.mainHurtBox;
-					healOrb.healValue = 0;
+					healOrb.healValue = recipient.fullHealth * healFraction;
 					healOrb.overrideDuration = 0.1f;
 					OrbManager.instance.AddOrb(healOrb);
 
-					recipient.body.AddTimedBuff(buffDef, buffDuration);
+					recipient.body.AddTimedBuff(RoR2Content.Buffs.CrocoRegen, healDuration);*/
 				}
-				EffectManager.SpawnEffect(Heal.effectPrefab//Resources.Load<GameObject>("prefabs/effects/JellyfishNova") /*HealSpell.loveBombImpact*/
+				EffectManager.SpawnEffect(Resources.Load<GameObject>("prefabs/effects/JellyfishNova") /*HealSpell.loveBombImpact*/
 				, new EffectData
 				{
 					origin = base.transform.position,
-					scale = buffRange
+					scale = DummyEmpowerBurst.empowerRange
 				}, true);
-				//EffectManager.SimpleEffect(Heal.effectPrefab, base.transform.position, Quaternion.identity, true);
 			}
-			UnityEngine.Object.Destroy(gameObject);
 		}
     }
 }
