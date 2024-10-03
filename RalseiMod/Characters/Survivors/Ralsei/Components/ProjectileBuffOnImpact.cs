@@ -29,6 +29,11 @@ namespace RalseiMod.Survivors.Ralsei.Components
 				sphereSearch.mask = LayerIndex.entityPrecise.mask;
 				sphereSearch.RefreshCandidates();
 				sphereSearch.FilterCandidatesByDistinctHurtBoxEntities();
+
+				TeamMask friendly = new TeamMask();
+				friendly.AddTeam(GetComponent<ProjectileController>().teamFilter.teamIndex);
+				sphereSearch.FilterCandidatesByHurtBoxTeam(friendly);
+
 				HurtBox[] hurtBoxes = sphereSearch.GetHurtBoxes();
 				for (int i = 0; i < hurtBoxes.Length; i++)
 				{

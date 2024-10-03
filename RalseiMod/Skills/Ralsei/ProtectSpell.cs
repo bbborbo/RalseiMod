@@ -59,7 +59,7 @@ namespace RalseiMod.Skills
 
         public override UnlockableDef UnlockDef => null;
 
-        public override Sprite Icon => LoadSpriteFromRorSkill("RoR2/Base/Captain/CallSupplyDropHealing.asset");
+        public override Sprite Icon => LoadSpriteFromRorSkill("RoR2/Base/Engi/EngiBodyPlaceBubbleShield.asset");
 
         public override Type ActivationState => typeof(AimGuardSpell);
 
@@ -118,7 +118,7 @@ namespace RalseiMod.Skills
                 if (buffCount > 0)
                 {
                     float endChance = 1 - Mathf.Pow(1 - blockChance, buffCount);
-                    if(Util.CheckRoll(endChance, 0f))
+                    if(Util.CheckRoll(endChance * 100, 0f))
                     {
                         EffectData effectData = new EffectData
                         {
