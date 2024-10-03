@@ -23,13 +23,13 @@ namespace RalseiMod.Skills.Ralsei
         [AutoConfig("Ability Stock", 2)]
         public static int stock;
 
-        [AutoConfig("Ability Cooldown", 20)]
+        [AutoConfig("Ability Cooldown", 30)]
         public static float cooldown;
 
         [AutoConfig("Prepare Duration", 1)]
         public static float prepareDuration;
 
-        [AutoConfig("Throw Force", 80f)]
+        [AutoConfig("Throw Force", 60f)]
         public static float throwForce;
 
         [AutoConfig("Throw Duration", 0.5f)]

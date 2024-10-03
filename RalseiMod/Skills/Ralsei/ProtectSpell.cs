@@ -22,10 +22,10 @@ namespace RalseiMod.Skills
         #region config
         public override string ConfigName => "Skill : " + SkillName;
 
-        [AutoConfig("Ability Stock", 2)]
+        [AutoConfig("Ability Stock", 1)]
         public static int stock;
 
-        [AutoConfig("Ability Cooldown", 14)]
+        [AutoConfig("Ability Cooldown", 12)]
         public static float cooldown;
 
         [AutoConfig("Effect Range", 35f)]
@@ -34,13 +34,13 @@ namespace RalseiMod.Skills
         [AutoConfig("Minimum Cast Time", 0.4f)]
         public static float minCastTime;
 
-        [AutoConfig("Block Chance", "Expressed as a fraction; ie, 0.5 means 50%", 0.5f)]
+        [AutoConfig("Block Chance", "Expressed as a fraction; ie, 0.3 means 30%", 0.3f)]
         public static float blockChance;
 
         [AutoConfig("Allow Block Buff Stacking", true)]
         public static bool blockStackable = true;
 
-        [AutoConfig("Delayed Heal Duration", 8f)]
+        [AutoConfig("Block Buff Duration", 6f)]
         public static float blockDuration;
         #endregion
         public static GameObject loveBomb;

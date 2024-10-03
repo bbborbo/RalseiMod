@@ -23,7 +23,7 @@ namespace RalseiMod.Skills
         #region config
         public override string ConfigName => "Skill : " + SkillName;
 
-        [AutoConfig("Ability Cooldown", 40)]
+        [AutoConfig("Ability Cooldown", 35)]
         public static float cooldown;
 
         [AutoConfig("Should Pacified Enemies Use Ambient Level", "If set to false, pacified enemies will be revived using player level. This can be used to balance enemy strength, if desired.", true)]

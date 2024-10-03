@@ -29,8 +29,8 @@ namespace RalseiMod.Survivors.Ralsei
         public static float ralseiJumpPower = 19f;
         [AutoConfig("Movement Speed", "Ralsei's movement speed. 7 is standard for most survivors.", 8f)]
         public static float ralseiMoveSpeed = 8f;
-        [AutoConfig("Base Health", "Ralsei's base health. 110 is standard for most survivors.", 80f)]
-        public static float ralseiBaseHealth = 80f;
+        [AutoConfig("Base Health", "Ralsei's base health. 110 is standard for most survivors.", 70f)]
+        public static float ralseiBaseHealth = 70f;
         [AutoConfig("Base Damage", "Ralsei's base damage. 12 is standard for most survivors.", 14f)]
         public static float ralseiBaseDamage = 14f;
         [AutoConfig("Base Regen", "Ralsei's base regen. 2 is standard for most survivors.", 1f)]

@@ -153,6 +153,8 @@ namespace RalseiMod.Characters
             utilityFlee.aimType = AISkillDriver.AimType.None;
             utilityFlee.buttonPressType = AISkillDriver.ButtonPressType.TapContinuous;
             utilityFlee.driverUpdateTimerOverride = -1f;
+
+            utilityFlee.shouldFireEquipment = false;
         }
 
         public override void InitializeEntityStateMachines()
