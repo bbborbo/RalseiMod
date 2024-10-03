@@ -1,17 +1,13 @@
-﻿using EntityStates;
-using RalseiMod.Skills;
-using RoR2;
+﻿using RalseiMod.Skills;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 
 namespace RalseiMod.States.Ralsei.Weapon
 {
-    class CastEncourageSpell : SpellBombBaseState
+    class AimHealSpell : SpellBombBaseState
     {
-
         internal override float GetCastTime()
         {
             return HealSpell.minCastTime;
@@ -19,7 +15,7 @@ namespace RalseiMod.States.Ralsei.Weapon
 
         internal override float GetEffectRange()
         {
-            return 15;
+            return HealSpell.healRange;
         }
 
         internal override float GetMaxDistance()
@@ -29,12 +25,7 @@ namespace RalseiMod.States.Ralsei.Weapon
 
         internal override GameObject GetProjectilePrefab()
         {
-            return Pacify.encourageProjectilePrefab; ;
-        }
-
-        public override void OnEnter()
-        {
-            base.OnEnter();
+            return HealSpell.loveBomb;
         }
     }
 }

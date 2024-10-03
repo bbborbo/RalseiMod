@@ -33,6 +33,10 @@ namespace RalseiMod.Survivors.Ralsei
         public static float ralseiBaseHealth = 55f;
         [AutoConfig("Base Damage", "Ralsei's base damage. 12 is standard for most survivors.", 14f)]
         public static float ralseiBaseDamage = 14f;
+        [AutoConfig("Base Regen", "Ralsei's base regen. 2 is standard for most survivors.", 1f)]
+        public static float ralseiBaseRegen = 1f;
+        [AutoConfig("Base Armor", "Ralsei's base armor. 0 is standard for most survivors.", 0)]
+        public static float ralseiBaseArmor = 0;
 
         [AutoConfig("Empowerment Armor Bonus", 20)]
         public static int empowerArmor = 20;
@@ -110,8 +114,8 @@ namespace RalseiMod.Survivors.Ralsei
             podPrefab = LegacyResourcesAPI.Load<GameObject>("Prefabs/NetworkedObjects/SurvivorPod"),
 
             maxHealth = ralseiBaseHealth,
-            healthRegen = 1f,
-            armor = 0f,
+            healthRegen = ralseiBaseRegen,
+            armor = ralseiBaseArmor,
             moveSpeed = ralseiMoveSpeed,
             damage = ralseiBaseDamage,
 
@@ -154,10 +158,13 @@ namespace RalseiMod.Survivors.Ralsei
 
             ///
             /// Loads the asset bundle for this character, then
-            ///     Initializes the body prefab and model
-            ///     Initializes item displays
+            ///     Initializes the body prefab and model,
+            ///     State machines,
+            ///     Skills,
+            ///     Item displays,
             ///     Initializes the display prefab (logbook? css?)
-            /// And registers the survivor
+            ///     
+            /// Then registers the survivor
             ///
             base.InitializeCharacter();
 
@@ -218,10 +225,6 @@ namespace RalseiMod.Survivors.Ralsei
 
             HenryAssets.Init(assetBundle);
             HenryBuffs.Init(assetBundle);
-
-            InitializeEntityStateMachines();
-            InitializeSkills();
-            InitializeSkins();
             //InitializeCharacterMaster();
 
             AdditionalBodySetup();
@@ -257,9 +260,7 @@ namespace RalseiMod.Survivors.Ralsei
         public override void InitializeCharacterMaster() => RalseiAI.Init(bodyPrefab, masterName);
         public override void InitializeSkills()
         {
-            //remove the genericskills from the commando body we cloned
-            Modules.Skills.ClearGenericSkills(bodyPrefab);
-            //add our own
+            base.InitializeSkills();
             SkillLocator skillLocator = bodyPrefab.GetComponent<SkillLocator>();
             if (skillLocator != null)
             {
@@ -280,11 +281,6 @@ namespace RalseiMod.Survivors.Ralsei
                     icon = assetBundle.LoadAsset<Sprite>("texPassiveIcon"),
                 };
             }
-            //GenericSkill passiveGenericSkill = Modules.Skills.CreateGenericSkillWithSkillFamily(bodyPrefab, "PassiveSkill");
-            Modules.Skills.CreateGenericSkillWithSkillFamily(bodyPrefab, SkillSlot.Primary);
-            Modules.Skills.CreateGenericSkillWithSkillFamily(bodyPrefab, SkillSlot.Secondary);
-            Modules.Skills.CreateGenericSkillWithSkillFamily(bodyPrefab, SkillSlot.Utility);
-            Modules.Skills.CreateGenericSkillWithSkillFamily(bodyPrefab, SkillSlot.Special);
         }
 
         public override void Hooks()
@@ -327,7 +323,7 @@ namespace RalseiMod.Survivors.Ralsei
 
         private static void ApplyRalseiCdr(CharacterBody body, float cdr)
         {
-            if (body != null && body.bodyIndex == BodyCatalog.FindBodyIndex(RalseiSurvivor.instance.bodyName))
+            if (body != null && body.bodyIndex == BodyCatalog.FindBodyIndex(RalseiSurvivor.instance.bodyName) || body.bodyIndex == BodyCatalog.FindBodyIndex(Dummy.instance.bodyName))
             {
                 SkillLocator skillLocator = body.skillLocator;
                 skillLocator.DeductCooldownFromAllSkillsServer(cdr);

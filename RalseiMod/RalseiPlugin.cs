@@ -15,6 +15,7 @@ using RalseiMod.Modules;
 using RalseiMod.Survivors;
 using R2API;
 using RalseiMod.Survivors.Ralsei.Components;
+using RalseiMod.Characters;
 
 [module: UnverifiableCode]
 [assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
@@ -66,13 +67,14 @@ namespace RalseiMod
             ConfigManager.HandleConfigAttributes(GetType(), "Ralsei", Modules.Config.MyConfig);
 
             RoR2.TeleporterInteraction.onTeleporterBeginChargingGlobal += WarpMinionsTp;
-            On.EntityStates.Missions.BrotherEncounter.Phase1.FixedUpdate += WarpMinionsMithrix;
+            On.EntityStates.Missions.BrotherEncounter.Phase1.FixedUpdate += WarpMinionsBrother;
             On.RoR2.MeridianEventTriggerInteraction.Phase1.FixedUpdate += WarpMinionsSon;
 
             Type[] allTypes = Assembly.GetExecutingAssembly().GetTypes();
 
             //new RalseiSurvivor().Init();
             BeginInitializing<SurvivorBase>(allTypes);
+            new Dummy().Init();
             Modules.Language.TryPrintOutput("RalseiSurvivor.txt");
 
             BeginInitializing<SkillBase>(allTypes);
@@ -114,7 +116,7 @@ namespace RalseiMod
             orig(self);
         }
 
-        private void WarpMinionsMithrix(On.EntityStates.Missions.BrotherEncounter.Phase1.orig_FixedUpdate orig, EntityStates.Missions.BrotherEncounter.Phase1 self)
+        private void WarpMinionsBrother(On.EntityStates.Missions.BrotherEncounter.Phase1.orig_FixedUpdate orig, EntityStates.Missions.BrotherEncounter.Phase1 self)
         {
             if(self.fixedAge + Time.fixedDeltaTime > EntityStates.Missions.BrotherEncounter.Phase1.prespawnSoundDelay && !self.hasPlayedPrespawnSound)
             {

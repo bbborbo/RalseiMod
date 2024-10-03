@@ -44,7 +44,11 @@ namespace RalseiMod.Survivors
             InitializeDisplayPrefab();
 
             InitializeSurvivor();
+
+            InitializeSkins();
         }
+
+        public abstract void InitializeSkins();
 
         protected virtual void InitializeDisplayPrefab()
         {

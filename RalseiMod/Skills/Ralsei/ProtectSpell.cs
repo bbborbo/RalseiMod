@@ -17,7 +17,7 @@ using static RalseiMod.Modules.Language.Styling;
 
 namespace RalseiMod.Skills
 {
-    class HealSpell : SkillBase<HealSpell>
+    class ProtectSpell : SkillBase<ProtectSpell>
     {
         #region config
         public override string ConfigName => "Skill : " + SkillName;
@@ -28,36 +28,40 @@ namespace RalseiMod.Skills
         [AutoConfig("Ability Cooldown", 14)]
         public static float cooldown;
 
-        [AutoConfig("Heal Range", 35f)]
-        public static float healRange;
+        [AutoConfig("Effect Range", 35f)]
+        public static float effectRange;
 
         [AutoConfig("Minimum Cast Time", 0.4f)]
         public static float minCastTime;
 
-        [AutoConfig("Immediate Heal Fraction", 0.1f)]
-        public static float instantHealPercent;
+        [AutoConfig("Block Chance", "Expressed as a fraction; ie, 0.5 means 50%", 0.5f)]
+        public static float blockChance;
 
-        [AutoConfig("Delayed Heal Duration", 1f)]
-        public static float healDuration;
+        [AutoConfig("Allow Block Buff Stacking", true)]
+        public static bool blockStackable = true;
+
+        [AutoConfig("Delayed Heal Duration", 8f)]
+        public static float blockDuration;
         #endregion
         public static GameObject loveBomb;
         public static GameObject loveBombImpact;
+        public static BuffDef blockBuff;
         public override AssetBundle assetBundle => RalseiPlugin.mainAssetBundle;
 
-        public override string SkillName => "Heal Prayer";
+        public override string SkillName => "Fluffy Guard";
 
         public override string SkillDescription => 
-            $"Cast a {HealingColor("healing spell")} on yourself and all allies within {UtilityColor(healRange + "m")}, " +
-            $"restoring {HealingColor(ConvertDecimal(instantHealPercent) + " health")} " +
-            $"and granting {HealingColor("Regenerative")} for {HealingColor(healDuration.ToString())} seconds.";
+            $"Cast a {UtilityColor("protective spell")} on yourself and all allies within {UtilityColor(effectRange + "m")}, " +
+            $"granting {UtilityColor(ConvertDecimal(blockChance) + " block chance")}" +
+            $" for {UtilityColor(blockDuration.ToString())} seconds.";
 
-        public override string SkillLangTokenName => "HEALSPELL";
+        public override string SkillLangTokenName => "GUARDSPELL";
 
         public override UnlockableDef UnlockDef => null;
 
         public override Sprite Icon => LoadSpriteFromRorSkill("RoR2/Base/Captain/CallSupplyDropHealing.asset");
 
-        public override Type ActivationState => typeof(AimHealSpell);
+        public override Type ActivationState => typeof(AimGuardSpell);
 
         public override Type BaseSkillDef => typeof(SkillDef);
 
@@ -84,23 +88,59 @@ namespace RalseiMod.Skills
             KeywordTokens = new string[] { "KEYWORD_RAPID_REGEN" };
             base.Init();
             CreateBombProjectile();
+            CreateBlockBuff();
             GameObject healexp = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/EliteEarth/AffixEarthHealExplosion.prefab").WaitForCompletion();
             loveBombImpact = PrefabAPI.InstantiateClone(healexp, "RalseiLoveBombExplosion", false);
-            loveBombImpact.transform.localScale *= (healRange / 12);
+            loveBombImpact.transform.localScale *= (effectRange / 12);
         }
+
+        private void CreateBlockBuff()
+        {
+            blockBuff = Content.CreateAndAddBuff(
+                "RalseiFluffyGuard", 
+                Addressables.LoadAssetAsync<Sprite>("RoR2/Base/Common/texBuffGenericShield.tif").WaitForCompletion(), 
+                Color.grey,
+                blockStackable, 
+                false
+                );
+        }
+
         public override void Hooks()
         {
+            On.RoR2.HealthComponent.TakeDamageProcess += RalseiBlockBuff;
+        }
 
+        private void RalseiBlockBuff(On.RoR2.HealthComponent.orig_TakeDamageProcess orig, HealthComponent self, DamageInfo damageInfo)
+        {
+            if (!damageInfo.damageType.damageType.HasFlag(DamageType.BypassBlock))
+            {
+                int buffCount = self.body.GetBuffCount(blockBuff);
+                if (buffCount > 0)
+                {
+                    float endChance = 1 - Mathf.Pow(1 - blockChance, buffCount);
+                    if(Util.CheckRoll(endChance, 0f))
+                    {
+                        EffectData effectData = new EffectData
+                        {
+                            origin = damageInfo.position,
+                            rotation = Util.QuaternionSafeLookRotation((damageInfo.force != Vector3.zero) ? damageInfo.force : UnityEngine.Random.onUnitSphere)
+                        };
+                        EffectManager.SpawnEffect(HealthComponent.AssetReferences.bearEffectPrefab, effectData, true);
+                        damageInfo.rejected = true;
+                    }
+                }
+            }
+            orig(self, damageInfo);
         }
 
         private static void CreateBombProjectile()
         {
             //highly recommend setting up projectiles in editor, but this is a quick and dirty way to prototype if you want
-            loveBomb = Modules.Assets.CloneProjectilePrefab("CryoCanisterProjectile", "RalseiLoveBomb");
+            loveBomb = Modules.Assets.CloneProjectilePrefab("CryoCanisterProjectile", "RalseiArmorBomb");
 
             //remove their ProjectileImpactExplosion component and start from default values
             UnityEngine.Object.Destroy(loveBomb.GetComponent<ProjectileImpactExplosion>());
-            ProjectileHealOnImpact bombImpactExplosion = loveBomb.AddComponent<ProjectileHealOnImpact>();
+            ProjectileBuffOnImpact bombImpactExplosion = loveBomb.AddComponent<ProjectileBuffOnImpact>();
 
 
             //bombImpactExplosion.blastRadius = 16f;

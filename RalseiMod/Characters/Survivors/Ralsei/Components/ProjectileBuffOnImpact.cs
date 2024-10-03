@@ -14,9 +14,9 @@ namespace RalseiMod.Survivors.Ralsei.Components
     [RequireComponent(typeof(ProjectileController))]
     class ProjectileBuffOnImpact : MonoBehaviour, IProjectileImpactBehavior
     {
-		public BuffDef buffDef => RoR2Content.Buffs.ArmorBoost;
-		public float buffDuration => HealSpell.healDuration;
-		public float buffRange => HealSpell.healRange;
+		public BuffDef buffDef => ProtectSpell.blockBuff;
+		public float buffDuration => ProtectSpell.blockDuration;
+		public float buffRange => ProtectSpell.effectRange;
         public void OnProjectileImpact(ProjectileImpactInfo impactInfo)
         {
 			if (NetworkServer.active)
@@ -51,6 +51,7 @@ namespace RalseiMod.Survivors.Ralsei.Components
 				}
 				EffectManager.SimpleEffect(Heal.effectPrefab, base.transform.position, Quaternion.identity, true);
 			}
+			UnityEngine.Object.Destroy(gameObject);
 		}
     }
 }

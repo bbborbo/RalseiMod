@@ -10,15 +10,19 @@ using UnityEngine.AddressableAssets;
 
 namespace RalseiMod.States.Ralsei.Weapon
 {
-    class SpellBombBaseState : AimThrowableBase
+    public abstract class SpellBombBaseState : AimThrowableBase
     {
         Animator animator;
+        internal abstract float GetEffectRange();
+        internal abstract GameObject GetProjectilePrefab();
+        internal abstract float GetCastTime();
+        internal abstract float GetMaxDistance();
         public override void OnEnter()
         {
-            base.detonationRadius = HealSpell.healRange;
-            base.projectilePrefab = HealSpell.loveBomb;
-            base.baseMinimumDuration = HealSpell.minCastTime;
-            base.maxDistance = 100;
+            base.detonationRadius = GetEffectRange();
+            base.projectilePrefab = GetProjectilePrefab();
+            base.baseMinimumDuration = GetCastTime();
+            base.maxDistance = GetMaxDistance();
             base.setFuse = true;
             base.arcVisualizerPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Common/VFX/BasicThrowableVisualizer.prefab").WaitForCompletion();
             base.endpointVisualizerPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Treebot/TreebotMortarAreaIndicator.prefab").WaitForCompletion();

@@ -36,6 +36,9 @@ namespace RalseiMod.Characters
         {
             InitializeCharacterBodyPrefab();
 
+            InitializeEntityStateMachines();
+            InitializeSkills();
+
             InitializeItemDisplays();
         }
 
@@ -67,9 +70,17 @@ namespace RalseiMod.Characters
 
         public abstract void InitializeEntityStateMachines();
 
-        public abstract void InitializeSkills();
-
-        public abstract void InitializeSkins();
+        public virtual void InitializeSkills()
+        {
+            //remove the genericskills from the commando body we cloned
+            Modules.Skills.ClearGenericSkills(bodyPrefab);
+            //add our own
+            //GenericSkill passiveGenericSkill = Modules.Skills.CreateGenericSkillWithSkillFamily(bodyPrefab, "PassiveSkill");
+            Modules.Skills.CreateGenericSkillWithSkillFamily(bodyPrefab, SkillSlot.Primary);
+            Modules.Skills.CreateGenericSkillWithSkillFamily(bodyPrefab, SkillSlot.Secondary);
+            Modules.Skills.CreateGenericSkillWithSkillFamily(bodyPrefab, SkillSlot.Utility);
+            Modules.Skills.CreateGenericSkillWithSkillFamily(bodyPrefab, SkillSlot.Special);
+        }
 
         public abstract void InitializeCharacterMaster();
     }
