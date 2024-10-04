@@ -9,10 +9,11 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using static RalseiMod.Modules.Language.Styling;
 
 namespace RalseiMod.Skills.Ralsei
 {
-    class SummonDummy : SkillBase<SummonDummy>
+    class ThrowDummySkill : SkillBase<ThrowDummySkill>
     {
         public DeployableAPI.GetDeployableSameSlotLimit GetDummySlotLimit;
         public static DeployableSlot dummyDeployableSlot;
@@ -23,7 +24,7 @@ namespace RalseiMod.Skills.Ralsei
         [AutoConfig("Ability Stock", 2)]
         public static int stock;
 
-        [AutoConfig("Ability Cooldown", 30)]
+        [AutoConfig("Ability Cooldown", 50)]
         public static float cooldown;
 
         [AutoConfig("Prepare Duration", 1)]
@@ -36,16 +37,16 @@ namespace RalseiMod.Skills.Ralsei
         public static float throwDuration;
 
         [AutoConfig("Minion Max Base", "The maximum amount of dummy minions Ralsei should be allowed to have at base.", 2)]
-        public static int maxMinionBase;
+        public static int maxMinionBase = 2;
         [AutoConfig("Minion Max Upgraded", "The maximum amount of dummy minions Ralsei should be allowed to have with at least one lysate cell.", 3)]
         public static int maxMinionUpgrade;
 
         #endregion
         public override string SkillName => "Practice Dummy";
 
-        public override string SkillDescription => $"Throw a practice dummy that draws ALL enemy attacks, " +
-            $"creating a Stunning and Fatiguing blast when it dies. " +
-            $"Periodically Empowers nearby allies.";
+        public override string SkillDescription => $"Throw a dummy Ralsei that {UtilityColor("draws in enemy attacks")}, " +
+            $"and {DamageColor("Stuns and Fatigues")} for {DamageValueText(Characters.Dummy.deathDamage)} when it dies. " +
+            $"Periodically {HealingColor("Empowers")} nearby allies.";
 
         public override string SkillLangTokenName => "RALSEIDUMMYSKILL";
 
@@ -53,7 +54,7 @@ namespace RalseiMod.Skills.Ralsei
 
         public override Sprite Icon => LoadSpriteFromRorSkill("RoR2/Base/Engi/EngiBodyPlaceTurret.asset");
 
-        public override Type ActivationState => typeof(ThrowDummy);
+        public override Type ActivationState => typeof(ThrowDummyState);
 
         public override Type BaseSkillDef => typeof(SkillDef);
 

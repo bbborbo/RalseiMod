@@ -41,7 +41,7 @@ namespace RalseiMod.Survivors.Ralsei
         [AutoConfig("Empowerment Armor Bonus", 20)]
         public static int empowerArmor = 20;
         [AutoConfig("Empowerment Attack Speed Multiplier Bonus", 1.5f)]
-        public static float empowerAttackSpeed = 1.5f;
+        public static float empowerAttackSpeed = 1f;
         [AutoConfig("Empowerment Sprint Speed Multiplier Bonus", 1f)]
         public static float empowerSprintSpeed = 1f;
         [AutoConfig("Empowerment Movement Speed Multiplier Bonus", 0.3f)]
@@ -261,7 +261,8 @@ namespace RalseiMod.Survivors.Ralsei
         public void AddHitboxes()
         {
             //example of how to create a HitBoxGroup. see summary for more details
-            //Modules.Prefabs.SetupHitBoxGroup(characterModelObject, "SwordGroup", "SwordHitbox");
+            Modules.Prefabs.SetupHitBoxGroup(characterModelObject, "ScarfGroup", "SwingHitbox");
+            Modules.Prefabs.SetupHitBoxGroup(characterModelObject, "SpinGroup", "SpinHitbox");
         }
 
         public override void InitializeEntityStateMachines() 
@@ -406,9 +407,6 @@ namespace RalseiMod.Survivors.Ralsei
         {
             base.Lang();
 
-            Modules.Language.Add(GetAchievementNameToken(RalseiMasteryAchievement.identifier), $"{CharacterName}: Mastery");
-            Modules.Language.Add(GetAchievementDescriptionToken(RalseiMasteryAchievement.identifier), $"As {CharacterName}, beat the game or obliterate on Monsoon.");
-
             Modules.Language.Add(RALSEI_PREFIX + "DEFAULT_SKIN_NAME", $"Default");
             Modules.Language.Add(RALSEI_PREFIX + "MASTERY_SKIN_NAME", $"Peeled");
             Modules.Language.Add(RALSEI_PREFIX + "NIKO_SKIN_NAME", $"Solstice");
@@ -531,7 +529,8 @@ namespace RalseiMod.Survivors.Ralsei
                 args.cooldownMultAdd *= Mathf.Pow(1 - empowerCdr, empowerCount);
                 args.baseRegenAdd += empowerRegen * (1 + 0.3f * (sender.level - 1));
                 args.armorAdd += empowerArmor * empowerCount;
-                args.sprintSpeedAdd += empowerSprintSpeed;
+                if(!sender.isPlayerControlled)
+                    args.sprintSpeedAdd += empowerSprintSpeed;
             }
             if (sender.HasBuff(tangleDebuff))
             {

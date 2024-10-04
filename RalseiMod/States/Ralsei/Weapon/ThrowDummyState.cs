@@ -13,7 +13,7 @@ using UnityEngine.Networking;
 
 namespace RalseiMod.States.Ralsei.Weapon
 {
-    class ThrowDummy : BaseState
+    class ThrowDummyState : BaseState
     {
         bool dummyThrown = false;
 
@@ -21,8 +21,8 @@ namespace RalseiMod.States.Ralsei.Weapon
         float throwDuration;
         public override void OnEnter()
         {
-            prepareDuration = SummonDummy.prepareDuration / attackSpeedStat;
-            throwDuration = SummonDummy.throwDuration / attackSpeedStat;
+            prepareDuration = ThrowDummySkill.prepareDuration / attackSpeedStat;
+            throwDuration = ThrowDummySkill.throwDuration / attackSpeedStat;
             base.OnEnter();
             PlayAnimation("Gesture, Override", "PrepareSpellEntry", "SpellSecondary.playbackRate", prepareDuration);
         }
@@ -67,7 +67,7 @@ namespace RalseiMod.States.Ralsei.Weapon
                 Deployable deployable = gameObject.AddComponent<Deployable>();
                 deployable.onUndeploy = new UnityEvent();
                 deployable.onUndeploy.AddListener(new UnityAction(dummyMaster.TrueKill));
-                base.characterBody.master.AddDeployable(deployable, SummonDummy.dummyDeployableSlot);
+                base.characterBody.master.AddDeployable(deployable, ThrowDummySkill.dummyDeployableSlot);
                 dummyMaster.onBodyStart += (body) =>
                 {
                     if (NetworkServer.active)
@@ -80,7 +80,7 @@ namespace RalseiMod.States.Ralsei.Weapon
                 CharacterBody dummyBody = dummyMaster.GetBody();
                 if (dummyBody)
                 {
-                    Vector3 forceVector = characterBody.inputBank.aimDirection * SummonDummy.throwForce;
+                    Vector3 forceVector = characterBody.inputBank.aimDirection * ThrowDummySkill.throwForce;
                     //dummyMaster.money = (uint)Mathf.FloorToInt(characterBody.master.money);
                     dummyBody.characterMotor.onMotorStart += (body) => 
                     {

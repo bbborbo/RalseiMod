@@ -1,6 +1,7 @@
 ﻿using RalseiMod.Modules;
 using RalseiMod.Skills.Dummy;
 using RalseiMod.States.Dummy;
+using RalseiMod.Survivors.Ralsei;
 using RoR2;
 using RoR2.CharacterAI;
 using System;
@@ -15,14 +16,24 @@ namespace RalseiMod.Characters
         #region config
         public override string ConfigName => CharacterName;
 
-        [AutoConfig("Base Health", "Dummy's base health. 110 is standard for most survivors.", 200f)]
-        public static float dummyBaseHealth = 200f;
+        [AutoConfig("Base Health", "Dummy's base health. 110 is standard for most survivors.", 180f)]
+        public static float dummyBaseHealth = 140f;
         [AutoConfig("Base Damage", "Dummy's base damage. 12 is standard for most survivors.", 14f)]
         public static float dummyBaseDamage = 14f;
         [AutoConfig("Base Regen", "Dummy's base regen. 2 is standard for most survivors.", 0f)]
         public static float dummyBaseRegen = 0f;
         [AutoConfig("Base Armor", "Dummy's base armor. 0 is standard for most survivors.", 20)]
         public static float dummyBaseArmor = 20;
+
+        [AutoConfig("Death Blast Radius", 80f)]
+        public static float deathBlastRadius = 80f;
+        [AutoConfig("Death Proc Coefficient", "Determines the duration of stun on death", 1.0f)]
+        public static float deathProcCoeff = 1.0f;
+        [AutoConfig("Death Damage Coefficient", 10)]
+        public static float deathDamage = 10;
+        public static float deathDamageCoefficient => deathDamage * (dummyBaseDamage / RalseiSurvivor.ralseiBaseDamage);
+        [AutoConfig("Death Fatigue Duration", 12)]
+        public static float deathDebuffDuration = 12;
         #endregion
         public override string CharacterName => "Dummy";
 

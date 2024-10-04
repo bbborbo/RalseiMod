@@ -1,4 +1,5 @@
 ﻿using EntityStates;
+using EntityStates.Loader;
 using RalseiMod.Skills;
 using RoR2;
 using RoR2.Skills;
@@ -33,19 +34,18 @@ namespace RalseiMod.States.Ralsei.Weapon
         public abstract float altAnimationAttackSpeedThreshold { get; }
         public abstract float baseEnterDuration { get; }
         public abstract float baseExitDuration { get; }
-        float enterDuration;
-        float exitDuration;
+        private protected float enterDuration;
+        private protected float exitDuration;
         float totalDuration => enterDuration + exitDuration;
         float stopwatch;
         bool fired = false;
         internal string muzzleString;
 
         public abstract float damageCoefficient { get; }
-        public static float force = 0;
+        public virtual float force { get; } = 0;
         public static float spreadBloomValue = 0.2f;
-        public static float maxRange = 100f;
 
-        public static GameObject hitEffectPrefab;
+        public abstract GameObject hitEffectPrefab { get; }
         public override void OnEnter()
         {
             base.OnEnter();
@@ -77,6 +77,14 @@ namespace RalseiMod.States.Ralsei.Weapon
         {
             return "SwingCenter";
         }
+        public virtual string GetAttackSoundString()
+        {
+            return new LoaderMeleeAttack().beginSwingSoundString;// "HenrySwordSwing";
+        }
+        public virtual string GetHitSoundString()
+        {
+            return "HenrySwordSwing";
+        }
         public override void OnExit()
         {
             base.OnExit();
@@ -104,15 +112,14 @@ namespace RalseiMod.States.Ralsei.Weapon
                 return;
 
             fired = true;
+            Util.PlaySound(GetAttackSoundString(), base.gameObject);
+
             if (isComboFinisher)
             {
                 FireAttackCombo();
                 return;
             }
             FireAttack();
-
-            if (!characterMotor.isGrounded && characterBody.HasBuff(LiftPrayer.hoverBuff))
-                base.SmallHop(characterMotor, 7/* / this.attackSpeedStat*/);
         }
         public abstract void FireAttackCombo();
         public abstract void FireAttack();

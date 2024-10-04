@@ -922,6 +922,10 @@ namespace RalseiMod.Modules
                     Log.Error($"Error setting up hitboxGroup for {hitBoxGroupName}: hitbox transform was null");
                     continue;
                 }
+                if(i.TryGetComponent(out Collider collider))
+                {
+                    GameObject.Destroy(collider);
+                }
                 HitBox hitBox = i.gameObject.AddComponent<HitBox>();
                 i.gameObject.layer = LayerIndex.projectile.intVal;
                 hitBoxes.Add(hitBox);

@@ -54,7 +54,7 @@ namespace RalseiMod.Survivors.Ralsei.Components
 
 					recipient.body.AddTimedBuff(buffDef, buffDuration);
 				}
-				EffectManager.SpawnEffect(Heal.effectPrefab//Resources.Load<GameObject>("prefabs/effects/JellyfishNova") /*HealSpell.loveBombImpact*/
+				EffectManager.SpawnEffect(Resources.Load<GameObject>("prefabs/effects/JellyfishNova")//Resources.Load<GameObject>("prefabs/effects/JellyfishNova") /*HealSpell.loveBombImpact*/
 				, new EffectData
 				{
 					origin = base.transform.position,

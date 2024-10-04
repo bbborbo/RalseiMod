@@ -3,6 +3,7 @@ using RalseiMod.Skills.Dummy;
 using RalseiMod.Skills.Ralsei;
 using RalseiMod.Survivors.Ralsei;
 using RoR2;
+using R2API;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -27,7 +28,7 @@ namespace RalseiMod.States.Dummy
 			{
 				List<HealthComponent> list = new List<HealthComponent>();
 				SphereSearch sphereSearch = new SphereSearch();
-				sphereSearch.radius = DummyEmpowerBurst.empowerRange;
+				sphereSearch.radius = Characters.Dummy.deathBlastRadius;
 				sphereSearch.origin = base.transform.position;
 				sphereSearch.queryTriggerInteraction = QueryTriggerInteraction.Ignore;
 				sphereSearch.mask = LayerIndex.entityPrecise.mask;
@@ -47,9 +48,32 @@ namespace RalseiMod.States.Dummy
 						list.Add(healthComponent);
 					}
 				}
-				foreach (HealthComponent recipient in list)
+				DamageInfo damageInfo = new DamageInfo();
+				damageInfo.damage = Characters.Dummy.deathDamageCoefficient * characterBody.baseDamage;
+				damageInfo.damageType = DamageType.Stun1s;
+				damageInfo.procCoefficient = Characters.Dummy.deathProcCoeff;
+				damageInfo.attacker = this.gameObject;
+                CharacterMaster master = characterBody.masterObject?.GetComponent<CharacterMaster>();
+                if (master)
+                {
+					CharacterMaster ownerMaster = master.minionOwnership?.ownerMaster;
+                    if (ownerMaster)
+                    {
+						GameObject ownerObject = ownerMaster.GetBodyObject();
+						if (ownerObject)
+							damageInfo.attacker = ownerObject;
+                    }
+                }
+				damageInfo.crit = RollCrit();
+
+                foreach (HealthComponent recipient in list)
 				{
-					recipient.body.AddTimedBuff(RalseiSurvivor.fatigueDebuff, DummyEmpowerBurst.empowerDuration);
+					recipient.body.AddTimedBuff(RalseiSurvivor.fatigueDebuff, Characters.Dummy.deathDebuffDuration);
+					damageInfo.position = recipient.body.corePosition;
+					recipient.TakeDamage(damageInfo);
+					GlobalEventManager.instance.OnHitAll(damageInfo, recipient.gameObject);
+					GlobalEventManager.instance.OnHitEnemy(damageInfo, recipient.gameObject);
+
 					/*HealOrb healOrb = new HealOrb();
 					healOrb.origin = base.transform.position;
 					healOrb.target = recipient.body.mainHurtBox;

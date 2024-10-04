@@ -21,6 +21,8 @@ namespace RalseiMod.States.Ralsei.Weapon
 
         public override float altAnimationAttackSpeedThreshold => 2.65f;
 
+        public override GameObject hitEffectPrefab => ScarfRange.tracerImpact;
+
         public override string GetAnimationLayer()
         {
             if (isComboFinisher)
@@ -49,15 +51,29 @@ namespace RalseiMod.States.Ralsei.Weapon
 
             return base.GetMuzzleName();
         }
+        public override string GetAttackSoundString()
+        {
+            if (isComboFinisher)
+                return base.GetAttackSoundString();
+            return base.GetAttackSoundString();
+        }
+        public override string GetHitSoundString()
+        {
+            if (isComboFinisher)
+                return base.GetHitSoundString();
+            return base.GetHitSoundString();
+        }
 
         //fire attack combo and regular are split because some applications of the base state would want to do two different kinds of attacks
         //however in this state, both attacks are essentially identical aside from their AVFX, so they are using a common BulletAttack 
         public override void FireAttackCombo()
         {
+            if (!characterMotor.isGrounded && characterBody.HasBuff(LiftPrayer.hoverBuff))
+                base.SmallHop(characterMotor, 7/* / this.attackSpeedStat*/);
+
             float recoil = 2.2f / this.attackSpeedStat;
             base.AddRecoil(-recoil, -2f * recoil, -recoil, recoil);
             base.characterBody.SetAimTimer(2f);
-            Util.PlaySound(new LoaderMeleeAttack().beginSwingSoundString, base.gameObject);
 
             if (base.isAuthority)
             {
@@ -70,10 +86,12 @@ namespace RalseiMod.States.Ralsei.Weapon
         }
         public override void FireAttack()
         {
+            if (!characterMotor.isGrounded && characterBody.HasBuff(LiftPrayer.hoverBuff))
+                base.SmallHop(characterMotor, 7/* / this.attackSpeedStat*/);
+
             float recoil = 0.8f / this.attackSpeedStat;
             base.AddRecoil(-recoil, -2f * recoil, -recoil, recoil);
             base.characterBody.SetAimTimer(2f);
-            Util.PlaySound(new LoaderMeleeAttack().beginSwingSoundString, base.gameObject);
 
             if (base.isAuthority)
             {
@@ -95,7 +113,7 @@ namespace RalseiMod.States.Ralsei.Weapon
             bulletAttack.force = force;
             bulletAttack.tracerEffectPrefab = isComboFinisher ? ScarfRange.tracerThreadCombo : ScarfRange.tracerThread;
             bulletAttack.muzzleName = this.muzzleString;
-            bulletAttack.hitEffectPrefab = ScarfRange.tracerImpact;
+            bulletAttack.hitEffectPrefab = hitEffectPrefab;
             bulletAttack.isCrit = Util.CheckRoll(this.critStat, base.characterBody.master);
             bulletAttack.radius = 1.2f;
             bulletAttack.falloffModel = BulletAttack.FalloffModel.None;
