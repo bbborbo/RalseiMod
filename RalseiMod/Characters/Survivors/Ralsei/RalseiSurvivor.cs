@@ -15,6 +15,7 @@ using UnityEngine.AddressableAssets;
 using R2API;
 using static R2API.DamageAPI;
 using UnityEngine.Networking;
+using RalseiMod.States.Ralsei;
 
 namespace RalseiMod.Survivors.Ralsei
 {
@@ -40,7 +41,7 @@ namespace RalseiMod.Survivors.Ralsei
 
         [AutoConfig("Empowerment Armor Bonus", 20)]
         public static int empowerArmor = 20;
-        [AutoConfig("Empowerment Attack Speed Multiplier Bonus", 1.5f)]
+        [AutoConfig("Empowerment Attack Speed Multiplier Bonus", 1f)]
         public static float empowerAttackSpeed = 1f;
         [AutoConfig("Empowerment Sprint Speed Multiplier Bonus", 1f)]
         public static float empowerSprintSpeed = 1f;
@@ -50,6 +51,9 @@ namespace RalseiMod.Survivors.Ralsei
         public static float empowerRegen = 2f;
         [AutoConfig("Empowerment Cooldown Reduction", 0.5f)]
         public static float empowerCdr = 0.5f;
+        [AutoConfig("Stack Empowerment Prefix", 
+            "If set to true, characters who are Empowered multiple times will have the Empowered prefix added multiple times, i.e. Empowered Empowered Glacial Jellyfish", true)]
+        public static bool stackEmpowerPrefix = true;
 
         [AutoConfig("Tangle Armor Penalty", 20)]
         public static int tangleArmor = 20;
@@ -79,6 +83,8 @@ namespace RalseiMod.Survivors.Ralsei
         public static string fatigueKeywordToken = RalseiPlugin.DEVELOPER_PREFIX + "_KEYWORD_FATIGUE";
 
         public static BuffDef empowerBuff;
+        public static GameObject empowerTemporaryEffectPrefabFriendly;
+        public static GameObject empowerTemporaryEffectPrefabEnemy;
         public static Material empowerOverlayMaterialFriendly;
         public static Material empowerOverlayMaterialEnemy;
 
@@ -225,13 +231,32 @@ namespace RalseiMod.Survivors.Ralsei
                 false
                 );
 
+
             empowerOverlayMaterialFriendly = UnityEngine.Object.Instantiate(Addressables.LoadAssetAsync<Material>("RoR2/Base/CritOnUse/matFullCrit.mat").WaitForCompletion());
-            empowerOverlayMaterialFriendly.SetColor("_TintColor", new Color32(90, 180, 0, 191)/*(150, 110, 0, 191)*/);
+            empowerOverlayMaterialFriendly.SetColor("_TintColor", new Color32(90, 180, 0, 111)/*(150, 110, 0, 191)*/);
             empowerOverlayMaterialFriendly.SetTexture("_RemapTex", Addressables.LoadAssetAsync<Texture>("RoR2/Base/Common/ColorRamps/texRampBanditSplatter.png").WaitForCompletion());
 
+            empowerTemporaryEffectPrefabFriendly = PrefabAPI.InstantiateClone(
+                Addressables.LoadAssetAsync<GameObject>("RoR2/Base/WardOnLevel/WarbannerBuffEffect.prefab").WaitForCompletion(), "EmpowerInsigniaFriendly");
+            TempVisualEffectAPI.AddTemporaryVisualEffect(empowerTemporaryEffectPrefabFriendly, 
+                body => (body.HasBuff(empowerBuff) == true && body.teamComponent.teamIndex == TeamIndex.Player), false);
+            ParticleSystemRenderer psr = empowerTemporaryEffectPrefabFriendly.GetComponentInChildren<ParticleSystemRenderer>();
+            if(psr != null)
+            {
+                Material newMaterial = UnityEngine.Object.Instantiate(psr.material);
+                //newMaterial.SetTexture()
+                psr.material = newMaterial;
+            }
+
             empowerOverlayMaterialEnemy = UnityEngine.Object.Instantiate(Addressables.LoadAssetAsync<Material>("RoR2/Base/CritOnUse/matFullCrit.mat").WaitForCompletion());
-            empowerOverlayMaterialEnemy.SetColor("_TintColor", new Color32(180, 0, 90, 191)/*(150, 110, 0, 191)*/);
+            empowerOverlayMaterialEnemy.SetColor("_TintColor", new Color32(180, 0, 90, 111)/*(150, 110, 0, 191)*/);
             empowerOverlayMaterialEnemy.SetTexture("_RemapTex", Addressables.LoadAssetAsync<Texture>("RoR2/Base/Common/ColorRamps/texRampBanditSplatter.png").WaitForCompletion());
+
+            empowerTemporaryEffectPrefabEnemy = PrefabAPI.InstantiateClone(
+                Addressables.LoadAssetAsync<GameObject>("RoR2/Base/WardOnLevel/WarbannerBuffEffect.prefab").WaitForCompletion(), "EmpowerInsigniaEnemy");
+            TempVisualEffectAPI.AddTemporaryVisualEffect(empowerTemporaryEffectPrefabEnemy, 
+                body => (body.HasBuff(empowerBuff) == true && body.teamComponent.teamIndex != TeamIndex.Player), false);
+
             LanguageAPI.Add(RALSEI_PREFIX + "EMPOWERED_MODIFIER", "Empowered {0}");
 
 
@@ -265,8 +290,14 @@ namespace RalseiMod.Survivors.Ralsei
             Modules.Prefabs.SetupHitBoxGroup(characterModelObject, "SpinGroup", "SpinHitbox");
         }
 
-        public override void InitializeEntityStateMachines() 
+        public override void InitializeEntityStateMachines()
         {
+            Content.AddEntityState(typeof(RalseiDeathState));
+            CharacterDeathBehavior cdb = bodyPrefab.GetComponent<CharacterDeathBehavior>();
+            if (!cdb)
+                cdb = bodyPrefab.AddComponent<CharacterDeathBehavior>();
+            cdb.deathState = new EntityStates.SerializableEntityStateType(typeof(RalseiDeathState));
+
             //clear existing state machines from your cloned body (probably commando)
             //omit all this if you want to just keep theirs
             Modules.Prefabs.ClearEntityStateMachines(bodyPrefab);
@@ -367,6 +398,8 @@ namespace RalseiMod.Survivors.Ralsei
                 for(int i = 0; i < buffCount; i++)
                 {
                     name = RoR2.Language.GetStringFormatted(RALSEI_PREFIX + "EMPOWERED_MODIFIER", name);
+                    if (stackEmpowerPrefix == false)
+                        break;
                 }
             }
             return name;

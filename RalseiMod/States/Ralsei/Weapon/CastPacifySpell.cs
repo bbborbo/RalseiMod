@@ -216,7 +216,7 @@ namespace RalseiMod.States.Ralsei.Weapon
 				AISkillDriver followSkillDriver = minionMaster.gameObject.AddComponent<AISkillDriver>();
 				followSkillDriver.customName = "ReturnToLeader";
 				followSkillDriver.skillSlot = SkillSlot.None;
-				followSkillDriver.minDistance = 80;
+				followSkillDriver.minDistance = Pacify.minionFollowRange;
 				followSkillDriver.moveTargetType = AISkillDriver.TargetType.CurrentLeader;
 				followSkillDriver.movementType = AISkillDriver.MovementType.ChaseMoveTarget;
 				followSkillDriver.aimType = AISkillDriver.AimType.AtCurrentEnemy;

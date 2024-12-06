@@ -121,7 +121,7 @@ namespace RalseiMod.Modules
                 return null;
             }
 
-            newEffect.AddComponent<DestroyOnTimer>().duration = 12;
+            newEffect.AddComponent<DestroyOnTimer>().duration = 2;
             newEffect.AddComponent<NetworkIdentity>();
             newEffect.AddComponent<VFXAttributes>().vfxPriority = VFXAttributes.VFXPriority.Always;
             EffectComponent effect = newEffect.AddComponent<EffectComponent>();

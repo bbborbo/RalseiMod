@@ -26,14 +26,14 @@ namespace RalseiMod
     [BepInDependency("com.johnedwa.RTAutoSprintEx", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("com.RiskOfBrainrot.Ror2AggroTools", BepInDependency.DependencyFlags.HardDependency)]
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
-    [R2APISubmoduleDependency(nameof(DeployableAPI), nameof(LanguageAPI), nameof(LoadoutAPI), nameof(PrefabAPI), nameof(DamageAPI), nameof(TempVisualEffectAPI))]
+    [R2APISubmoduleDependency(nameof(DeployableAPI), nameof(LanguageAPI), nameof(LoadoutAPI), nameof(PrefabAPI), nameof(DamageAPI), nameof(TempVisualEffectAPI), nameof(SoundAPI))]
     [BepInPlugin(guid, modName, version)]
     public class RalseiPlugin : BaseUnityPlugin
     {
         public const string guid = "com." + teamName + "." + modName;
         public const string teamName = "GodRayProd";
         public const string modName = "RalseiMod";
-        public const string version = "0.5.0";
+        public const string version = "0.7.2";
 
         public const string DEVELOPER_PREFIX = "GRP";
 
@@ -68,7 +68,7 @@ namespace RalseiMod
 
             RoR2.TeleporterInteraction.onTeleporterBeginChargingGlobal += WarpMinionsTp;
             On.EntityStates.Missions.BrotherEncounter.Phase1.FixedUpdate += WarpMinionsBrother;
-            On.RoR2.MeridianEventTriggerInteraction.Phase1.FixedUpdate += WarpMinionsSon;
+            On.EntityStates.MeridianEvent.Phase1.FixedUpdate += WarpMinionsSon;
 
             Type[] allTypes = Assembly.GetExecutingAssembly().GetTypes();
 
@@ -90,7 +90,7 @@ namespace RalseiMod
             ////refer to guide on how to build and distribute your mod with the proper folders
         }
 
-        private void WarpMinionsSon(On.RoR2.MeridianEventTriggerInteraction.Phase1.orig_FixedUpdate orig, MeridianEventTriggerInteraction.Phase1 self)
+        private void WarpMinionsSon(On.EntityStates.MeridianEvent.Phase1.orig_FixedUpdate orig, EntityStates.MeridianEvent.Phase1 self)
         {
             if (!self.spawnedEntryFX && self.fixedAge > self.meridianEventTriggerInteraction.additionalEntryVFXDelay + self.durationBeforeEnablingCombatEncounter)
             {

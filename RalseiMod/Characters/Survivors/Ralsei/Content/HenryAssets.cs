@@ -13,6 +13,7 @@ namespace RalseiMod.Survivors.Ralsei
         public static GameObject swordHitImpactEffect;
 
         public static GameObject bombExplosionEffect;
+        public static GameObject sillyExplosionEffect;
 
         // networked hit sounds
         public static NetworkSoundEventDef swordHitSoundEvent;
@@ -36,10 +37,33 @@ namespace RalseiMod.Survivors.Ralsei
         #region effects
         private static void CreateEffects()
         {
+            CreateSillyExplosionEffect();
+
             CreateBombExplosionEffect();
 
             swordSwingEffect = _assetBundle.LoadEffect("HenrySwordSwingEffect", true);
             swordHitImpactEffect = _assetBundle.LoadEffect("ImpactHenrySlash");
+        }
+
+        private static void CreateSillyExplosionEffect()
+        {
+            sillyExplosionEffect = _assetBundle.LoadEffect("SillyExplosionEffect", "SillyExplosionSound");
+
+            if (!bombExplosionEffect)
+                return;
+
+            ShakeEmitter shakeEmitter = bombExplosionEffect.AddComponent<ShakeEmitter>();
+            shakeEmitter.amplitudeTimeDecay = true;
+            shakeEmitter.duration = 0.5f;
+            shakeEmitter.radius = 200f;
+            shakeEmitter.scaleShakeRadiusWithLocalScale = false;
+
+            shakeEmitter.wave = new Wave
+            {
+                amplitude = 1f,
+                frequency = 40f,
+                cycleOffset = 0f
+            };
         }
 
         private static void CreateBombExplosionEffect()

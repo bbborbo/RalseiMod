@@ -62,7 +62,7 @@ namespace RalseiMod.Skills.Ralsei
 
         public override SkillSlot SkillSlot => SkillSlot.Special;
 
-        public override SimpleSkillData SkillData => new SimpleSkillData()
+        public override SimpleSkillData SkillData => new SimpleSkillData
         {
             stockToConsume = 1,
             baseRechargeInterval = cooldown,

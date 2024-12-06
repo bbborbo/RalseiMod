@@ -1,0 +1,156 @@
+ManifestFileVersion: 0
+CRC: 65140570
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: dabd55a114917fea756ed9f79081b4a3
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: c523574ad213db1e0e1933fb0816bcb6
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 23
+  Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 33
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+- Class: 65
+  Script: {instanceID: 0}
+- Class: 74
+  Script: {instanceID: 0}
+- Class: 90
+  Script: {instanceID: 0}
+- Class: 91
+  Script: {instanceID: 0}
+- Class: 95
+  Script: {instanceID: 0}
+- Class: 108
+  Script: {instanceID: 0}
+- Class: 114
+  Script: {fileID: 11500000, guid: 261c50d8a80898e4ebf2e8e415ea6766, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+- Class: 136
+  Script: {instanceID: 0}
+- Class: 137
+  Script: {instanceID: 0}
+- Class: 198
+  Script: {instanceID: 0}
+- Class: 199
+  Script: {instanceID: 0}
+- Class: 213
+  Script: {instanceID: 0}
+- Class: 319
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers:
+- AssemblyName: Assembly-CSharp
+  ClassName: ChildLocator/NameTransformPair
+Assets:
+- Assets/RalseiAssets/Icons/texRalseiIcon.bmp
+- Assets/RalseiAssets/Animation/clips/WalkLFT.anim
+- Assets/RalseiAssets/VFX/SillyExplosionEffect.prefab
+- Assets/RalseiAssets/Textures/texHenry.png
+- Assets/RalseiAssets/Materials/RalseiHatless_Base_Color.mat
+- Assets/RalseiAssets/Textures/Ralsei_Base_Color.PNG
+- Assets/RalseiAssets/VFX/Materials/matHitSparkPunch.mat
+- Assets/RalseiAssets/Animation/clips/Idle.anim
+- Assets/RalseiAssets/Textures/texHenryAlt.png
+- Assets/RalseiAssets/Textures/texBoxingGlove.png
+- Assets/RalseiAssets/VFX/FistBarrageEffect.prefab
+- Assets/RalseiAssets/VFX/Textures/spritesheet.png
+- Assets/RalseiAssets/Animation/clips/Landing.anim
+- Assets/RalseiAssets/Animation/clips/Ascending.anim
+- Assets/RalseiAssets/Textures/texHenryDanteEmission.png
+- Assets/RalseiAssets/Animation/clips/WalkRHT.anim
+- Assets/RalseiAssets/VFX/Textures/texFire.tga
+- Assets/RalseiAssets/VFX/HenryFistSwingEffect.prefab
+- Assets/RalseiAssets/Animation/clips/PrepareSpellLoop.anim
+- Assets/RalseiAssets/VFX/ImpactHenrySlash.prefab
+- Assets/RalseiAssets/Animation/clips/WalkBWD.anim
+- Assets/RalseiAssets/VFX/Materials/matSlash.mat
+- Assets/RalseiAssets/Animation/clips/Descend.anim
+- Assets/RalseiAssets/Textures/texHenryNeo.png
+- Assets/RalseiAssets/VFX/Materials/RalseiExplosion.mat
+- Assets/RalseiAssets/VFX/Materials/matAnimeShapes.mat
+- Assets/RalseiAssets/VFX/Materials/matPunchEffect.mat
+- Assets/RalseiAssets/Animation/animRalseiMenu.controller
+- Assets/RalseiAssets/VFX/Materials/matSmoke.mat
+- Assets/RalseiAssets/VFX/Textures/texLightning.tif
+- Assets/RalseiAssets/VFX/Textures/texHenrySwing2.png
+- Assets/RalseiAssets/Animation/clips/Jump.anim
+- Assets/RalseiAssets/VFX/Materials/matDust.mat
+- Assets/RalseiAssets/Materials/Ralsei_Base_Color.mat
+- Assets/RalseiAssets/Animation/clips/SprintFWD.anim
+- Assets/RalseiAssets/Textures/Niko_Base_Color.PNG
+- Assets/RalseiAssets/Materials/Niko_Base_Color.mat
+- Assets/RalseiAssets/VFX/Materials/matSwingEffect.mat
+- Assets/RalseiAssets/VFX/Mesh/meshSwing.asset
+- Assets/RalseiAssets/Animation/clips/PrepareSpellCancel.anim
+- Assets/RalseiAssets/VFX/Materials/matHenrySwing2.mat
+- Assets/RalseiAssets/VFX/Materials/matHitSpark.mat
+- Assets/RalseiAssets/VFX/Mesh/meshBoxingGlove.mesh
+- Assets/RalseiAssets/VFX/Textures/texDust.png
+- Assets/RalseiAssets/VFX/Textures/texHitSpark.png
+- Assets/RalseiAssets/RalseiDisplay.prefab
+- Assets/RalseiAssets/VFX/Textures/texSwingEffect.png
+- Assets/RalseiAssets/Textures/texShotgun.png
+- Assets/RalseiAssets/VFX/Materials/matTrail.mat
+- Assets/RalseiAssets/VFX/Textures/texSlash.png
+- Assets/RalseiAssets/Animation/clips/Primary4.anim
+- Assets/RalseiAssets/Animation/clips/CharSelect.anim
+- Assets/RalseiAssets/Textures/texHenryJedi.png
+- Assets/RalseiAssets/VFX/HenryDustEffect.prefab
+- Assets/RalseiAssets/VFX/Textures/texSmoke.png
+- Assets/RalseiAssets/Animation/clips/PrepareSpellEntry.anim
+- Assets/RalseiAssets/Animation/maskImpact.mask
+- Assets/RalseiAssets/Animation/clips/WalkFWD.anim
+- Assets/RalseiAssets/Textures/texHenryJediEmission.png
+- Assets/RalseiAssets/Mesh/RalseiMesh.mesh
+- Assets/RalseiAssets/Textures/texBazooka.png
+- Assets/RalseiAssets/VFX/HenrySwordSwingEffect.prefab
+- Assets/RalseiAssets/VFX/HenryBazookaMuzzleFlash.prefab
+- Assets/RalseiAssets/mdlRalsei.prefab
+- Assets/RalseiAssets/VFX/Textures/texFistSwing.png
+- Assets/RalseiAssets/Animation/animRalsei.controller
+- Assets/RalseiAssets/Animation/clips/Secondary.anim
+- Assets/RalseiAssets/VFX/BombExplosionEffect.prefab
+- Assets/RalseiAssets/Animation/clips/Primary3.anim
+- Assets/RalseiAssets/Animation/clips/CharSelectIdle.anim
+- Assets/RalseiAssets/VFX/Mesh/meshPunchShockwave.mesh
+- Assets/RalseiAssets/Textures/texHenryDante.png
+- Assets/RalseiAssets/VFX/Materials/matFire.mat
+- Assets/RalseiAssets/Animation/clips/Default.anim
+- Assets/RalseiAssets/VFX/HenryBazookaExplosionEffect.prefab
+- Assets/RalseiAssets/Textures/Ralsei_Normal.PNG
+- Assets/RalseiAssets/VFX/Textures/texPunchImpactShadow.png
+- Assets/RalseiAssets/VFX/Textures/texPunchImpact.png
+- Assets/RalseiAssets/VFX/Materials/matFistSwing.mat
+- Assets/RalseiAssets/Textures/texHenryVergil.png
+- Assets/RalseiAssets/Animation/maskGesture.mask
+- Assets/RalseiAssets/VFX/Materials/matPunchImpact.mat
+- Assets/RalseiAssets/Animation/clips/Primary1.anim
+- Assets/RalseiAssets/VFX/Materials/matRipple.mat
+- Assets/RalseiAssets/Animation/clips/Walk-Idle.anim
+- Assets/RalseiAssets/Animation/clips/Primary2.anim
+- Assets/RalseiAssets/Animation/clips/Special.anim
+- Assets/RalseiAssets/mdlRalseiDummy.prefab
+- Assets/RalseiAssets/VFX/ImpactHenryPunch.prefab
+- Assets/RalseiAssets/VFX/Materials/matSwingShadow.mat
+- Assets/RalseiAssets/Textures/RalseiHatless_Base_Color.PNG
+- Assets/RalseiAssets/VFX/Materials/matEmbers.mat
+- Assets/RalseiAssets/VFX/Textures/texEmbers.png
+- Assets/RalseiAssets/VFX/Textures/texRipple.png
+- Assets/RalseiAssets/VFX/Materials/matPunchImpactShadow.mat
+Dependencies:
+- C:/Users/bbborbo/source/repos/RalseiMod/RalseiUnityProject/AssetBundles/StandaloneWindows/myassetbundle

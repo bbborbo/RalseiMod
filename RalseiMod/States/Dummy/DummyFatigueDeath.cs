@@ -9,12 +9,12 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
+using RalseiMod.States.Ralsei;
 
 namespace RalseiMod.States.Dummy
 {
-    class DummyFatigueDeath : GenericCharacterDeath
+    class DummyFatigueDeath : RalseiDeathState
     {
-
         public override void OnEnter()
         {
             Debug.Log("Dummy fatigue burst");

@@ -45,6 +45,8 @@ namespace RalseiMod.Skills
         [AutoConfig("Champions Sparability", "If set to true, champions (world-spawn bosstype enemies) can be spared and turned into an ally.", true)]
         public static bool championsPacifiable;
 
+        [AutoConfig("MinionFollowRanfe", "The range in meters at which your minions will begin trying to follow you by sprinting", 45)]
+        public static float minionFollowRange;
         [AutoConfig("Enemy Empower Ward Radius", "Affects the radius of the special Empower ward that enemy Ralseis cast.", 25f)]
         public static float empowerWardRadius;
         #endregion

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WwiseDocument Type="WorkUnit" ID="{68114751-A0CE-47A9-B51C-3C4EF6FDA0CE}" SchemaVersion="119">
+	<AudioObjects>
+		<WorkUnit Name="Default Work Unit" ID="{68114751-A0CE-47A9-B51C-3C4EF6FDA0CE}" PersistMode="Standalone">
+			<ChildrenList>
+				<Sound Name="sillyexplosionsound" ID="{93BEB3D4-58CD-425D-A048-5AF2CEA209DB}" ShortID="858243576">
+					<ReferenceList>
+						<Reference Name="Conversion">
+							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{E39721B4-AA0F-4604-B89F-337514B98957}"/>
+						</Reference>
+						<Reference Name="OutputBus">
+							<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{BA63C80F-C0A8-4BA4-B116-FBF221B2BB0E}"/>
+						</Reference>
+					</ReferenceList>
+					<ChildrenList>
+						<AudioFileSource Name="sillyexplosionsound" ID="{61E5F3A9-5072-4F49-97F3-336E983E0699}">
+							<Language>SFX</Language>
+							<AudioFile>sillyexplosionsound.wav</AudioFile>
+							<MediaIDList>
+								<MediaID ID="594700504"/>
+							</MediaIDList>
+						</AudioFileSource>
+					</ChildrenList>
+					<ObjectLists>
+						<ObjectList Name="RTPC">
+							<Reference>
+								<Local>
+									<RTPC Name="" ID="{EBB6C75C-C8B6-4506-B106-1D544001C7C0}" ShortID="341401797">
+										<PropertyList>
+											<Property Name="PropertyName" Type="string" Value="OutputBusVolume"/>
+										</PropertyList>
+										<ReferenceList>
+											<Reference Name="ControlInput">
+												<ObjectRef Name="Volume_SFX" ID="{62851CEF-8245-4A44-8E12-64EA4C176C36}" WorkUnitID="{20EFC10C-D9D4-405B-81D0-A9BEFC89D3C9}"/>
+											</Reference>
+											<Reference Name="Curve">
+												<Custom>
+													<Curve Name="" ID="{03A45A9E-5C3B-4D60-8861-1C01EE9C1444}">
+														<PropertyList>
+															<Property Name="Flags" Type="int32" Value="3"/>
+														</PropertyList>
+														<PointList>
+															<Point>
+																<XPos>0</XPos>
+																<YPos>-200</YPos>
+																<Flags>5</Flags>
+															</Point>
+															<Point>
+																<XPos>100</XPos>
+																<YPos>0</YPos>
+																<Flags>37</Flags>
+															</Point>
+														</PointList>
+													</Curve>
+												</Custom>
+											</Reference>
+										</ReferenceList>
+									</RTPC>
+								</Local>
+							</Reference>
+						</ObjectList>
+					</ObjectLists>
+					<ActiveSourceList>
+						<ActiveSource Name="sillyexplosionsound" ID="{61E5F3A9-5072-4F49-97F3-336E983E0699}" Platform="Linked"/>
+					</ActiveSourceList>
+				</Sound>
+			</ChildrenList>
+		</WorkUnit>
+	</AudioObjects>
+</WwiseDocument>

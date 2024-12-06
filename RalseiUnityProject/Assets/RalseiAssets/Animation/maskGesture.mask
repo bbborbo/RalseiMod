@@ -1,0 +1,233 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!319 &31900000
+AvatarMask:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: maskGesture
+  m_Mask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+  m_Elements:
+  - m_Path: 
+    m_Weight: 1
+  - m_Path: RalseiArmature
+    m_Weight: 0
+  - m_Path: RalseiArmature/ROOT
+    m_Weight: 0
+  - m_Path: RalseiArmature/ROOT/Base
+    m_Weight: 0
+  - m_Path: RalseiArmature/ROOT/Base/Hips
+    m_Weight: 0
+  - m_Path: RalseiArmature/ROOT/Base/Hips/Leg_01.L
+    m_Weight: 0
+  - m_Path: RalseiArmature/ROOT/Base/Hips/Leg_01.L/Leg_02.L
+    m_Weight: 0
+  - m_Path: RalseiArmature/ROOT/Base/Hips/Leg_01.L/Leg_02.L/Foot.L
+    m_Weight: 0
+  - m_Path: RalseiArmature/ROOT/Base/Hips/Leg_01.L/Leg_02.L/Foot.L/Foot.L_end
+    m_Weight: 0
+  - m_Path: RalseiArmature/ROOT/Base/Hips/Leg_01.R
+    m_Weight: 0
+  - m_Path: RalseiArmature/ROOT/Base/Hips/Leg_01.R/Leg_02.R
+    m_Weight: 0
+  - m_Path: RalseiArmature/ROOT/Base/Hips/Leg_01.R/Leg_02.R/Foot.R
+    m_Weight: 0
+  - m_Path: RalseiArmature/ROOT/Base/Hips/Leg_01.R/Leg_02.R/Foot.R/Foot.R_end
+    m_Weight: 0
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01
+    m_Weight: 0
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Dress.L
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Dress.L/Dress.L_end
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Dress.R
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Dress.R/Dress.R_end
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/DressBCK
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/DressBCK/DressBCK_end
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/DressFWD
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/DressFWD/DressFWD_end
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/HandIK.L
+    m_Weight: 0
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/HandIK.L/HandIK.L_end
+    m_Weight: 0
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/HandIK.R
+    m_Weight: 0
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/HandIK.R/HandIK.R_end
+    m_Weight: 0
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Heart
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Heart/Heart_end
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Neck
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Neck/Head
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Neck/Head/Ear.L
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Neck/Head/Ear.L/Ear.L_end
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Neck/Head/Ear.R
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Neck/Head/Ear.R/Ear.R_end
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Neck/Head/Eye.L
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Neck/Head/Eye.L/EyeBTM.L
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Neck/Head/Eye.L/EyeBTM.L/EyeBTM.L_end
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Neck/Head/Eye.L/EyeUPP.L
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Neck/Head/Eye.L/EyeUPP.L/EyeUPP.L_end
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Neck/Head/Eye.R
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Neck/Head/Eye.R/EyeBTM.R
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Neck/Head/Eye.R/EyeBTM.R/EyeBTM.R_end
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Neck/Head/Eye.R/EyeUPP.R
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Neck/Head/Eye.R/EyeUPP.R/EyeUPP.R_end
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Neck/Head/Glasses
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Neck/Head/Glasses/Glassses1.L
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Neck/Head/Glasses/Glassses1.L/Glassses1.L_end
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Neck/Head/Glasses/Glassses1.R
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Neck/Head/Glasses/Glassses1.R/Glassses1.R_end
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Neck/Head/Glasses/Glassses2.L
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Neck/Head/Glasses/Glassses2.L/Glassses2.L_end
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Neck/Head/Glasses/Glassses2.R
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Neck/Head/Glasses/Glassses2.R/Glassses2.R_end
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Neck/Head/Glasses/Glassses3.L
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Neck/Head/Glasses/Glassses3.L/Glassses3.L_end
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Neck/Head/Glasses/Glassses3.R
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Neck/Head/Glasses/Glassses3.R/Glassses3.R_end
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Neck/Head/Hat1
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Neck/Head/Hat1/Hat2
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Neck/Head/Hat1/Hat2/Hat2_end
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Scarf1
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Scarf1/Scarf2
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Scarf1/Scarf2/Scarf3
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Scarf1/Scarf2/Scarf3/ScarfFinger1
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Scarf1/Scarf2/Scarf3/ScarfFinger1/ScarfFinger2
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Scarf1/Scarf2/Scarf3/ScarfFinger1/ScarfFinger2/ScarfFinger2_end
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Scarf1/Scarf2/Scarf3/ScarfIndex1
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Scarf1/Scarf2/Scarf3/ScarfIndex1/ScarfIndex2
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Scarf1/Scarf2/Scarf3/ScarfIndex1/ScarfIndex2/ScarfIndex2_end
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Scarf1/Scarf2/Scarf3/ScarfPinky1
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Scarf1/Scarf2/Scarf3/ScarfPinky1/ScarfPinky2
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Scarf1/Scarf2/Scarf3/ScarfPinky1/ScarfPinky2/ScarfPinky2_end
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Scarf1/Scarf2/Scarf3/ScarfSmearB3
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Scarf1/Scarf2/Scarf3/ScarfSmearB3/ScarfSmearB3_end
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Scarf1/Scarf2/Scarf3/ScarfSmearT3
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Scarf1/Scarf2/Scarf3/ScarfSmearT3/ScarfSmearT3_end
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Scarf1/Scarf2/Scarf3/ScarfThumb1
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Scarf1/Scarf2/Scarf3/ScarfThumb1/ScarfThumb2
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Scarf1/Scarf2/Scarf3/ScarfThumb1/ScarfThumb2/ScarfThumb2_end
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Scarf1/Scarf2/ScarfSmearB2
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Scarf1/Scarf2/ScarfSmearB2/ScarfSmearB2_end
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Scarf1/Scarf2/ScarfSmearT2
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Scarf1/Scarf2/ScarfSmearT2/ScarfSmearT2_end
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Scarf1/ScarfSmearB1
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Scarf1/ScarfSmearB1/ScarfSmearB1_end
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Scarf1/ScarfSmearT1
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Scarf1/ScarfSmearT1/ScarfSmearT1_end
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Shoulder.L
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Shoulder.L/Arm_01.L
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Shoulder.L/Arm_01.L/Arm_02.L
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Shoulder.L/Arm_01.L/Arm_02.L/Hand.L
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Shoulder.L/Arm_01.L/Arm_02.L/Hand.L/Hand.L_end
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Shoulder.R
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Shoulder.R/Arm_01.R
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Shoulder.R/Arm_01.R/Arm_02.R
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Shoulder.R/Arm_01.R/Arm_02.R/Hand.R
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/Base/Spine_01/Spine_02/Shoulder.R/Arm_01.R/Arm_02.R/Hand.R/Hand.R_end
+    m_Weight: 1
+  - m_Path: RalseiArmature/ROOT/ElbowIK.L
+    m_Weight: 0
+  - m_Path: RalseiArmature/ROOT/ElbowIK.L/ElbowIK.L_end
+    m_Weight: 0
+  - m_Path: RalseiArmature/ROOT/ElbowIK.R
+    m_Weight: 0
+  - m_Path: RalseiArmature/ROOT/ElbowIK.R/ElbowIK.R_end
+    m_Weight: 0
+  - m_Path: RalseiArmature/ROOT/FootIK.L
+    m_Weight: 0
+  - m_Path: RalseiArmature/ROOT/FootIK.L/FootIK.L_end
+    m_Weight: 0
+  - m_Path: RalseiArmature/ROOT/FootIK.R
+    m_Weight: 0
+  - m_Path: RalseiArmature/ROOT/FootIK.R/FootIK.R_end
+    m_Weight: 0
+  - m_Path: RalseiArmature/ROOT/KneeIK.L
+    m_Weight: 0
+  - m_Path: RalseiArmature/ROOT/KneeIK.L/KneeIK.L_end
+    m_Weight: 0
+  - m_Path: RalseiArmature/ROOT/KneeIK.R
+    m_Weight: 0
+  - m_Path: RalseiArmature/ROOT/KneeIK.R/KneeIK.R_end
+    m_Weight: 0
+  - m_Path: RalseiMesh
+    m_Weight: 0

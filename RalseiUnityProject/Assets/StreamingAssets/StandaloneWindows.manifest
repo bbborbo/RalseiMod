@@ -1,0 +1,11 @@
+ManifestFileVersion: 0
+CRC: 3246462825
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: ralseibundle
+      Dependencies:
+        Dependency_0: myassetbundle
+    Info_1:
+      Name: myassetbundle
+      Dependencies: {}

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="16" SoundBankVersion="150">
+	<RootPaths>
+		<ProjectRoot>../..</ProjectRoot>
+		<SourceFilesRoot>../../.cache/Mac</SourceFilesRoot>
+		<SoundBanksRoot>.</SoundBanksRoot>
+		<ExternalSourcesInputFile></ExternalSourcesInputFile>
+		<ExternalSourcesOutputRoot>.</ExternalSourcesOutputRoot>
+	</RootPaths>
+	<DialogueEvents/>
+	<SoundBanks>
+		<SoundBank Id="1355168291" Type="User" Language="SFX" Hash="{F150F569-00FD-47CF-CA24-E26B6972B891}">
+			<ShortName>Init</ShortName>
+			<Path>Init.bnk</Path>
+			<Plugins>
+				<AudioDevices>
+					<Plugin Id="2317455096" Name="No_Output" LibName="No Output" LibId="11862023"/>
+					<Plugin Id="3859886410" Name="System" LibName="System" LibId="11403271"/>
+				</AudioDevices>
+			</Plugins>
+			<Busses>
+				<Bus Id="3803692087" Name="Master Audio Bus"/>
+			</Busses>
+			<GameParameters>
+				<GameParameter Id="3673881719" Name="Volume_SFX"/>
+			</GameParameters>
+		</SoundBank>
+		<SoundBank Id="2666890595" Type="User" Language="SFX" Hash="{C5516EB7-7715-6916-D5C6-6943A2178AE0}">
+			<ShortName>RalseiSounds</ShortName>
+			<Path>RalseiSounds.bnk</Path>
+			<Media>
+				<File Id="594700504" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>sillyexplosionsound.wav</ShortName>
+					<CachePath>SFX/sillyexplosionsound_818F3B66.wem</CachePath>
+				</File>
+			</Media>
+			<Events>
+				<Event Id="535854868" Name="SillyExplosionSound">
+					<MediaRefs>
+						<MediaRef Id="594700504"/>
+					</MediaRefs>
+				</Event>
+			</Events>
+			<GameParameters>
+				<GameParameter Id="3673881719" Name="Volume_SFX"/>
+			</GameParameters>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{4B3DEBC5-669C-BFE3-1872-E1308BBE7F72}</FileHash>
+</SoundBanksInfo>
