@@ -5,6 +5,7 @@ using RalseiMod.Survivors.Ralsei;
 using RalseiMod.Survivors.Ralsei.Components;
 using RoR2;
 using RoR2.CharacterAI;
+using RoR2.Orbs;
 using Ror2AggroTools;
 using System;
 using System.Collections.Generic;
@@ -131,6 +132,13 @@ namespace RalseiMod.States.Ralsei.Weapon
 							if (b.bodyIndex != BodyCatalog.FindBodyIndex("ScavBody") && b.inventory.GetItemCount(RoR2Content.Items.InvadingDoppelganger) <= 0)
 							{
 								b.inventory.CopyItemsFrom(characterBody.inventory, new Func<ItemIndex, bool>(CopyItemFilter));
+								foreach(ItemIndex item in characterBody.inventory.itemAcquisitionOrder)
+                                {
+									ItemDef itemDef = ItemCatalog.GetItemDef(item);
+									if (itemDef.hidden || itemDef.tier == ItemTier.NoTier)
+										continue;
+									ItemTransferOrb.DispatchItemTransferOrb(characterBody.corePosition, null, item, 0, orbDestinationOverride: b.mainHurtBox);
+                                }
 
 								if (RunArtifactManager.instance.IsArtifactEnabled(RoR2Content.Artifacts.MonsterTeamGainsItems))
 									b.inventory.AddItemsFrom(RoR2.Artifacts.MonsterTeamGainsItemsArtifactManager.monsterTeamInventory, new Func<ItemIndex, bool>(CopyItemFilter));
