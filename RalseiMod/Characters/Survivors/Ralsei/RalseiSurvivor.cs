@@ -97,6 +97,7 @@ namespace RalseiMod.Survivors.Ralsei
         public static Material tangleOverlayMaterial;
 
         public static BuffDef fatigueDebuff;
+        public static Material fatigueOverlayMaterial;
         public override string bodyName => "RalseiBody"; 
         public override string masterName => "RalseiMonsterMaster";
 
@@ -225,6 +226,10 @@ namespace RalseiMod.Survivors.Ralsei
             tangleOverlayMaterial = UnityEngine.Object.Instantiate(Addressables.LoadAssetAsync<Material>("RoR2/Base/CritOnUse/matFullCrit.mat"/*"RoR2/Base/Treebot/matWeakEffect.mat"*/).WaitForCompletion());
             tangleOverlayMaterial.SetColor("_TintColor", new Color32(20, 0, 50, 120));
             tangleOverlayMaterial.SetTexture("_RemapTex", Addressables.LoadAssetAsync<Texture>("RoR2/DLC1/Common/ColorRamps/texRampConstructLaserTypeB.png").WaitForCompletion());
+
+            fatigueOverlayMaterial = UnityEngine.Object.Instantiate(Addressables.LoadAssetAsync<Material>("RoR2/Base/ArmorReductionOnHit/matPulverizedOverlay.mat"/*"RoR2/Base/Treebot/matWeakEffect.mat"*/).WaitForCompletion());
+            fatigueOverlayMaterial.SetColor("_TintColor", new Color32(26, 24, 36, 255));
+            fatigueOverlayMaterial.SetTexture("_RemapTex", Addressables.LoadAssetAsync<Texture>("RoR2/DLC1/Common/ColorRamps/texGeepRamp.png").WaitForCompletion());
 
 
             empowerBuff = Content.CreateAndAddBuff(
@@ -420,6 +425,7 @@ namespace RalseiMod.Survivors.Ralsei
             AddOverlay(empowerOverlayMaterialFriendly, self.body.HasBuff(empowerBuff) && self.body.teamComponent.teamIndex == TeamIndex.Player);
             AddOverlay(empowerOverlayMaterialEnemy, self.body.HasBuff(empowerBuff) && self.body.teamComponent.teamIndex != TeamIndex.Player);
             AddOverlay(tangleOverlayMaterial, self.body.HasBuff(tangleDebuff));
+            AddOverlay(fatigueOverlayMaterial, self.body.HasBuff(fatigueDebuff));
 
             void AddOverlay(Material overlayMaterial, bool condition)
             {
