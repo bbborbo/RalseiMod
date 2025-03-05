@@ -82,6 +82,8 @@ namespace RalseiMod.Survivors.Ralsei
         public static string sleepKeywordToken = RalseiPlugin.DEVELOPER_PREFIX + "_KEYWORD_SLEEP";
         public static string fatigueKeywordToken = RalseiPlugin.DEVELOPER_PREFIX + "_KEYWORD_FATIGUE";
 
+        public static GameObject ralseiSpellPrepareEffect;
+
         public static BuffDef empowerBuff;
         public static GameObject empowerTemporaryEffectPrefabFriendly;
         public static GameObject empowerTemporaryEffectPrefabEnemy;
@@ -175,6 +177,8 @@ namespace RalseiMod.Survivors.Ralsei
             /// Then registers the survivor
             ///
             base.InitializeCharacter();
+
+            //ralseiSpellPrepareEffect = assetBundle.LoadAsset<GameObject>("RalseiSpellLighting");
 
             TangleOnHit = DamageAPI.ReserveDamageType();
             tangleDebuff = Content.CreateAndAddBuff(

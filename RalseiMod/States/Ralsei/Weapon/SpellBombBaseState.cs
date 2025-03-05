@@ -1,6 +1,7 @@
 ﻿using EntityStates;
 using EntityStates.Toolbot;
 using RalseiMod.Skills;
+using RalseiMod.Survivors.Ralsei;
 using RoR2;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,8 @@ namespace RalseiMod.States.Ralsei.Weapon
 {
     public abstract class SpellBombBaseState : AimThrowableBase
     {
+        public GameObject spellLightingEffectInstance;
+
         Animator animator;
         internal abstract float GetEffectRange();
         internal abstract GameObject GetProjectilePrefab();
@@ -19,6 +22,8 @@ namespace RalseiMod.States.Ralsei.Weapon
         internal abstract float GetMaxDistance();
         public override void OnEnter()
         {
+            //this.spellLightingEffectInstance = UnityEngine.Object.Instantiate<GameObject>(RalseiSurvivor.ralseiSpellPrepareEffect, this.transform);
+
             base.detonationRadius = GetEffectRange();
             base.projectilePrefab = GetProjectilePrefab();
             base.baseMinimumDuration = GetCastTime();
@@ -46,6 +51,10 @@ namespace RalseiMod.States.Ralsei.Weapon
         public override void OnExit()
         {
             base.OnExit();
+
+            if (spellLightingEffectInstance)
+                //EntityState.Destroy(spellLightingEffectInstance);
+
             animator.SetBool("spellReady", false);
             PlayAnimation("Gesture, Override", "CastSpellSecondary", "SpellSecondary.playbackRate", 1f / base.attackSpeedStat);
             if (characterBody.HasBuff(RoR2Content.Buffs.Slow50))

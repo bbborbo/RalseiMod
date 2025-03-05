@@ -66,8 +66,22 @@ MonoBehaviour:
     ParentPath: SoundBanks\Default Work Unit
     guid: 0d20d15eddef5747ad871079bfb9839a
     GuidInternal: 
-    m_lastTime: -8584681577339896182
-    List: []
+    m_lastTime: -8584681574993006541
+    List:
+    - name: RalseiSounds
+      guid: 541f765a21038d4291b10247d367c6e4
+      id: 2666890595
+      PathAndIcons:
+      - ElementName: SoundBanks
+        ObjectType: 5
+        guid: 00000000000000000000000000000000
+      - ElementName: Default Work Unit
+        ObjectType: 12
+        guid: 0d20d15eddef5747ad871079bfb9839a
+      - ElementName: RalseiSounds
+        ObjectType: 7
+        guid: 541f765a21038d4291b10247d367c6e4
+      Path: SoundBanks\Default Work Unit\RalseiSounds
   EventWwu:
   - PhysicalPath: Events\Default Work Unit.wwu
     PathAndIcons:
@@ -80,8 +94,25 @@ MonoBehaviour:
     ParentPath: Events\Default Work Unit
     guid: 43e210959d4ffe49af305f51c0d80a65
     GuidInternal: 
-    m_lastTime: -8584681577339515833
-    List: []
+    m_lastTime: -8584681574993376878
+    List:
+    - name: SillyExplosionSound
+      guid: b49d50bba6ed31458755ef487363a914
+      id: 535854868
+      PathAndIcons:
+      - ElementName: Events
+        ObjectType: 5
+        guid: 00000000000000000000000000000000
+      - ElementName: Default Work Unit
+        ObjectType: 12
+        guid: 43e210959d4ffe49af305f51c0d80a65
+      - ElementName: SillyExplosionSound
+        ObjectType: 3
+        guid: b49d50bba6ed31458755ef487363a914
+      Path: Events\Default Work Unit\SillyExplosionSound
+      maxAttenuation: 0
+      maxDuration: -1
+      minDuration: -1
   RtpcWwu:
   - PhysicalPath: Game Parameters\Default Work Unit.wwu
     PathAndIcons:
@@ -94,8 +125,22 @@ MonoBehaviour:
     ParentPath: Game Parameters\Default Work Unit
     guid: 0cc1ef20d4d95b4081d0a9befc89d3c9
     GuidInternal: 
-    m_lastTime: -8584681577340386620
-    List: []
+    m_lastTime: -8584681574993126646
+    List:
+    - name: Volume_SFX
+      guid: ef1c85624582444a8e1264ea4c176c36
+      id: 3673881719
+      PathAndIcons:
+      - ElementName: Game Parameters
+        ObjectType: 5
+        guid: 00000000000000000000000000000000
+      - ElementName: Default Work Unit
+        ObjectType: 12
+        guid: 0cc1ef20d4d95b4081d0a9befc89d3c9
+      - ElementName: Volume_SFX
+        ObjectType: 13
+        guid: ef1c85624582444a8e1264ea4c176c36
+      Path: Game Parameters\Default Work Unit\Volume_SFX
   StateWwu:
   - PhysicalPath: States\Default Work Unit.wwu
     PathAndIcons:

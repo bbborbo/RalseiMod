@@ -17,12 +17,17 @@ namespace RalseiMod.States.Ralsei.Weapon
         //these attacks choose the correct stat based on whether this state is determined to be the last in the combo
         public override float baseEnterDuration => isComboFinisher ? ScarfRange.comboEntryDuration : ScarfRange.baseEntryDuration;
         public override float baseExitDuration => isComboFinisher ? ScarfRange.comboExitDuration : ScarfRange.baseExitDuration;
-        public override float damageCoefficient => isComboFinisher ? ScarfRange.baseDamageCombo : ScarfRange.baseDamage;
+        public override float damageCoefficient => isComboFinisher ? ScarfRange.baseDamageFinisher : ScarfRange.baseDamage;
 
         public override float altAnimationAttackSpeedThreshold => 2.65f;
 
-        public override GameObject hitEffectPrefab => ScarfRange.tracerImpact;
+        public override GameObject hitEffectPrefab => ScarfRange.threadImpact;
 
+        public override void OnEnter()
+        {
+            base.OnEnter();
+            EffectManager.SimpleMuzzleFlash(step > 1 ? ScarfRange.swingEffectFinisher : ScarfRange.swingEffect, gameObject, muzzleString, false);
+        }
         public override string GetAnimationLayer()
         {
             if (isComboFinisher)
@@ -46,10 +51,7 @@ namespace RalseiMod.States.Ralsei.Weapon
 
             if (step == ScarfRange.lastCombo)
                 return "SwingSpin";
-            if (step == ScarfRange.lastCombo - 1)
-                return "SwingJab";
-
-            return base.GetMuzzleName();
+            return (step % 2) == 0 ? "SwingR" : "SwingL";
         }
         public override string GetAttackSoundString()
         {
@@ -64,6 +66,14 @@ namespace RalseiMod.States.Ralsei.Weapon
             return base.GetHitSoundString();
         }
 
+        public override void TryAttack()
+        {
+            if (fired)
+                return;
+
+            EffectManager.SimpleMuzzleFlash(isComboFinisher ? ScarfRange.muzzleFlashFinisher : ScarfRange.muzzleFlash, gameObject, muzzleString, false);
+            base.TryAttack();
+        }
         //fire attack combo and regular are split because some applications of the base state would want to do two different kinds of attacks
         //however in this state, both attacks are essentially identical aside from their AVFX, so they are using a common BulletAttack 
         public override void FireAttackCombo()
@@ -111,7 +121,7 @@ namespace RalseiMod.States.Ralsei.Weapon
             bulletAttack.maxSpread = 0f;
             bulletAttack.damage = damageCoefficient * this.damageStat;
             bulletAttack.force = force;
-            bulletAttack.tracerEffectPrefab = isComboFinisher ? ScarfRange.tracerThreadCombo : ScarfRange.tracerThread;
+            bulletAttack.tracerEffectPrefab = isComboFinisher ? ScarfRange.tracerThreadFinisher : ScarfRange.tracerThread;
             bulletAttack.muzzleName = this.muzzleString;
             bulletAttack.hitEffectPrefab = hitEffectPrefab;
             bulletAttack.isCrit = Util.CheckRoll(this.critStat, base.characterBody.master);

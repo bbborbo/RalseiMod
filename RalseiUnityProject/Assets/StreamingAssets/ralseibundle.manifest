@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 65140570
+CRC: 1416060476
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: dabd55a114917fea756ed9f79081b4a3
+    Hash: de38e4a477830f620544117d7a85e52b
   TypeTreeHash:
     serializedVersion: 2
     Hash: c523574ad213db1e0e1933fb0816bcb6
@@ -88,6 +88,7 @@ Assets:
 - Assets/RalseiAssets/VFX/Materials/matSmoke.mat
 - Assets/RalseiAssets/VFX/Textures/texLightning.tif
 - Assets/RalseiAssets/VFX/Textures/texHenrySwing2.png
+- Assets/RalseiAssets/Textures/texRalseiScopeOverlay.png
 - Assets/RalseiAssets/Animation/clips/Jump.anim
 - Assets/RalseiAssets/VFX/Materials/matDust.mat
 - Assets/RalseiAssets/Materials/Ralsei_Base_Color.mat
@@ -135,6 +136,7 @@ Assets:
 - Assets/RalseiAssets/Textures/Ralsei_Normal.PNG
 - Assets/RalseiAssets/VFX/Textures/texPunchImpactShadow.png
 - Assets/RalseiAssets/VFX/Textures/texPunchImpact.png
+- Assets/RalseiAssets/VFX/RalseiSpellLighting.prefab
 - Assets/RalseiAssets/VFX/Materials/matFistSwing.mat
 - Assets/RalseiAssets/Textures/texHenryVergil.png
 - Assets/RalseiAssets/Animation/maskGesture.mask

@@ -38,7 +38,7 @@ namespace RalseiMod.States.Ralsei.Weapon
         private protected float exitDuration;
         float totalDuration => enterDuration + exitDuration;
         float stopwatch;
-        bool fired = false;
+        internal bool fired = false;
         internal string muzzleString;
 
         public abstract float damageCoefficient { get; }

@@ -1,6 +1,9 @@
 ﻿using EntityStates;
 using EntityStates.Engi.EngiMissilePainter;
+using RalseiMod.Skills;
+using RalseiMod.Survivors.Ralsei;
 using RoR2;
+using RoR2.HudOverlay;
 using RoR2.Skills;
 using RoR2.UI;
 using System;
@@ -13,13 +16,17 @@ namespace RalseiMod.States.Ralsei.Weapon
 {
     public abstract class EmpowerSpellBaseState : BaseSkillState
 	{
+		public GameObject spellLightingEffectInstance;
+
+		public GameObject scopeOverlayprefab => Pacify.pacifyTargetingOverlayPrefab;
+		private OverlayController overlayController;
 		Animator animator;
 		public abstract float maxHealthFraction { get; }
 		public abstract bool useFriendlyTeam { get; }
 		public abstract GameObject indicatorPrefab { get; }
 
 		public static float stackInterval = 0.125f;
-		public static GameObject crosshairOverridePrefab = Paint.crosshairOverridePrefab;
+		public static GameObject crosshairOverridePrefab = Pacify.crosshairOverridePrefab; //Paint.crosshairOverridePrefab;
 		public static string enterSoundString = Paint.enterSoundString;
 		public static string exitSoundString = Paint.exitSoundString;
 		public static string loopSoundString = Paint.loopSoundString;
@@ -56,12 +63,18 @@ namespace RalseiMod.States.Ralsei.Weapon
 
             Util.PlaySound(EmpowerSpellBaseState.enterSoundString, base.gameObject);
             this.loopSoundID = Util.PlaySound(EmpowerSpellBaseState.loopSoundString, base.gameObject);
+			//this.spellLightingEffectInstance = UnityEngine.Object.Instantiate<GameObject>(RalseiSurvivor.ralseiSpellPrepareEffect, this.transform);
 
-            //set crosshair
-            if (EmpowerSpellBaseState.crosshairOverridePrefab)
+			//set targeting crosshairs
+			this.overlayController = HudOverlayManager.AddOverlay(gameObject, new OverlayCreationParams
+			{
+				prefab = this.scopeOverlayprefab,
+				childLocatorEntry = "ScopeContainer"
+			});
+			if (crosshairOverridePrefab)
             {
                 this.crosshairOverrideRequest = CrosshairUtils.RequestOverrideForBody(base.characterBody, 
-					EmpowerSpellBaseState.crosshairOverridePrefab, CrosshairUtils.OverridePriority.Skill);
+					crosshairOverridePrefab, CrosshairUtils.OverridePriority.Skill);
 			}
 			this.targetIndicator = new Indicator(base.gameObject, indicatorPrefab);
 
@@ -116,6 +129,22 @@ namespace RalseiMod.States.Ralsei.Weapon
 			}
 			return null;
 		}
+		protected void SetScopeAlpha(float alpha)
+		{
+			if (this.overlayController != null)
+			{
+				this.overlayController.alpha = alpha;
+			}
+		}
+
+		protected void RemoveOverlay(float transitionDuration)
+		{
+			if (this.overlayController != null)
+			{
+				HudOverlayManager.RemoveOverlay(this.overlayController);
+				this.overlayController = null;
+			}
+		}
 
 		public override void OnExit()
 		{
@@ -128,6 +157,9 @@ namespace RalseiMod.States.Ralsei.Weapon
 			//play sounds/animations
 			Util.PlaySound(EmpowerSpellBaseState.exitSoundString, base.gameObject);
 			Util.PlaySound(EmpowerSpellBaseState.stopLoopSoundString, base.gameObject);
+			this.RemoveOverlay(0f);
+			if (spellLightingEffectInstance)
+				//EntityState.Destroy(spellLightingEffectInstance);
 
 			animator.SetBool("spellReady", false);
 			PlayCrossfade("Gesture, Override", "PrepareSpellCancel", "SpellSpecial.playbackRate", 0.73f / attackSpeedStat, 0.1f / attackSpeedStat);

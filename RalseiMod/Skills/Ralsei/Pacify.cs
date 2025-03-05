@@ -15,6 +15,8 @@ using R2API;
 using RalseiMod.Skills.SkillDefTypes;
 using UnityEngine.AddressableAssets;
 using RoR2.Projectile;
+using EntityStates.Engi.EngiMissilePainter;
+using UnityEngine.UI;
 
 namespace RalseiMod.Skills
 {
@@ -55,6 +57,23 @@ namespace RalseiMod.Skills
         public static DeployableSlot pacifyDeployableSlot;
         public static GameObject encourageProjectilePrefab;
         public static GameObject encourageWardPrefab;
+
+        public static GameObject pacifyTargetingOverlayPrefab;
+        private static GameObject defaultCrosshair => Paint.crosshairOverridePrefab;
+        private static GameObject _crosshairOverridePrefab = null;
+        public static GameObject crosshairOverridePrefab
+        {
+            get
+            {
+                if (_crosshairOverridePrefab != null)
+                    return _crosshairOverridePrefab;
+                return defaultCrosshair;
+            }
+            set
+            {
+                _crosshairOverridePrefab = value;
+            }
+        }
 
         public override AssetBundle assetBundle => RalseiPlugin.mainAssetBundle;
 
@@ -98,6 +117,8 @@ namespace RalseiMod.Skills
             (SkillDef as DualSkillDef).alternateActivationState = new SerializableEntityStateType(typeof(CastEncourageSpell));
             Content.AddEntityState(typeof(CastEncourageSpell));
             Content.AddEntityState(typeof(CastPacifySpell));
+
+            CreateTargetingCrosshairPrefabs();
 
             spareBuff = ScriptableObject.CreateInstance<BuffDef>();
             spareBuff.name = "SpareBuff";
@@ -167,6 +188,38 @@ namespace RalseiMod.Skills
             }
 
             Content.AddProjectilePrefab(encourageProjectilePrefab);
+        }
+
+        private void CreateTargetingCrosshairPrefabs()
+        {
+            crosshairOverridePrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/UI/SimpleDotCrosshair.prefab").WaitForCompletion();
+
+            GameObject railgunnerScopeOverlay = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/Railgunner/RailgunnerScopeHeavyOverlay.prefab").WaitForCompletion();
+            pacifyTargetingOverlayPrefab = PrefabAPI.InstantiateClone(railgunnerScopeOverlay, "RalseiPacifyTargetingOverlay");
+
+            Transform stv = pacifyTargetingOverlayPrefab.transform.Find("SniperTargetViewer");
+            if(stv != null)
+            {
+                GameObject.Destroy(stv.gameObject);
+            }
+            Transform scopeOverlay = pacifyTargetingOverlayPrefab.transform.Find("ScopeOverlay");
+            if(scopeOverlay != null)
+            {
+                RawImage image = scopeOverlay.GetComponent<RawImage>();
+
+                Material mat = UnityEngine.Object.Instantiate(Addressables.LoadAssetAsync<Material>("RoR2/DLC1/Railgunner/matRailgunnerScopeOverlayHeavy.mat").WaitForCompletion());
+                mat.name = "matRalseiScopeOverlay";
+                Texture tex = assetBundle.LoadAsset<Texture>("texRalseiScopeOverlay");
+                if(tex != null)
+                    mat.SetTexture("_ScopeMap", tex);
+
+                mat.SetFloat("_TintStrength", 0.65f);
+                mat.SetFloat("_Scale", 1.4f);
+                mat.SetFloat("_DistortionStrength", -0.08f);
+
+                image.material = mat;
+                image.color = new Color32(50, 41, 17, 255);
+            }
         }
 
         private int GetMaxPacifyMinions(CharacterMaster self, int deployableCountMultiplier)

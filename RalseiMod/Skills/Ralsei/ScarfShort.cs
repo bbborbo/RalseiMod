@@ -56,7 +56,7 @@ namespace RalseiMod.Skills
         internal static int lastCombo => comboCount - 1;
         public static GameObject slashEffectBasic;
         public static GameObject slashEffectCombo;
-        public static GameObject slashImpactEffect;
+        public static GameObject slashImpactEffect => ScarfRange.threadImpact;
 
         public override string SkillName => "Thread Slash";
 
@@ -106,7 +106,7 @@ namespace RalseiMod.Skills
             ec1.parentToReferencedTransform = true;
             ec1.positionAtReferencedTransform = true;
             Content.CreateAndAddEffectDef(slashEffectBasic);
-            slashEffectBasic.transform.localScale *= 9;
+            slashEffectBasic.transform.localScale *= 6;
 
             Transform slash = slashEffectBasic.transform.Find("SwingTrail");
             if (slash)
@@ -122,6 +122,12 @@ namespace RalseiMod.Skills
                 psr.material = ralseiSwipeMaterial;
             }
 
+            Transform sparks = slashEffectBasic.transform.Find("Sparks");
+            if (sparks)
+            {
+                GameObject.Destroy(sparks.gameObject);
+            }
+
             slashEffectCombo = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Merc/MercSwordSlashWhirlwind.prefab").WaitForCompletion().InstantiateClone("RalseiScarfSpin");
             EffectComponent ec2 = slashEffectCombo.GetComponent<EffectComponent>();
             if(ec2 == null)
@@ -135,9 +141,9 @@ namespace RalseiMod.Skills
             {
                 ParticleSystem ps = spin.GetComponent<ParticleSystem>();
                 ParticleSystem.MainModule main = ps.main;
-                main.startSizeXMultiplier *= 2;
-                main.startSizeYMultiplier *= 2;
-                main.startSizeZMultiplier *= 2;
+                main.startSizeXMultiplier *= 1.5f;
+                main.startSizeYMultiplier *= 1.5f;
+                main.startSizeZMultiplier *= 1.5f;
                 ParticleSystemRenderer psr = spin.GetComponent<ParticleSystemRenderer>();
 
                 Material ralseiSpinMaterial = UnityEngine.Object.Instantiate(Addressables.LoadAssetAsync<Material>("RoR2/Base/Merc/matMercSwipe2.mat").WaitForCompletion());
@@ -148,8 +154,8 @@ namespace RalseiMod.Skills
                 //Material ralseiSpinMaterial = UnityEngine.Object.Instantiate(Addressables.LoadAssetAsync<Material>("RoR2/Base/Common/ColorRamps/texRampDiamondLaser.png").WaitForCompletion());
             }
 
-            slashImpactEffect = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Merc/OmniImpactVFXSlashMerc.prefab").WaitForCompletion().InstantiateClone("RalseiScarfImpact");
-            Content.CreateAndAddEffectDef(slashImpactEffect);
+            //slashImpactEffect = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Merc/OmniImpactVFXSlashMerc.prefab").WaitForCompletion().InstantiateClone("RalseiScarfImpact");
+            //Content.CreateAndAddEffectDef(slashImpactEffect);
         }
     }
 }

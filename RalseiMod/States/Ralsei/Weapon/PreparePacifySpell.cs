@@ -16,6 +16,17 @@ namespace RalseiMod.States.Ralsei.Weapon
 
         public override GameObject indicatorPrefab => LegacyResourcesAPI.Load<GameObject>("Prefabs/WoodSpriteIndicator");
 
+        public override void OnEnter()
+        {
+            base.OnEnter();
+            base.SetScopeAlpha(0f);
+        }
+        public override void Update()
+        {
+            base.Update();
+            base.SetScopeAlpha(Mathf.Clamp01(base.age / 2f));
+        }
+
         public override EntityState GetNextState()
         {
             return new CastPacifySpell
