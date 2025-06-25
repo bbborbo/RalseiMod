@@ -15,6 +15,8 @@ namespace RalseiMod.Survivors.Ralsei
         public static GameObject bombExplosionEffect;
         public static GameObject sillyExplosionEffect;
 
+        public static GameObject grappleLeash;
+
         // networked hit sounds
         public static NetworkSoundEventDef swordHitSoundEvent;
 
@@ -32,6 +34,8 @@ namespace RalseiMod.Survivors.Ralsei
             CreateEffects();
 
             CreateProjectiles();
+
+            grappleLeash = _assetBundle.LoadAsset<GameObject>("RalseiGrapple");
         }
 
         #region effects

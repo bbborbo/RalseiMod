@@ -11,7 +11,8 @@ namespace RalseiMod.Achievements
         public const string identifier = RalseiSurvivor.RALSEI_PREFIX + "masteryAchievement";
         public const string unlockableIdentifier = RalseiSurvivor.RALSEI_PREFIX + "masteryUnlockable";
 
-        public override string RequiredCharacterBody => RalseiSurvivor.instance.bodyName;
+        //public override string RequiredCharacterBody => RalseiSurvivor.instance.bodyName;
+        public override string RequiredCharacterBody => "RalseiBody";
 
         //difficulty coeff 3 is monsoon. 3.5 is typhoon for grandmastery skins
         public override float RequiredDifficultyCoefficient => 3;

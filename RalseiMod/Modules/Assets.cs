@@ -43,7 +43,26 @@ namespace RalseiMod.Modules
             }
 
             AssetBundle assetBundle = null;
-            assetBundle = AssetBundle.LoadFromFile(Path.Combine(Path.GetDirectoryName(RalseiPlugin.instance.Info.Location), bundleName));
+            try
+            {
+                assetBundle = AssetBundle.LoadFromFile(Path.Combine(Path.GetDirectoryName(RalseiPlugin.instance.Info.Location), "AssetBundles", bundleName));
+            }
+            catch (System.Exception e)
+            {
+                Log.Error($"Error loading asset bundle, {bundleName}. Attempting to load from subfolder.\n{e}");
+            }
+
+            if (assetBundle == null)
+            {
+                try
+                {
+                    assetBundle = AssetBundle.LoadFromFile(Path.Combine(Path.GetDirectoryName(RalseiPlugin.instance.Info.Location), "RalseiMod/plugins/AssetBundles", bundleName));
+                }
+                catch (System.Exception e)
+                {
+                    Log.Error($"Error loading asset bundle, {bundleName}. Subfolder loading failed.\n{e}");
+                }
+            }
 
             loadedBundles[bundleName] = assetBundle;
 
