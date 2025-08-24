@@ -131,6 +131,7 @@ namespace RalseiMod.States.Ralsei.Weapon
             //maxDistance = maxRange;
             bulletAttack.smartCollision = true;
             bulletAttack.maxDistance = 999;
+            bulletAttack.damageType = DamageTypeCombo.GenericPrimary;
 
             return bulletAttack;
         }
