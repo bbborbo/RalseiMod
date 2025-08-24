@@ -13,7 +13,9 @@ namespace RalseiMod.Achievements
         public const string identifier = RalseiSurvivor.RALSEI_PREFIX + "unlockAchievement";
         public const string unlockableIdentifier = RalseiSurvivor.RALSEI_PREFIX + "unlockUnlockable";
 
-        public override BodyIndex LookUpRequiredBodyIndex() => BodyCatalog.FindBodyIndex(RalseiSurvivor.instance.bodyName);
+        //public override BodyIndex LookUpRequiredBodyIndex() => BodyCatalog.FindBodyIndex(RalseiSurvivor.instance.bodyName);
+        //its probably a bad idea to hard code all of this but im being a little lazy
+        public override BodyIndex LookUpRequiredBodyIndex() => BodyCatalog.FindBodyIndex("RalseiBody");
         public override void OnBodyRequirementMet()
         {
             base.OnBodyRequirementMet();

@@ -80,6 +80,9 @@ namespace RalseiMod
             BeginInitializing<SkillBase>(allTypes);
             Modules.Language.TryPrintOutput("RalseiSkills.txt");
 
+
+            Modules.Language.PrintOutput("Ralsei.txt");
+
             RalseiSurvivor.instance.InitializeCharacterMaster();
             //DummySurvivor.instance.InitializeCharacterMaster();
             Dummy.instance.InitializeCharacterMaster();

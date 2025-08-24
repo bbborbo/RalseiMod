@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using static RalseiMod.Modules.Language.Styling;
+using RalseiMod.States.Ralsei.Weapon;
 
 namespace RalseiMod.Skills.Ralsei
 {
@@ -26,7 +27,7 @@ namespace RalseiMod.Skills.Ralsei
 
         public override Sprite Icon => LoadSpriteFromRorSkill("RoR2/Base/Loader/FireHook.asset");
 
-        public override Type ActivationState => typeof(Idle);
+        public override Type ActivationState => typeof(GrappleChuck);
 
         public override Type BaseSkillDef => typeof(SkillDef);
 
@@ -34,9 +35,16 @@ namespace RalseiMod.Skills.Ralsei
 
         public override SkillSlot SkillSlot => SkillSlot.Utility;
 
-        public override SimpleSkillData SkillData => new SimpleSkillData
+        public override SimpleSkillData SkillData => new SimpleSkillData()
         {
-
+            /*stockToConsume = 1,
+            baseRechargeInterval = 2,
+            resetCooldownTimerOnUse = false,
+            canceledFromSprinting = true,
+            cancelSprintingOnActivation = true,
+            baseMaxStock = 2,
+            isCombatSkill = false,
+            interruptPriority = InterruptPriority.PrioritySkill*/
         };
 
         public override AssetBundle assetBundle => RalseiPlugin.mainAssetBundle;
