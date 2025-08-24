@@ -15,8 +15,8 @@ namespace RalseiMod.Achievements
         public const string unlockableIdentifier = RalseiSurvivor.RALSEI_PREFIX + "pacifistUnlockable";
 
         private int killCount = 0;
-        public override BodyIndex LookUpRequiredBodyIndex() => BodyCatalog.FindBodyIndex("RalseiBody");
-        //public override BodyIndex LookUpRequiredBodyIndex() => BodyCatalog.FindBodyIndex(RalseiSurvivor.instance.bodyName);
+        //public override BodyIndex LookUpRequiredBodyIndex() => BodyCatalog.FindBodyIndex("RalseiBody");
+        public override BodyIndex LookUpRequiredBodyIndex() => BodyCatalog.FindBodyIndex(RalseiSurvivor.instance.bodyName);
         public override void OnBodyRequirementMet()
         {
             base.OnBodyRequirementMet();
