@@ -8,7 +8,7 @@ using System.Text;
 
 namespace RalseiMod.Achievements
 {
-    [RegisterAchievement(identifier, unlockableIdentifier, null, uint.MaxValue, null)]
+    [RegisterAchievement(identifier, unlockableIdentifier, null, 50, null)]
     public class RalseiPacifistAchievement : BaseAchievement
     {
         public const string identifier = RalseiSurvivor.RALSEI_PREFIX + "pacifistAchievement";
