@@ -7,10 +7,10 @@ using System.Text;
 
 namespace RalseiMod.Achievements
 {
-    [RegisterAchievement("RalseiKingHealer", unlockableIdentifier, null, 3, null)]
+    [RegisterAchievement(identifier, unlockableIdentifier, null, 3, null)]
     class KingHealer
     {
-        const string name = "King Healer";
+        const string name = "KingHealer";
         public const string identifier = RalseiSurvivor.RALSEI_PREFIX + name + "Achievement";
         public const string unlockableIdentifier = RalseiSurvivor.RALSEI_PREFIX + name + "unlockUnlockable";
 

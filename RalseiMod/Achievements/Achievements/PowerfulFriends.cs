@@ -7,7 +7,7 @@ using System.Text;
 
 namespace RalseiMod.Achievements
 {
-    [RegisterAchievement("RalseiPowerfulFriends", unlockableIdentifier, null, 3, null)]
+    [RegisterAchievement(identifier, unlockableIdentifier, null, 3, null)]
     class PowerfulFriends
     {
         const string name = "PowerfulFriends";

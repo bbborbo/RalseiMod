@@ -7,7 +7,7 @@ using System.Text;
 
 namespace RalseiMod.Achievements
 {
-    [RegisterAchievement("RalseiUnlock", unlockableIdentifier, null, 3, null)]
+    [RegisterAchievement(identifier, unlockableIdentifier, null, 3, null)]
     class RalseiUnlockAchievement : BaseAchievement
     {
         public const string identifier = RalseiSurvivor.RALSEI_PREFIX + "unlockAchievement";
