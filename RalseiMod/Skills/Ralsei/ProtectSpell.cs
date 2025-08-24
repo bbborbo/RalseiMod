@@ -112,7 +112,7 @@ namespace RalseiMod.Skills
 
         private void RalseiBlockBuff(On.RoR2.HealthComponent.orig_TakeDamageProcess orig, HealthComponent self, DamageInfo damageInfo)
         {
-            if (!damageInfo.damageType.damageType.HasFlag(DamageType.BypassBlock))
+            if (!damageInfo.damageType.damageType.HasFlag(DamageType.BypassBlock) && self.body)
             {
                 int buffCount = self.body.GetBuffCount(blockBuff);
                 if (buffCount > 0)

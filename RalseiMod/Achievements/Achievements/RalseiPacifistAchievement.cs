@@ -52,11 +52,14 @@ namespace RalseiMod.Achievements
 
         public void ClearCheck(Run run, RunReport runReport)
         {
+            
             bool flag = killCount == 0 && meetsBodyRequirement;
             killCount = 0;
 
             if (!runReport.gameEnding.isWin || !flag || 
                 run == null || runReport == null || !(bool)runReport.gameEnding) 
+                return;
+            if (runReport.FindFirstPlayerInfo().bodyIndex != LookUpRequiredBodyIndex())
                 return;
             Grant();
         }
