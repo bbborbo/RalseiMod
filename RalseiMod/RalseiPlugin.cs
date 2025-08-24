@@ -33,7 +33,7 @@ namespace RalseiMod
         public const string guid = "com." + teamName + "." + modName;
         public const string teamName = "GodRayProd";
         public const string modName = "RalseiMod";
-        public const string version = "0.7.2";
+        public const string version = "1.0.2";
 
         public const string DEVELOPER_PREFIX = "GRP";
 

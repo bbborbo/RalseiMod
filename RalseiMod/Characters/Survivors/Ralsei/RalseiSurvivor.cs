@@ -71,11 +71,15 @@ namespace RalseiMod.Survivors.Ralsei
         public override string SurvivorOutroWin => "..and so he left, shining with HOPE.";
         public override string SurvivorOutroFailure => "..and so he vanished, a whisper of legend fading to black.";
         public override string CharacterLore => "";
-        public override string SurvivorDescription => "Henry is a skilled fighter who makes use of a wide arsenal of weaponry to take down his foes.<color=#CCD3E0>" + Environment.NewLine + Environment.NewLine
-             + "< ! > Sword is a good all-rounder while Boxing Gloves are better for laying a beatdown on more powerful foes." + Environment.NewLine + Environment.NewLine
-             + "< ! > Pistol is a powerful anti air, with its low cooldown and high damage." + Environment.NewLine + Environment.NewLine
-             + "< ! > Roll has a lingering armor buff that helps to use it aggressively." + Environment.NewLine + Environment.NewLine
-             + "< ! > Bomb can be used to wipe crowds with ease.";
+        public override string SurvivorDescription => "Ralsei's support capabilities can rally together any team, friend or foe!" +
+            "<color=#CCD3E0>\n\n" +
+            "< ! > Be intentional about the enemies you pacify; you can only have 3 pacified minions at once. " +
+                "Pacifying enemies means you won't be getting money from them, so be wary!\n\n" +
+            "< ! > Casting Pacify on bosses can be a great way to soften them for minions to gain an advantage. " +
+                "Don't dismiss it just because Pacify can't spare bosses.\n\n" +
+            "< ! > Your primary is much stronger without the last hit of the combo, but can not debuff without it. " +
+                "Be mindful of when to use the full combo or just bursts of attacks at the right time." +
+            "</color>";
         #endregion
         public static string tangleKeywordToken = RalseiPlugin.DEVELOPER_PREFIX + "_KEYWORD_TANGLE";
         public static string empowerKeywordToken = RalseiPlugin.DEVELOPER_PREFIX + "_KEYWORD_EMPOWER";
