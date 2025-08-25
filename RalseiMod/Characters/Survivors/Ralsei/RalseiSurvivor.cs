@@ -394,11 +394,18 @@ namespace RalseiMod.Survivors.Ralsei
 
         private static void ApplyRalseiCdr(CharacterBody body, float cdr)
         {
-            if (body != null && body.bodyIndex == BodyCatalog.FindBodyIndex(RalseiSurvivor.instance.bodyName) || body.bodyIndex == BodyCatalog.FindBodyIndex(Dummy.instance.bodyName))
-            {
-                SkillLocator skillLocator = body.skillLocator;
-                skillLocator.DeductCooldownFromAllSkillsServer(cdr);
-            }
+            if (body == null)
+                return;
+
+            if (body.skillLocator == null)
+                return;
+
+            if (body.bodyIndex != BodyCatalog.FindBodyIndex(RalseiSurvivor.instance.bodyName)
+                && body.bodyIndex != BodyCatalog.FindBodyIndex(Dummy.instance.bodyName))
+                return;
+
+            SkillLocator skillLocator = body.skillLocator;
+            skillLocator.DeductCooldownFromAllSkillsServer(cdr);
         }
 
         private string EmpowermentNameModifier(On.RoR2.Util.orig_GetBestBodyName orig, GameObject bodyObject)
