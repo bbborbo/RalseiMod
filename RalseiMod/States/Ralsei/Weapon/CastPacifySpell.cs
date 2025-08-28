@@ -20,6 +20,7 @@ namespace RalseiMod.States.Ralsei.Weapon
     class CastPacifySpell : BaseSkillState
     {
 		public static List<string> pacifyBodyNameWhitelist = new List<string>() { "UNIDENTIFIED", "AFFIXEARTH_HEALER_BODY_NAME", "URCHINTURRET_BODY_NAME" };
+
 		public static bool IsTargetPacifiable(HurtBox hurtBox)
         {
 			return IsCharacterPacifiable(hurtBox.healthComponent?.body);
@@ -99,10 +100,17 @@ namespace RalseiMod.States.Ralsei.Weapon
         public override void FixedUpdate()
         {
             base.FixedUpdate();
+
 			if(base.fixedAge > duration && base.isAuthority)
             {
 				outer.SetNextStateToMain();
             }
+        }
+
+        public override void OnExit()
+        {
+			Util.PlaySound("Stop_R_cast_loop", gameObject);
+            base.OnExit();
         }
         public bool CastToTargetServer(HurtBox hurtBox)
 		{
@@ -146,6 +154,9 @@ namespace RalseiMod.States.Ralsei.Weapon
 
 							ReplaceMinionAI(b);
 							EmpowerAndStunMinion(b);
+
+							Util.PlaySound("Play_R_cast_start", gameObject); //we play it a second time to get the secondary sfx to activate
+							Util.PlaySound("Play_R_target_hit", gameObject);
 							//b.inventory.GiveItem(RoR2Content.Items.MinionLeash);
 
 							if (Pacify.swarmsDuplicate && RunArtifactManager.instance.IsArtifactEnabled(RoR2Content.Artifacts.Swarms))
@@ -210,7 +221,7 @@ namespace RalseiMod.States.Ralsei.Weapon
 			if (b.isChampion && b.inventory)
 				b.inventory.GiveItem(RoR2Content.Items.HealthDecay, Pacify.championDecayTime);
 
-			b.masterObject.AddComponent<WarpOnTeleporterBegin>();
+			b.masterObject.AddComponent<RalseiRecallComponent>();
 			b.bodyFlags |= CharacterBody.BodyFlags.ResistantToAOE;
             if (b.inventory)
 			{

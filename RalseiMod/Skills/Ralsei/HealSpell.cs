@@ -44,18 +44,24 @@ namespace RalseiMod.Skills
         public static GameObject loveBombImpact;
         public override AssetBundle assetBundle => RalseiPlugin.mainAssetBundle;
 
+        [AutoConfig("Ally Teleport Time", "How long to hold secondary until allies are teleported, in seconds.", 1.5f)]
+        public static float teleportTime;
+
         public override string SkillName => "Heal Prayer";
 
         public override string SkillDescription => 
             $"Cast a {HealingColor("healing spell")} on yourself and all allies within {UtilityColor(healRange + "m")}, " +
             $"restoring {HealingColor(ConvertDecimal(instantHealPercent) + " health")} " +
-            $"and granting {HealingColor("Regenerative")} for {HealingColor(healDuration.ToString())} seconds.";
+            $"and granting {HealingColor("Regenerative")} for {HealingColor(healDuration.ToString())} seconds." +
+            $"Holding this ability for {teleportTime} seconds will {DamageColor("consume all stocks")} and teleport your allies to you" +
+            $"{HealingColor(" healing 10% plus a static 20 health")}, increasing with levels.";
 
         public override string SkillLangTokenName => "HEALSPELL";
 
         public override UnlockableDef UnlockDef => null;
 
-        public override Sprite Icon => LoadSpriteFromRorSkill("RoR2/Base/Captain/CallSupplyDropHealing.asset");
+        //public override Sprite Icon => LoadSpriteFromRorSkill("RoR2/Base/Captain/CallSupplyDropHealing.asset");
+        public override Sprite Icon => RalseiPlugin.mainAssetBundle.LoadAsset<Sprite>("healprayer");
 
         public override Type ActivationState => typeof(AimHealSpell);
 
@@ -76,7 +82,8 @@ namespace RalseiMod.Skills
             cancelSprintingOnActivation = true,
             mustKeyPress = true,
             interruptPriority = InterruptPriority.Skill,
-            baseMaxStock = stock
+            baseMaxStock = stock,
+            dontAllowPastMaxStocks = false,
         };
 
         public override void Init()

@@ -8,7 +8,7 @@ namespace RalseiMod.States.Ralsei.Weapon
 {
     internal class GrappleChuck : BaseSkillState
     {
-        public static float BaseDuration = 0.65f;
+        /*public static float BaseDuration = 0.65f;
 
         public float duration = 0.65f;
 
@@ -67,6 +67,6 @@ namespace RalseiMod.States.Ralsei.Weapon
         public override InterruptPriority GetMinimumInterruptPriority()
         {
             return InterruptPriority.Pain;
-        }
+        }*/
     }
 }

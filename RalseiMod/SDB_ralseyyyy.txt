@@ -1,0 +1,37 @@
+Event	ID	Name			Wwise Object Path	Notes
+	371338710	Play_M1_basic_end_combo			\Default Work Unit\Play_M1_basic_end_combo	
+	2315043432	Stop_fly_loop			\Default Work Unit\Stop_fly_loop	
+	2403132935	Play_R_cast_loop			\Default Work Unit\Play_R_cast_loop	
+	2685293034	Play_R_target_hit			\Default Work Unit\Play_R_target_hit	
+	2805969271	Play_M1_basic			\Default Work Unit\Play_M1_basic	
+	2813328903	Play_R_cast_start			\Default Work Unit\Play_R_cast_start	
+	3320147165	Play_fly_hop			\Default Work Unit\Play_fly_hop	
+	3724224621	Stop_R_cast_loop			\Default Work Unit\Stop_R_cast_loop	
+	3859793151	Play_gloom_effect_loop			\Default Work Unit\Play_gloom_effect_loop	
+	4094657849	Stop_gloom_effect_loop			\Default Work Unit\Stop_gloom_effect_loop	
+	4274466530	Play_fly_loop			\Default Work Unit\Play_fly_loop	
+
+Effect plug-ins	ID	Name	Type				Notes
+	578151855	Delay (Custom)	Wwise Delay			
+	1023551136	Delay (Custom)	Wwise Delay			
+
+In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
+	23138496	M1_basic_end_combo-002	C:\Users\Bee_Snow\source\repos\RalseiMod\WWise\.cache\Windows\SFX\M1_basic_end_combo-002_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\main_ralsey\M1_basic_end_combo\M1_basic_end_combo-002		342596
+	67086575	fly_loop-002	C:\Users\Bee_Snow\source\repos\RalseiMod\WWise\.cache\Windows\SFX\fly_loop-002_DA6DA1CE.wem		\Actor-Mixer Hierarchy\Default Work Unit\main_ralsey\fly_loop\fly_loop-002		1264492
+	144255323	M1_basic-002	C:\Users\Bee_Snow\source\repos\RalseiMod\WWise\.cache\Windows\SFX\M1_basic-002_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\main_ralsey\M1_basic\M1_basic-002		101408
+	257239083	fly_loop-001	C:\Users\Bee_Snow\source\repos\RalseiMod\WWise\.cache\Windows\SFX\fly_loop-001_2D43AC92.wem		\Actor-Mixer Hierarchy\Default Work Unit\main_ralsey\fly_loop\fly_loop-001		1268212
+	407942785	R_cast_loop-002	C:\Users\Bee_Snow\source\repos\RalseiMod\WWise\.cache\Windows\SFX\R_cast_loop-002_B1975234.wem		\Actor-Mixer Hierarchy\Default Work Unit\main_ralsey\R_cast_loop\R_cast_loop-002		498660
+	431504031	R_cast_start-001	C:\Users\Bee_Snow\source\repos\RalseiMod\WWise\.cache\Windows\SFX\R_cast_start-001_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\main_ralsey\R_cast_start\R_cast_start-001		591976
+	464548300	R_cast_loop-003	C:\Users\Bee_Snow\source\repos\RalseiMod\WWise\.cache\Windows\SFX\R_cast_loop-003_FAD6C06B.wem		\Actor-Mixer Hierarchy\Default Work Unit\main_ralsey\R_cast_loop\R_cast_loop-003		569168
+	484459052	R_target-001	C:\Users\Bee_Snow\source\repos\RalseiMod\WWise\.cache\Windows\SFX\R_target-001_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\main_ralsey\R_target_hit\R_target-001		350016
+	575006184	gloom_effect_loop	C:\Users\Bee_Snow\source\repos\RalseiMod\WWise\.cache\Windows\SFX\gloom_effect_loop_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\main_ralsey\gloom_effect_loop		619776
+	575211646	M1_basic-001	C:\Users\Bee_Snow\source\repos\RalseiMod\WWise\.cache\Windows\SFX\M1_basic-001_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\main_ralsey\M1_basic\M1_basic-001		168652
+	614399097	fly_hop-002	C:\Users\Bee_Snow\source\repos\RalseiMod\WWise\.cache\Windows\SFX\fly_hop-002_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\main_ralsey\fly_hop\fly_hop-002		117924
+	734742294	M1_basic_end_combo-001	C:\Users\Bee_Snow\source\repos\RalseiMod\WWise\.cache\Windows\SFX\M1_basic_end_combo-001_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\main_ralsey\M1_basic_end_combo\M1_basic_end_combo-001		325328
+	821773199	fly_hop-001	C:\Users\Bee_Snow\source\repos\RalseiMod\WWise\.cache\Windows\SFX\fly_hop-001_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\main_ralsey\fly_hop\fly_hop-001		87404
+	832809867	R_target-002	C:\Users\Bee_Snow\source\repos\RalseiMod\WWise\.cache\Windows\SFX\R_target-002_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\main_ralsey\R_target_hit\R_target-002		431504
+	907579073	M1_basic-004	C:\Users\Bee_Snow\source\repos\RalseiMod\WWise\.cache\Windows\SFX\M1_basic-004_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\main_ralsey\M1_basic\M1_basic-004		139632
+	1006965115	R_cast_start-002	C:\Users\Bee_Snow\source\repos\RalseiMod\WWise\.cache\Windows\SFX\R_cast_start-002_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\main_ralsey\R_cast_start\R_cast_start-002		515124
+	1025908300	R_cast_OS-001	C:\Users\Bee_Snow\source\repos\RalseiMod\WWise\.cache\Windows\SFX\R_cast_loop-001_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\main_ralsey\R_cast_loop\R_cast_OS-001		580864
+	1036964864	M1_basic-003	C:\Users\Bee_Snow\source\repos\RalseiMod\WWise\.cache\Windows\SFX\M1_basic-003_818F3B66.wem		\Actor-Mixer Hierarchy\Default Work Unit\main_ralsey\M1_basic\M1_basic-003		112536
+

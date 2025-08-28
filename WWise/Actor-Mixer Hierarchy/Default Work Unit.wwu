@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WwiseDocument Type="WorkUnit" ID="{45B6BD9B-2C59-44AC-BAD8-A54CF22833CB}" SchemaVersion="119">
+	<AudioObjects>
+		<WorkUnit Name="Default Work Unit" ID="{45B6BD9B-2C59-44AC-BAD8-A54CF22833CB}" PersistMode="Standalone">
+			<ChildrenList>
+				<WorkUnit Name="main_ralsey" ID="{C4873F74-1F64-4B86-9462-78944F0F87E9}" PersistMode="Reference"/>
+			</ChildrenList>
+		</WorkUnit>
+	</AudioObjects>
+</WwiseDocument>

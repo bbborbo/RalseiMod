@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WwiseDocument Type="WorkUnit" ID="{8CC30997-9600-43C4-99C2-AFCF8BBDB228}" SchemaVersion="119">
+	<Events>
+		<WorkUnit Name="Default Work Unit" ID="{8CC30997-9600-43C4-99C2-AFCF8BBDB228}" PersistMode="Standalone">
+			<ChildrenList>
+				<Event Name="Play_fly_hop" ID="{4BC810B8-006D-4297-883E-2BD1E85158F3}">
+					<ChildrenList>
+						<Action Name="" ID="{933E3C32-C24D-42E9-A155-1596DF2F84A5}" ShortID="397918527">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="fly_hop" ID="{2C9BC6D9-0512-4A49-A306-C4E2CAFDF53A}" WorkUnitID="{C4873F74-1F64-4B86-9462-78944F0F87E9}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_M1_basic" ID="{1FB6AEF3-1D8F-4749-A876-5E9A98FE0063}">
+					<ChildrenList>
+						<Action Name="" ID="{E70EFD9B-A7EF-4CB0-B883-C9F2585FDD86}" ShortID="567818630">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="M1_basic" ID="{D0A0E717-E472-49DE-AAA0-947B913AB5C8}" WorkUnitID="{C4873F74-1F64-4B86-9462-78944F0F87E9}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_M1_basic_end_combo" ID="{6AD303B3-A348-404D-B4B5-AD8FDCC90245}">
+					<ChildrenList>
+						<Action Name="" ID="{4DF692DA-D510-4399-8F82-04AA800DDA56}" ShortID="646544238">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="M1_basic_end_combo" ID="{3A4CC36B-9B26-4CB6-95B5-A8BBF68FF821}" WorkUnitID="{C4873F74-1F64-4B86-9462-78944F0F87E9}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_R_cast_start" ID="{3272B78A-1DD6-43BF-AAB4-94D7A31BB110}">
+					<ChildrenList>
+						<Action Name="" ID="{33BDB2E0-25EE-44A9-9379-BAE11959589F}" ShortID="300701951">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="R_cast_start" ID="{872E8D15-F2A9-45E6-8BCC-BC70039E459B}" WorkUnitID="{C4873F74-1F64-4B86-9462-78944F0F87E9}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_R_target_hit" ID="{3ABC1F89-BCEA-4679-AAE3-F2C45D22084B}">
+					<ChildrenList>
+						<Action Name="" ID="{884DA07D-E604-445E-AD94-9C79FD15174E}" ShortID="746227279">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="R_target_hit" ID="{FD8B7FB4-9B9F-427F-BF27-18C2F85AC539}" WorkUnitID="{C4873F74-1F64-4B86-9462-78944F0F87E9}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_fly_loop" ID="{24DDFD03-5173-477A-B9FB-B233103D7B51}">
+					<ChildrenList>
+						<Action Name="" ID="{FA0ED26A-064A-4D05-B772-AF4D5EA5A345}" ShortID="48680716">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="fly_loop" ID="{9E8C7CAD-AF21-46BE-8C3C-5A10134AFC3C}" WorkUnitID="{C4873F74-1F64-4B86-9462-78944F0F87E9}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_R_cast_loop" ID="{7D8B4158-914A-4AC7-A1F0-C133A6128D36}">
+					<ChildrenList>
+						<Action Name="" ID="{5A26A82D-F836-4B94-B2C4-11673DEB83B4}" ShortID="213809211">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="R_cast_loop" ID="{CD612AE2-42B6-4577-BE9A-6B635E131920}" WorkUnitID="{C4873F74-1F64-4B86-9462-78944F0F87E9}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Play_gloom_effect_loop" ID="{7A56148A-5C5F-4C41-8626-0410236E365A}">
+					<ChildrenList>
+						<Action Name="" ID="{3D3EBF09-032F-4390-B3A4-716061129E33}" ShortID="551581149">
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="gloom_effect_loop" ID="{2C459CBD-ECAB-470B-93B3-0AC215D6FB9A}" WorkUnitID="{C4873F74-1F64-4B86-9462-78944F0F87E9}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Stop_fly_loop" ID="{2DE9E994-7F74-4043-B606-330C78145C2D}">
+					<ChildrenList>
+						<Action Name="" ID="{AAA53B38-7E1D-48B5-852D-12A854116705}" ShortID="603391510">
+							<PropertyList>
+								<Property Name="ActionType" Type="int16" Value="2"/>
+								<Property Name="FadeTime" Type="Real64" Value="0.5"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="fly_loop" ID="{9E8C7CAD-AF21-46BE-8C3C-5A10134AFC3C}" WorkUnitID="{C4873F74-1F64-4B86-9462-78944F0F87E9}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Stop_R_cast_loop" ID="{AD7F6126-D6A4-4967-B8F5-21EB77992750}">
+					<ChildrenList>
+						<Action Name="" ID="{6A452BAE-886F-4D37-8E76-628C0BE8718F}" ShortID="585472359">
+							<PropertyList>
+								<Property Name="ActionType" Type="int16" Value="2"/>
+								<Property Name="FadeTime" Type="Real64" Value="0.5"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="R_cast_loop" ID="{CD612AE2-42B6-4577-BE9A-6B635E131920}" WorkUnitID="{C4873F74-1F64-4B86-9462-78944F0F87E9}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+				<Event Name="Stop_gloom_effect_loop" ID="{3DFCBF70-31D1-454A-A0F9-D412DC4AC9EC}">
+					<ChildrenList>
+						<Action Name="" ID="{3E4D08FE-A245-4E09-B367-89BFCD8D48D9}" ShortID="928169442">
+							<PropertyList>
+								<Property Name="ActionType" Type="int16" Value="2"/>
+							</PropertyList>
+							<ReferenceList>
+								<Reference Name="Target">
+									<ObjectRef Name="gloom_effect_loop" ID="{2C459CBD-ECAB-470B-93B3-0AC215D6FB9A}" WorkUnitID="{C4873F74-1F64-4B86-9462-78944F0F87E9}"/>
+								</Reference>
+							</ReferenceList>
+						</Action>
+					</ChildrenList>
+				</Event>
+			</ChildrenList>
+		</WorkUnit>
+	</Events>
+</WwiseDocument>

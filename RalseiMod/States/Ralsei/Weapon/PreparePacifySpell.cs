@@ -20,6 +20,9 @@ namespace RalseiMod.States.Ralsei.Weapon
         {
             base.OnEnter();
             base.SetScopeAlpha(0f);
+
+            Util.PlaySound("Play_R_cast_start", gameObject);
+            Util.PlaySound("Play_R_cast_loop", gameObject);
         }
         public override void Update()
         {

@@ -68,7 +68,7 @@ namespace RalseiMod.Skills
 
         public override UnlockableDef UnlockDef => null;
 
-        public override Sprite Icon => LoadSpriteFromRorSkill("RoR2/Base/Merc/MercBodyWhirlwind.asset");
+        public override Sprite Icon => RalseiPlugin.mainAssetBundle.LoadAsset<Sprite>("threadwhip2");
 
         public override Type ActivationState => typeof(ScarfAttackShort);
 

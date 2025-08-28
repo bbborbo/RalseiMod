@@ -80,9 +80,6 @@ namespace RalseiMod
             BeginInitializing<SkillBase>(allTypes);
             Modules.Language.TryPrintOutput("RalseiSkills.txt");
 
-
-            Modules.Language.PrintOutput("Ralsei.txt");
-
             RalseiSurvivor.instance.InitializeCharacterMaster();
             //DummySurvivor.instance.InitializeCharacterMaster();
             Dummy.instance.InitializeCharacterMaster();
@@ -98,11 +95,11 @@ namespace RalseiMod
             if (!self.spawnedEntryFX && self.fixedAge > self.meridianEventTriggerInteraction.additionalEntryVFXDelay + self.durationBeforeEnablingCombatEncounter)
             {
                 Vector3 pos = self.meridianEventTriggerInteraction.falseSonEntryFXPosition.position;
-                WarpOnTeleporterBegin[] warpTargets = WarpOnTeleporterBegin.GetWarpTargets(pos, 0);
+                RalseiRecallComponent[] warpTargets = RalseiRecallComponent.GetWarpTargets(pos, 0);
                 int count = warpTargets.Length;
                 Log.Warning(count);
                 int i = 0;
-                foreach (WarpOnTeleporterBegin warpTarget in warpTargets)
+                foreach (RalseiRecallComponent warpTarget in warpTargets)
                 {
                     // 7.5 is the magic number to have all turrets on the teleporter platform
                     // needs to be slightly larger for the primordial telepot
@@ -126,11 +123,11 @@ namespace RalseiMod
             if(self.fixedAge + Time.fixedDeltaTime > EntityStates.Missions.BrotherEncounter.Phase1.prespawnSoundDelay && !self.hasPlayedPrespawnSound)
             {
                 Vector3 pos = self.childLocator.FindChild("CenterOrbEffect").transform.position;
-                WarpOnTeleporterBegin[] warpTargets = WarpOnTeleporterBegin.GetWarpTargets(pos, 0);
+                RalseiRecallComponent[] warpTargets = RalseiRecallComponent.GetWarpTargets(pos, 0);
                 int count = warpTargets.Length;
                 Log.Warning(count);
                 int i = 0;
-                foreach (WarpOnTeleporterBegin warpTarget in warpTargets)
+                foreach (RalseiRecallComponent warpTarget in warpTargets)
                 {
                     // 7.5 is the magic number to have all turrets on the teleporter platform
                     // needs to be slightly larger for the primordial telepot
@@ -151,10 +148,10 @@ namespace RalseiMod
 
         private void WarpMinionsTp(TeleporterInteraction tp)
         {
-            WarpOnTeleporterBegin[] warpTargets = WarpOnTeleporterBegin.GetWarpTargets(tp);
+            RalseiRecallComponent[] warpTargets = RalseiRecallComponent.GetWarpTargets(tp);
             int count = warpTargets.Length;
             int i = 0;
-            foreach (WarpOnTeleporterBegin warpTarget in warpTargets)
+            foreach (RalseiRecallComponent warpTarget in warpTargets)
             {
                 // 7.5 is the magic number to have all turrets on the teleporter platform
                 // needs to be slightly larger for the primordial telepot

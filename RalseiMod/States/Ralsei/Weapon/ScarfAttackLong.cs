@@ -106,6 +106,11 @@ namespace RalseiMod.States.Ralsei.Weapon
             if (base.isAuthority)
             {
                 GetBulletAttack().Fire();
+
+                if (isComboFinisher)
+                    Util.PlaySound("Play_M1_basic_end_combo", gameObject);
+                else
+                    Util.PlaySound("Play_M1_basic", gameObject);
             }
         }
         BulletAttack GetBulletAttack()

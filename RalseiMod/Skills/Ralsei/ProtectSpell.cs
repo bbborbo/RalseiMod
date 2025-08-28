@@ -53,13 +53,15 @@ namespace RalseiMod.Skills
         public override string SkillDescription => 
             $"Cast a {UtilityColor("protective spell")} on yourself and all allies within {UtilityColor(effectRange + "m")}, " +
             $"granting {UtilityColor(ConvertDecimal(blockChance) + " block chance")}" +
-            $" for {UtilityColor(blockDuration.ToString())} seconds.";
+            $" for {UtilityColor(blockDuration.ToString())} seconds." +
+            $"Holding this ability for {HealSpell.teleportTime} seconds will {DamageColor("consume all stocks")} and teleport your allies to you" +
+            $"{HealingColor(" healing 10% plus a static 20 health")}, increasing with levels.";
 
         public override string SkillLangTokenName => "GUARDSPELL";
 
         public override UnlockableDef UnlockDef => null;
 
-        public override Sprite Icon => LoadSpriteFromRorSkill("RoR2/Base/Engi/EngiBodyPlaceBubbleShield.asset");
+        public override Sprite Icon => RalseiPlugin.mainAssetBundle.LoadAsset<Sprite>("healprayer2");
 
         public override Type ActivationState => typeof(AimGuardSpell);
 
@@ -80,7 +82,8 @@ namespace RalseiMod.Skills
             cancelSprintingOnActivation = true,
             mustKeyPress = true,
             interruptPriority = InterruptPriority.Skill,
-            baseMaxStock = stock
+            baseMaxStock = stock,
+            dontAllowPastMaxStocks = false,
         };
 
         public override void Init()

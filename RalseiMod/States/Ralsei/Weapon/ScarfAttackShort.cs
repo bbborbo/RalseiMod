@@ -82,6 +82,7 @@ namespace RalseiMod.States.Ralsei.Weapon
             animator = GetModelAnimator();
             StartAimMode(0.5f + enterDuration + exitDuration, false);
 
+
             base.OnEnter();
         }
         public override void OnExit()
@@ -120,6 +121,11 @@ namespace RalseiMod.States.Ralsei.Weapon
                 {
                     OnHitEnemyAuthority();
                 }
+
+                if (isComboFinisher)
+                    Util.PlaySound("Play_M1_basic_end_combo", gameObject);
+                else
+                    Util.PlaySound("Play_M1_basic", gameObject);
             }
         }
 

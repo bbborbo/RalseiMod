@@ -53,6 +53,7 @@ namespace RalseiMod.States.Ralsei
         public override void OnExit()
         {
             base.OnExit();
+            Util.PlaySound("Stop_fly_loop", gameObject);
             base.skillLocator.utility.UnsetSkillOverride(this, CancelHoverSkill.instance.SkillDef, RoR2.GenericSkill.SkillOverridePriority.Contextual);
             if (base.isAuthority)
             {

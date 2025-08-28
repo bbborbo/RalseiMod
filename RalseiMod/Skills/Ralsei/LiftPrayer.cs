@@ -52,7 +52,7 @@ namespace RalseiMod.Skills
 
         public override UnlockableDef UnlockDef => null;
 
-        public override Sprite Icon => LoadSpriteFromRorSkill("RoR2/Base/Mage/MageBodyFlyUp.asset");
+        public override Sprite Icon => RalseiPlugin.mainAssetBundle.LoadAsset<Sprite>("ascend");
 
         public override Type ActivationState => typeof(LiftState);
 
@@ -72,7 +72,8 @@ namespace RalseiMod.Skills
             mustKeyPress = true,
             interruptPriority = InterruptPriority.Any,
             cancelSprintingOnActivation = false,
-            isCombatSkill = false
+            isCombatSkill = false,
+            dontAllowPastMaxStocks = false,
         };
 
         public override void Init()

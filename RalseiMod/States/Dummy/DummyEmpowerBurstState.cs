@@ -16,19 +16,15 @@ namespace RalseiMod.States.Dummy
     {
         public override void OnEnter()
         {
-            Debug.Log("Dummy empower burst");
             base.OnEnter();
-			Debug.Log("A");
             DoEmpowerBurst();
             outer.SetNextStateToMain();
         }
 
         private void DoEmpowerBurst()
 		{
-			Debug.Log("B");
 			if (NetworkServer.active)
 			{
-				Debug.Log("C");
 				List<HealthComponent> list = new List<HealthComponent>();
 				SphereSearch sphereSearch = new SphereSearch();
 				sphereSearch.radius = DummyEmpowerBurst.empowerRange;
@@ -55,7 +51,6 @@ namespace RalseiMod.States.Dummy
 				{
 					if (recipient.body.bodyIndex == BodyCatalog.FindBodyIndex(Characters.Dummy.instance.bodyName))
 						continue;
-					Debug.Log("D");
 					recipient.body.AddTimedBuff(RalseiSurvivor.empowerBuff, DummyEmpowerBurst.empowerDuration);
 					/*HealOrb healOrb = new HealOrb();
 					healOrb.origin = base.transform.position;

@@ -22,6 +22,9 @@ namespace RalseiMod.States.Ralsei
             liftRateMax = LiftPrayer.liftSpeedMax * this.attackSpeedStat;
             duration = LiftPrayer.liftDuration / this.attackSpeedStat;
             characterBody.AddBuff(LiftPrayer.hoverBuff);
+
+            Util.PlaySound("Play_fly_hop", gameObject);
+            Util.PlaySound("Play_fly_loop", gameObject);
             base.OnEnter();
         }
         public override void FixedUpdate()
@@ -49,6 +52,7 @@ namespace RalseiMod.States.Ralsei
         public override void OnExit()
         {
             base.OnExit();
+
             characterBody.RemoveBuff(LiftPrayer.hoverBuff);
         }
 

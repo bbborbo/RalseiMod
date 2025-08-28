@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="16" SoundBankVersion="150">
+	<RootPaths>
+		<ProjectRoot>../..</ProjectRoot>
+		<SourceFilesRoot>../../.cache/Windows</SourceFilesRoot>
+		<SoundBanksRoot>.</SoundBanksRoot>
+		<ExternalSourcesInputFile></ExternalSourcesInputFile>
+		<ExternalSourcesOutputRoot>.</ExternalSourcesOutputRoot>
+	</RootPaths>
+	<DialogueEvents/>
+	<SoundBanks>
+		<SoundBank Id="1355168291" Type="User" Language="SFX" Hash="{3ED62E55-529D-B8A8-0529-E3B28EB77B23}">
+			<ShortName>Init</ShortName>
+			<Path>Init.bnk</Path>
+			<Plugins>
+				<AudioDevices>
+					<Plugin Id="2317455096" Name="No_Output" LibName="No Output" LibId="11862023"/>
+					<Plugin Id="3859886410" Name="System" LibName="System" LibId="11403271"/>
+				</AudioDevices>
+			</Plugins>
+			<Busses>
+				<Bus Id="3803692087" Name="Master Audio Bus"/>
+			</Busses>
+		</SoundBank>
+		<SoundBank Id="3083887774" Type="User" Language="SFX" Hash="{56D012F4-3967-A0DE-4A02-3142A9583A29}">
+			<ShortName>SDB_ralseyyyy</ShortName>
+			<Path>SDB_ralseyyyy.bnk</Path>
+			<Media>
+				<File Id="23138496" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>M1_basic_end_combo-002.wav</ShortName>
+					<CachePath>SFX/M1_basic_end_combo-002_818F3B66.wem</CachePath>
+				</File>
+				<File Id="67086575" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>fly_loop-002.wav</ShortName>
+					<CachePath>SFX/fly_loop-002_DA6DA1CE.wem</CachePath>
+				</File>
+				<File Id="144255323" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>M1_basic-002.wav</ShortName>
+					<CachePath>SFX/M1_basic-002_818F3B66.wem</CachePath>
+				</File>
+				<File Id="257239083" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>fly_loop-001.wav</ShortName>
+					<CachePath>SFX/fly_loop-001_2D43AC92.wem</CachePath>
+				</File>
+				<File Id="407942785" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>R_cast_loop-002.wav</ShortName>
+					<CachePath>SFX/R_cast_loop-002_B1975234.wem</CachePath>
+				</File>
+				<File Id="431504031" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>R_cast_start-001.wav</ShortName>
+					<CachePath>SFX/R_cast_start-001_818F3B66.wem</CachePath>
+				</File>
+				<File Id="464548300" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>R_cast_loop-003.wav</ShortName>
+					<CachePath>SFX/R_cast_loop-003_FAD6C06B.wem</CachePath>
+				</File>
+				<File Id="484459052" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>R_target-001.wav</ShortName>
+					<CachePath>SFX/R_target-001_818F3B66.wem</CachePath>
+				</File>
+				<File Id="575006184" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>gloom_effect_loop.wav</ShortName>
+					<CachePath>SFX/gloom_effect_loop_818F3B66.wem</CachePath>
+				</File>
+				<File Id="575211646" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>M1_basic-001.wav</ShortName>
+					<CachePath>SFX/M1_basic-001_818F3B66.wem</CachePath>
+				</File>
+				<File Id="614399097" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>fly_hop-002.wav</ShortName>
+					<CachePath>SFX/fly_hop-002_818F3B66.wem</CachePath>
+				</File>
+				<File Id="734742294" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>M1_basic_end_combo-001.wav</ShortName>
+					<CachePath>SFX/M1_basic_end_combo-001_818F3B66.wem</CachePath>
+				</File>
+				<File Id="821773199" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>fly_hop-001.wav</ShortName>
+					<CachePath>SFX/fly_hop-001_818F3B66.wem</CachePath>
+				</File>
+				<File Id="832809867" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>R_target-002.wav</ShortName>
+					<CachePath>SFX/R_target-002_818F3B66.wem</CachePath>
+				</File>
+				<File Id="907579073" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>M1_basic-004.wav</ShortName>
+					<CachePath>SFX/M1_basic-004_818F3B66.wem</CachePath>
+				</File>
+				<File Id="1006965115" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>R_cast_start-002.wav</ShortName>
+					<CachePath>SFX/R_cast_start-002_818F3B66.wem</CachePath>
+				</File>
+				<File Id="1025908300" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>R_cast_loop-001.wav</ShortName>
+					<CachePath>SFX/R_cast_loop-001_818F3B66.wem</CachePath>
+				</File>
+				<File Id="1036964864" Language="SFX" Streaming="false" Location="Memory">
+					<ShortName>M1_basic-003.wav</ShortName>
+					<CachePath>SFX/M1_basic-003_818F3B66.wem</CachePath>
+				</File>
+			</Media>
+			<Plugins>
+				<Custom>
+					<Plugin Id="578151855" Name="Delay (Custom)" LibName="Wwise Delay" LibId="6946819"/>
+					<Plugin Id="1023551136" Name="Delay (Custom)" LibName="Wwise Delay" LibId="6946819"/>
+				</Custom>
+			</Plugins>
+			<Events>
+				<Event Id="3320147165" Name="Play_fly_hop">
+					<MediaRefs>
+						<MediaRef Id="614399097"/>
+						<MediaRef Id="821773199"/>
+					</MediaRefs>
+					<PluginRefs>
+						<Custom>
+							<PluginRef Id="578151855"/>
+						</Custom>
+					</PluginRefs>
+				</Event>
+				<Event Id="4274466530" Name="Play_fly_loop">
+					<MediaRefs>
+						<MediaRef Id="67086575"/>
+						<MediaRef Id="257239083"/>
+					</MediaRefs>
+				</Event>
+				<Event Id="3859793151" Name="Play_gloom_effect_loop">
+					<MediaRefs>
+						<MediaRef Id="575006184"/>
+					</MediaRefs>
+				</Event>
+				<Event Id="2805969271" Name="Play_M1_basic">
+					<MediaRefs>
+						<MediaRef Id="144255323"/>
+						<MediaRef Id="575211646"/>
+						<MediaRef Id="907579073"/>
+						<MediaRef Id="1036964864"/>
+					</MediaRefs>
+				</Event>
+				<Event Id="371338710" Name="Play_M1_basic_end_combo">
+					<MediaRefs>
+						<MediaRef Id="23138496"/>
+						<MediaRef Id="734742294"/>
+					</MediaRefs>
+				</Event>
+				<Event Id="2403132935" Name="Play_R_cast_loop">
+					<MediaRefs>
+						<MediaRef Id="407942785"/>
+						<MediaRef Id="464548300"/>
+						<MediaRef Id="1025908300"/>
+					</MediaRefs>
+					<PluginRefs>
+						<Custom>
+							<PluginRef Id="1023551136"/>
+						</Custom>
+					</PluginRefs>
+				</Event>
+				<Event Id="2813328903" Name="Play_R_cast_start">
+					<MediaRefs>
+						<MediaRef Id="431504031"/>
+						<MediaRef Id="1006965115"/>
+					</MediaRefs>
+				</Event>
+				<Event Id="2685293034" Name="Play_R_target_hit">
+					<MediaRefs>
+						<MediaRef Id="484459052"/>
+						<MediaRef Id="832809867"/>
+					</MediaRefs>
+				</Event>
+				<Event Id="2315043432" Name="Stop_fly_loop"/>
+				<Event Id="4094657849" Name="Stop_gloom_effect_loop"/>
+				<Event Id="3724224621" Name="Stop_R_cast_loop"/>
+			</Events>
+		</SoundBank>
+	</SoundBanks>
+	<FileHash>{C713DD4C-1AFD-DCCF-1CB0-B8E1E6A3579B}</FileHash>
+</SoundBanksInfo>

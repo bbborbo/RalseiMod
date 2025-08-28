@@ -47,7 +47,7 @@ namespace RalseiMod.Skills
         [AutoConfig("Champions Sparability", "If set to true, champions (world-spawn bosstype enemies) can be spared and turned into an ally.", true)]
         public static bool championsPacifiable;
 
-        [AutoConfig("MinionFollowRanfe", "The range in meters at which your minions will begin trying to follow you by sprinting", 45)]
+        [AutoConfig("Minion Follow Range", "The range in meters at which your minions will begin trying to follow you by sprinting", 999)]
         public static float minionFollowRange;
         [AutoConfig("Enemy Empower Ward Radius", "Affects the radius of the special Empower ward that enemy Ralseis cast.", 25f)]
         public static float empowerWardRadius;
@@ -88,7 +88,7 @@ namespace RalseiMod.Skills
 
         public override UnlockableDef UnlockDef => null;
 
-        public override Sprite Icon => LoadSpriteFromRorSkill("RoR2/Base/Heretic/HereticDefaultAbility.asset");
+        public override Sprite Icon => RalseiPlugin.mainAssetBundle.LoadAsset<Sprite>("pacify1");
 
         public override Type ActivationState => typeof(PreparePacifySpell);
 
@@ -107,7 +107,8 @@ namespace RalseiMod.Skills
             cancelSprintingOnActivation = true,
             baseMaxStock = 2,
             isCombatSkill = false,
-            interruptPriority = InterruptPriority.PrioritySkill
+            interruptPriority = InterruptPriority.PrioritySkill,
+            dontAllowPastMaxStocks = false,
         };
 
         public override void Init()

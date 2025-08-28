@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ProjectInfo>
+	<Project Name="haste_reaper_ralsey_ror2mod" GUID="{25D5B087-4EB8-4C6D-A091-387FE7AE2596}" Generator="2023.1.4.8496"/>
+	<CacheRoot>../.cache</CacheRoot>
+	<Platforms>
+		<Platform Name="Windows" GUID="{5EC086A4-1AFE-462B-ABAC-A2F046397C14}" BasePlatform="Windows" BasePlatformGUID="{6E0CB257-C6C8-4C5C-8366-2740DFC441EB}" Path="Windows"/>
+	</Platforms>
+	<Languages>
+		<Language Name="English(US)" Id="684519430" GUID="{0DEDAF57-75A0-4185-ABD7-2288DE4E8173}" Default="true" UseAsStandIn="true"/>
+	</Languages>
+	<FileHash>{D8ED7AA5-CA23-FFA4-EAB2-7BEDA4DDBD57}</FileHash>
+</ProjectInfo>

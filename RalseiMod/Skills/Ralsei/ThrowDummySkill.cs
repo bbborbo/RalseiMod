@@ -52,7 +52,7 @@ namespace RalseiMod.Skills.Ralsei
 
         public override UnlockableDef UnlockDef => null;
 
-        public override Sprite Icon => LoadSpriteFromRorSkill("RoR2/Base/Engi/EngiBodyPlaceTurret.asset");
+        public override Sprite Icon => RalseiPlugin.mainAssetBundle.LoadAsset<Sprite>("pacify2");
 
         public override Type ActivationState => typeof(ThrowDummyState);
 
