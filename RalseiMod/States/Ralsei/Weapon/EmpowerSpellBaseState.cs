@@ -157,6 +157,7 @@ namespace RalseiMod.States.Ralsei.Weapon
 			//play sounds/animations
 			Util.PlaySound(EmpowerSpellBaseState.exitSoundString, base.gameObject);
 			Util.PlaySound(EmpowerSpellBaseState.stopLoopSoundString, base.gameObject);
+			AkSoundEngine.StopPlayingID(this.loopSoundID);
 			this.RemoveOverlay(0f);
 			if (spellLightingEffectInstance)
 				//EntityState.Destroy(spellLightingEffectInstance);

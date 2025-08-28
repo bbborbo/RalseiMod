@@ -12,6 +12,7 @@ namespace RalseiMod.Skills.Ralsei
 {
     class GrappleUtility : SkillBase<GrappleUtility>
     {
+        public override bool isEnabled => false;
         #region config
         public override string ConfigName => "Skill : " + SkillName;
         #endregion

@@ -8,15 +8,15 @@ using System.Text;
 
 namespace RalseiMod.Achievements
 {
-    [RegisterAchievement("RalseiPacifist", unlockableIdentifier, null, uint.MaxValue, null)]
+    [RegisterAchievement(identifier, unlockableIdentifier, null, 50, null)]
     public class RalseiPacifistAchievement : BaseAchievement
     {
         public const string identifier = RalseiSurvivor.RALSEI_PREFIX + "pacifistAchievement";
         public const string unlockableIdentifier = RalseiSurvivor.RALSEI_PREFIX + "pacifistUnlockable";
 
         private int killCount = 0;
-        public override BodyIndex LookUpRequiredBodyIndex() => BodyCatalog.FindBodyIndex("RalseiBody");
-        //public override BodyIndex LookUpRequiredBodyIndex() => BodyCatalog.FindBodyIndex(RalseiSurvivor.instance.bodyName);
+        //public override BodyIndex LookUpRequiredBodyIndex() => BodyCatalog.FindBodyIndex("RalseiBody");
+        public override BodyIndex LookUpRequiredBodyIndex() => BodyCatalog.FindBodyIndex(RalseiSurvivor.instance.bodyName);
         public override void OnBodyRequirementMet()
         {
             base.OnBodyRequirementMet();
@@ -53,11 +53,14 @@ namespace RalseiMod.Achievements
 
         public void ClearCheck(Run run, RunReport runReport)
         {
+            
             bool flag = killCount == 0 && meetsBodyRequirement;
             killCount = 0;
 
             if (!runReport.gameEnding.isWin || !flag || 
                 run == null || runReport == null || !(bool)runReport.gameEnding) 
+                return;
+            if (runReport.FindFirstPlayerInfo().bodyIndex != LookUpRequiredBodyIndex())
                 return;
             Grant();
         }

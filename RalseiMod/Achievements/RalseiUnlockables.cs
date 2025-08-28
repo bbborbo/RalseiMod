@@ -27,29 +27,29 @@ namespace RalseiMod.Survivors.Ralsei
                 RalseiPacifistAchievement.unlockableIdentifier,
                 GetAchievementNameToken(RalseiPacifistAchievement.identifier),
                 RalseiSurvivor.instance.assetBundle.LoadAsset<Sprite>("texMasteryAchievement"));
-            LanguageAPI.Add(GetAchievementNameToken(RalseiPacifistAchievement.identifier),
+            Modules.Language.Add(GetAchievementNameToken(RalseiPacifistAchievement.identifier),
                 $"{CharacterName}: True Pacifist");
-            LanguageAPI.Add(GetAchievementDescriptionToken(RalseiPacifistAchievement.identifier),
+            Modules.Language.Add(GetAchievementDescriptionToken(RalseiPacifistAchievement.identifier),
                 $"As {CharacterName}, beat the game or obliterate without killing a single non-boss enemy.");
 
-            LanguageAPI.Add(GetAchievementNameToken(RalseiUnlockAchievement.identifier), 
+            Modules.Language.Add(GetAchievementNameToken(RalseiUnlockAchievement.identifier), 
                 "Pacifist");
-            LanguageAPI.Add(GetAchievementDescriptionToken(RalseiUnlockAchievement.identifier), 
+            Modules.Language.Add(GetAchievementDescriptionToken(RalseiUnlockAchievement.identifier), 
                 "Beat a stage without killing any non-Boss enemies.");
 
-            LanguageAPI.Add(GetAchievementNameToken(Oops.identifier), 
+            Modules.Language.Add(GetAchievementNameToken(Oops.identifier), 
                 $"{CharacterName}: Oops");
-            LanguageAPI.Add(GetAchievementDescriptionToken(Oops.identifier), 
+            Modules.Language.Add(GetAchievementDescriptionToken(Oops.identifier), 
                 $"As {CharacterName}, die to one of your own minions.");
 
-            LanguageAPI.Add(GetAchievementNameToken(KingHealer.identifier), 
+            Modules.Language.Add(GetAchievementNameToken(KingHealer.identifier), 
                 $"{CharacterName}: King Healer");
-            LanguageAPI.Add(GetAchievementDescriptionToken(KingHealer.identifier), 
+            Modules.Language.Add(GetAchievementDescriptionToken(KingHealer.identifier), 
                 $"As {CharacterName}, apply more than 1000000 points of healing in a single run.");
 
-            LanguageAPI.Add(GetAchievementNameToken(PowerfulFriends.identifier), 
+            Modules.Language.Add(GetAchievementNameToken(PowerfulFriends.identifier), 
                 $"{CharacterName}: Powerful Connections");
-            LanguageAPI.Add(GetAchievementDescriptionToken(PowerfulFriends.identifier), 
+            Modules.Language.Add(GetAchievementDescriptionToken(PowerfulFriends.identifier), 
                 $"As {CharacterName}, have an allied Scavenger, Umbra, and rare Elite all at once.");
         }
     }

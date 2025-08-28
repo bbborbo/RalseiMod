@@ -109,6 +109,7 @@ namespace RalseiMod.States.Ralsei.Weapon
             attack.pushAwayForce = force;
             attack.isCrit = RollCrit();
             attack.impactSound = NetworkSoundEventIndex.Invalid;
+            attack.damageType = DamageTypeCombo.GenericPrimary;
             return attack;
         }
 

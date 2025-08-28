@@ -72,10 +72,10 @@ namespace RalseiMod.Survivors.Ralsei
         public override string SurvivorOutroFailure => "..and so he vanished, a whisper of legend fading to black.";
         public override string CharacterLore => "";
         public override string SurvivorDescription => "Henry is a skilled fighter who makes use of a wide arsenal of weaponry to take down his foes.<color=#CCD3E0>" + Environment.NewLine + Environment.NewLine
-             + "< ! > Be careful not to pacify every strong enemy you see, you can only have 3 allies at once!" + Environment.NewLine + Environment.NewLine
-             + "< ! > Pacifying enemies means you won't be getting money from them, so be wary!" + Environment.NewLine + Environment.NewLine
-             + "< ! > Casting Pacify on bosses can be a great way to soften them for minions to gain an advantage. Don't dismiss it just because Pacify can't spare bosses." + Environment.NewLine + Environment.NewLine
-             + "< ! > Your primary is much stronger without the last hit of the combo, but can not pierce without it. Be mindful of when to use the full combo or just bursts of attacks at the right time.";
+             + "< ! > Sword is a good all-rounder while Boxing Gloves are better for laying a beatdown on more powerful foes." + Environment.NewLine + Environment.NewLine
+             + "< ! > Pistol is a powerful anti air, with its low cooldown and high damage." + Environment.NewLine + Environment.NewLine
+             + "< ! > Roll has a lingering armor buff that helps to use it aggressively." + Environment.NewLine + Environment.NewLine
+             + "< ! > Bomb can be used to wipe crowds with ease.";
         #endregion
         public static string tangleKeywordToken = RalseiPlugin.DEVELOPER_PREFIX + "_KEYWORD_TANGLE";
         public static string empowerKeywordToken = RalseiPlugin.DEVELOPER_PREFIX + "_KEYWORD_EMPOWER";
@@ -390,11 +390,18 @@ namespace RalseiMod.Survivors.Ralsei
 
         private static void ApplyRalseiCdr(CharacterBody body, float cdr)
         {
-            if (body != null && body.bodyIndex == BodyCatalog.FindBodyIndex(RalseiSurvivor.instance.bodyName) || body.bodyIndex == BodyCatalog.FindBodyIndex(Dummy.instance.bodyName))
-            {
-                SkillLocator skillLocator = body.skillLocator;
-                skillLocator.DeductCooldownFromAllSkillsServer(cdr);
-            }
+            if (body == null)
+                return;
+
+            if (body.skillLocator == null)
+                return;
+
+            if (body.bodyIndex != BodyCatalog.FindBodyIndex(RalseiSurvivor.instance.bodyName)
+                && body.bodyIndex != BodyCatalog.FindBodyIndex(Dummy.instance.bodyName))
+                return;
+
+            SkillLocator skillLocator = body.skillLocator;
+            skillLocator.DeductCooldownFromAllSkillsServer(cdr);
         }
 
         private string EmpowermentNameModifier(On.RoR2.Util.orig_GetBestBodyName orig, GameObject bodyObject)
