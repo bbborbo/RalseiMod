@@ -18,8 +18,6 @@ namespace RalseiMod.Skills.Ralsei
         #endregion
         public override string SkillName => "Scarf Sling";
 
-        public override bool isEnabled => false;
-
         public override string SkillDescription => $"Target an ally to grapple to, dealing {DamageValueText(0)} to enemies in your path. " +
             $"Then, {DamageColor("stun")} nearby enemies for {DamageValueText(0)}, and hover to the ground.";
 
