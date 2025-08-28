@@ -279,6 +279,7 @@ namespace RalseiMod.Survivors.Ralsei
 
             HenryAssets.Init(assetBundle);
             HenryBuffs.Init(assetBundle);
+            Content.AddEntityState(typeof(RecallMinionState));
             //InitializeCharacterMaster();
 
             AdditionalBodySetup();
