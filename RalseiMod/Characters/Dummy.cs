@@ -88,7 +88,7 @@ namespace RalseiMod.Characters
         {
             base.Init();
 
-            prefabCharacterBody.bodyFlags |= CharacterBody.BodyFlags.IgnoreKnockback;
+            prefabCharacterBody.bodyFlags |= CharacterBody.BodyFlags.IgnoreKnockup;
             prefabCharacterBody.bodyFlags |= CharacterBody.BodyFlags.IgnoreFallDamage;
             prefabCharacterBody.bodyFlags |= CharacterBody.BodyFlags.Mechanical;
 
