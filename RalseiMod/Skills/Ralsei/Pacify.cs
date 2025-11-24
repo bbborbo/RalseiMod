@@ -130,7 +130,8 @@ namespace RalseiMod.Skills
             GetPacifySlotLimit += GetMaxPacifyMinions;
             pacifyDeployableSlot = DeployableAPI.RegisterDeployableSlot(GetPacifySlotLimit);
 
-            GameObject itSafeWard = Addressables.LoadAssetAsync<GameObject>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC1_GameModes_InfiniteTowerRun_InfiniteTowerAssets.EntityStates_InfiniteTowerSafeWard_AwaitingActivation_asset).WaitForCompletion();
+            GameObject itSafeWard = Addressables.LoadAssetAsync<GameObject>(
+                RoR2BepInExPack.GameAssetPaths.RoR2_DLC1_GameModes_InfiniteTowerRun_InfiniteTowerAssets.InfiniteTowerSafeWardAwaitingInteraction_prefab).WaitForCompletion();
             GameObject verticalWard = itSafeWard.transform.Find("Indicator")?.gameObject;
             GameObject encourageWardIndicator = PrefabAPI.InstantiateClone(verticalWard, "EncourageWardIndicatorPrefab");
 
