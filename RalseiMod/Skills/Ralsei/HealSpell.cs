@@ -49,12 +49,10 @@ namespace RalseiMod.Skills
 
         public override string SkillName => "Heal Prayer";
 
-        public override string SkillDescription => 
-            $"Cast a {HealingColor("healing spell")} on yourself and all allies within {UtilityColor(healRange + "m")}, " +
+        public override string SkillDescription =>
+            $"{UtilityColor("Rallying")}. Cast a {HealingColor("healing spell")} on yourself and all allies within {UtilityColor(healRange + "m")}, " +
             $"restoring {HealingColor(ConvertDecimal(instantHealPercent) + " health")} " +
-            $"and granting {HealingColor("Regenerative")} for {HealingColor(healDuration.ToString())} seconds." +
-            $"Holding this ability for {teleportTime} seconds will {DamageColor("consume all stocks")} and teleport your allies to you" +
-            $"{HealingColor(" healing 10% plus a static 20 health")}, increasing with levels.";
+            $"and granting {HealingColor("Regenerative")} for {HealingColor(healDuration.ToString())} seconds.";
 
         public override string SkillLangTokenName => "HEALSPELL";
 
@@ -88,7 +86,7 @@ namespace RalseiMod.Skills
 
         public override void Init()
         {
-            KeywordTokens = new string[] { "KEYWORD_RAPID_REGEN" };
+            KeywordTokens = new string[] { "GRP_KEYWORD_RALLY", "KEYWORD_RAPID_REGEN" };
             base.Init();
             CreateBombProjectile();
             GameObject healexp = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/EliteEarth/AffixEarthHealExplosion.prefab").WaitForCompletion();

@@ -50,12 +50,10 @@ namespace RalseiMod.Skills
 
         public override string SkillName => "Fluffy Guard";
 
-        public override string SkillDescription => 
-            $"Cast a {UtilityColor("protective spell")} on yourself and all allies within {UtilityColor(effectRange + "m")}, " +
+        public override string SkillDescription =>
+            $"{UtilityColor("Rallying")}. Cast a {UtilityColor("protective spell")} on yourself and all allies within {UtilityColor(effectRange + "m")}, " +
             $"granting {UtilityColor(ConvertDecimal(blockChance) + " block chance")}" +
-            $" for {UtilityColor(blockDuration.ToString())} seconds." +
-            $"Holding this ability for {HealSpell.teleportTime} seconds will {DamageColor("consume all stocks")} and teleport your allies to you" +
-            $"{HealingColor(" healing 10% plus a static 20 health")}, increasing with levels.";
+            $" for {UtilityColor(blockDuration.ToString())} seconds.";
 
         public override string SkillLangTokenName => "GUARDSPELL";
 
@@ -88,7 +86,7 @@ namespace RalseiMod.Skills
 
         public override void Init()
         {
-            KeywordTokens = new string[] { "KEYWORD_RAPID_REGEN" };
+            KeywordTokens = new string[] { "KEYWORD_RAPID_REGEN", "GRP_KEYWORD_RALLY" };
             base.Init();
             CreateBombProjectile();
             CreateBlockBuff();
