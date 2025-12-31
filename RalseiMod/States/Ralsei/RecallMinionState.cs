@@ -11,6 +11,10 @@ namespace RalseiMod.States.Ralsei
 {
     class RecallMinionState : EntityState
     {
+        public static float maxHealthFractionToRestore = 0.1f;
+        public static float flatHealthToRestore = 20f;
+        public static float flatHealthToRestorePerLevel = 15f;
+
         public override void OnEnter()
         {
             if(NetworkServer.active)
@@ -35,16 +39,19 @@ namespace RalseiMod.States.Ralsei
             {
                 if (ally)
                 {
-                    CharacterBody allyBody = ally.master.GetBody();
+                    if (ally.master.minionOwnership.ownerMaster != characterBody.master)
+                        continue;
 
+                    CharacterBody allyBody = ally.master.GetBody();
+                    
                     // 7.5 is the magic number to have all turrets on the teleporter platform
                     // needs to be slightly larger for the primordial telepot
                     float Radius = 25f;
                     float radianInc = Mathf.Deg2Rad * 360f / count;
                     Vector3 point1 = new Vector3(Mathf.Cos(radianInc * i) * Radius, 0.25f, Mathf.Sin(radianInc * i) * Radius);
 
-                    float flatIncreasePerLevel = 15 * characterBody.level;
-                    float healPerStack = (allyBody.maxHealth * 0.1f) + (20f + flatIncreasePerLevel);
+                    float flatIncreasePerLevel = flatHealthToRestorePerLevel * allyBody.level;
+                    float healPerStack = (allyBody.maxHealth * maxHealthFractionToRestore) + (flatHealthToRestore + flatIncreasePerLevel);
 
                     float totalHeal = healPerStack * skillLocator.secondary.stock;
 
@@ -54,7 +61,7 @@ namespace RalseiMod.States.Ralsei
 
                     var targetFootPos = pos + point1;
 
-                    TeleportHelper.TeleportBody(allyBody, targetFootPos);
+                    TeleportHelper.TeleportBody(allyBody, targetFootPos, true);
                 }
             }
 
