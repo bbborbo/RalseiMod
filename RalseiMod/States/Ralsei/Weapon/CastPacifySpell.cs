@@ -191,10 +191,13 @@ namespace RalseiMod.States.Ralsei.Weapon
 		{
 			if (itemIndex == RoR2Content.Items.AutoCastEquipment.itemIndex)
 				return false;
+			if (itemIndex == DLC2Content.Items.SpeedBoostPickup.itemIndex)
+				return false;
 			ItemDef itemDef = ItemCatalog.GetItemDef(itemIndex);
 			return itemDef 
 				&& !itemDef.ContainsTag(ItemTag.AIBlacklist) && !itemDef.ContainsTag(ItemTag.BrotherBlacklist) 
 				&& !itemDef.ContainsTag(ItemTag.CannotCopy) && !itemDef.ContainsTag(ItemTag.HoldoutZoneRelated) 
+				&& !itemDef.ContainsTag(ItemTag.InteractableRelated) && !itemDef.ContainsTag(ItemTag.ObjectiveRelated) 
 				&& (itemDef.tier == ItemTier.Boss || itemDef.tier == ItemTier.Lunar 
 				|| itemDef.tier == ItemTier.Tier1 || itemDef.tier == ItemTier.VoidTier1);
 		}
