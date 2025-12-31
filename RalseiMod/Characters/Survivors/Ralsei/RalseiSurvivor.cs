@@ -39,16 +39,16 @@ namespace RalseiMod.Survivors.Ralsei
         [AutoConfig("Base Armor", "Ralsei's base armor. 0 is standard for most survivors.", 0)]
         public static float ralseiBaseArmor = 0;
 
-        [AutoConfig("Empowerment Armor Bonus", 20)]
-        public static int empowerArmor = 20;
-        [AutoConfig("Empowerment Attack Speed Multiplier Bonus", 1f)]
-        public static float empowerAttackSpeed = 1f;
+        [AutoConfig("Empowerment Armor Bonus", 100)]
+        public static int empowerArmor = 100;
+        [AutoConfig("Empowerment Attack Speed Multiplier Bonus", 0.5f)]
+        public static float empowerAttackSpeed = 0.5f;
         [AutoConfig("Empowerment Sprint Speed Multiplier Bonus", 1f)]
         public static float empowerSprintSpeed = 1f;
         [AutoConfig("Empowerment Movement Speed Multiplier Bonus", 0.3f)]
         public static float empowerMoveSpeed = 0.3f;
-        [AutoConfig("Empowerment Base Regen Bonus", 2f)]
-        public static float empowerRegen = 2f;
+        [AutoConfig("Empowerment Base Regen Bonus", 4f)]
+        public static float empowerRegen = 4f;
         [AutoConfig("Empowerment Cooldown Reduction", 0.5f)]
         public static float empowerCdr = 0.5f;
         [AutoConfig("Stack Empowerment Prefix", 
